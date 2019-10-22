@@ -1,5 +1,7 @@
 package info.cinow.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -9,9 +11,12 @@ import lombok.Data;
 public class Result {
 
     private AddressComponents addressComponents;
-    private String formatted_address;
+
+    @JsonProperty("formatted_address")
+    private String formattedAddress;
     private Location location;
     private int accuracy;
-    private String accuracy_type;
+    @JsonProperty("accuracy_type")
+    private String accuracyType;
     private String source;
 }

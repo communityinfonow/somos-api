@@ -1,5 +1,8 @@
 package info.cinow.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.Data;
 
 /**
@@ -31,7 +34,8 @@ public class AddressComponents {
     /**
      * The street address, appended and formatted.
      */
-    private String formatted_street;
+    @JsonProperty("formatted_street")
+    private String formattedStreet;
 
     /**
      * The city.

@@ -2,18 +2,24 @@ package info.cinow.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * LocationIqResult
  */
 public class LocationIqResult {
 
-    private String place_id;
+    @JsonProperty("place_id")
+    private String placeId;
 
-    private String licence;
+    @JsonProperty("licence")
+    private String license;
 
-    private String osm_type;
+    @JsonProperty("osm_type")
+    private String osmType;
 
-    private String osm_id;
+    @JsonProperty("osm_id")
+    private String osmId;
 
     private List<String> boundingbox;
 
@@ -21,9 +27,11 @@ public class LocationIqResult {
 
     private String lon;
 
-    private String display_name;
+    @JsonProperty("display_name")
+    private String displayName;
 
-    private String class;
+    @JsonProperty("class")
+    private String theClass;
 
     private String type;
 

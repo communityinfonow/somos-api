@@ -1,12 +1,15 @@
-package info.cinow.model;
+package info.cinow.model.locationiq;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * LocationIqResult
  */
+@Data
 public class LocationIqResult {
 
     @JsonProperty("place_id")

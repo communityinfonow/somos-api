@@ -1,4 +1,4 @@
-package info.cinow.model;
+package info.cinow.model.geocodio;
 
 import lombok.Data;
 

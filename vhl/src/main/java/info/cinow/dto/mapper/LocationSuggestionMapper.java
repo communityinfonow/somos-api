@@ -3,8 +3,8 @@ package info.cinow.dto.mapper;
 import java.util.List;
 
 import info.cinow.dto.LocationSuggestionDto;
-import info.cinow.model.GeocodioResponse;
-import info.cinow.model.LocationIQResponse;
+import info.cinow.model.geocodio.GeocodioResponse;
+import info.cinow.model.locationiq.LocationIQResponse;
 
 /**
  * LocationSuggestionMapper

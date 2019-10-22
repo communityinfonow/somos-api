@@ -2,8 +2,8 @@ package info.cinow.repository;
 
 import org.springframework.web.client.RestTemplate;
 
-import info.cinow.model.GeocodioResponse;
-import info.cinow.model.LocationIQResponse;
+import info.cinow.model.geocodio.GeocodioResponse;
+import info.cinow.model.locationiq.LocationIQResponse;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,8 +29,9 @@ public class GeocodeDao {
     }
 
     public LocationIQResponse locationIq(String locationString) {
+        LocationIQResponse response = null;
         try {
-            LocationIQResponse response = this.restTemplate.getForObject("url", LocationIQResponse.class);
+            response = this.restTemplate.getForObject("url", LocationIQResponse.class);
         } catch (Exception e) {
             log.error("An error occured gecoding with locationIq", e);
         }

@@ -1,7 +1,8 @@
-package info.cinow.model;
+package info.cinow.model.geocodio;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import info.cinow.model.Location;
 import lombok.Data;
 
 /**

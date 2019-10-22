@@ -1,4 +1,4 @@
-package info.cinow.model;
+package info.cinow.model.locationiq;
 
 import java.util.List;
 

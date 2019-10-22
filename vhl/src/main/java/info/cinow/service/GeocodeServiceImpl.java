@@ -4,8 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import info.cinow.dto.LocationSuggestionDto;
-import info.cinow.model.GeocodioResponse;
-import info.cinow.model.LocationIQResponse;
+import info.cinow.model.geocodio.GeocodioResponse;
+import info.cinow.model.locationiq.LocationIQResponse;
 import info.cinow.model.LocationType;
 import info.cinow.repository.GeocodeDao;
 

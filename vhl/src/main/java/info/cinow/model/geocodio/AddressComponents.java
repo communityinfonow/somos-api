@@ -1,4 +1,4 @@
-package info.cinow.model;
+package info.cinow.model.geocodio;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;

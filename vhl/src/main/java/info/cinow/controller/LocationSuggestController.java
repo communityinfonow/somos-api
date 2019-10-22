@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.cinow.dto.LocationSuggestionDto;
-import info.cinow.model.GeocodioResponse;
-import info.cinow.model.LocationIQResponse;
+import info.cinow.model.geocodio.GeocodioResponse;
+import info.cinow.model.locationiq.LocationIQResponse;
 import info.cinow.model.LocationType;
 import info.cinow.model.LocationTypeConvertor;
 import info.cinow.service.GeocodeService;

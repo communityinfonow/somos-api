@@ -1,5 +1,7 @@
 package info.cinow.model;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -7,5 +9,8 @@ import lombok.Data;
  */
 @Data
 public class GeocodioResponse {
-    // TODO: mimick api response
+
+    Input input;
+
+    List<Result> results;
 }

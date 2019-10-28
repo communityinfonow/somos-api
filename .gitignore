@@ -65,3 +65,5 @@ secrets.yml
 
 /vhl/src/main/resources/*.properties
 !example.properties
+vhl/src/main/resources/application.properties
+vhl/target/classes/application.properties

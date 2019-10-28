@@ -1,8 +1,10 @@
 package info.cinow.service;
 
+import java.util.List;
+
 import info.cinow.dto.LocationSuggestionDto;
 import info.cinow.model.LocationType;
 
 public interface GeocodeService {
-    LocationSuggestionDto getLocationSuggestions(String locationSearch, LocationType locationType);
+    List<LocationSuggestionDto> getLocationSuggestions(String locationSearch, LocationType locationType);
 }

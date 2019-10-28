@@ -1,9 +1,11 @@
 package info.cinow.dto;
 
 import info.cinow.model.Location;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class LocationSuggestionDto {
 
     /**
@@ -14,5 +16,6 @@ public class LocationSuggestionDto {
     /**
      * The location of the suggestions.
      */
+
     Location location;
 }

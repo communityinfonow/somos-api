@@ -33,7 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/location")
 @CrossOrigin(origins = "http://localhost:8080")
 public class LocationSuggestController {
-
+    // TODO: Determine whether to use the "/location" prefix if there aren't any
+    // real resources that can be referred to as a location
     @Autowired
     private GeocodeService geocodeService;
 
@@ -87,5 +88,6 @@ public class LocationSuggestController {
 
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "An error occured finding location suggestions. If the problem persists, please contact CI:Now")
     public class InternalError extends RuntimeException {
+        private static final long serialVersionUID = 1L;
     }
 }

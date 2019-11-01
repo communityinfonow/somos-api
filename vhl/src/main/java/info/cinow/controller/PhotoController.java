@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import info.cinow.dto.PhotoDto;
 import info.cinow.model.Location;
+import info.cinow.model.PhotoOwner;
 import info.cinow.service.PhotoService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +46,7 @@ public class PhotoController {
     @PostMapping
     public List<EntityModel<PhotoDto>> savePhotos(@RequestParam("photos") MultipartFile[] photos) {
         // TODO: handler for file size too large
+        // TODO: handler/response for file not saved correctly
         List<EntityModel<PhotoDto>> photoEntities = null;
         try {
             photoEntities = photoService.uploadPhotos(photos).stream().map(photo -> new EntityModel<>(photo,
@@ -78,11 +81,23 @@ public class PhotoController {
     }
 
     @PutMapping("/{id}")
-    public String updatePhotos(@PathVariable("id") Long id) {
+    public String updatePhoto(@PathVariable("id") Long id, @RequestParam("photoOwner") PhotoOwner photoOwner) {
         return null;
         // TODO: if setting to approved, set publicity of file on S3 to public. Use the
         // urls from S3 for serving static images rather than loading them here and
         // returning them
     }
+
+    // PutMapping("/{id}")
+    // public String updatePhoto(@PathVariable("id") Long id,
+    // @RequestParam("photoOwner") PhotoOwner photoOwner) {
+    // return null;
+    // // TODO: if setting to approved, set publicity of file on S3 to public. Use
+    // the
+    // // urls from S3 for serving static images rather than loading them here and
+    // // returning them
+    // }
+
+    // TODO: DELETE
 
 }

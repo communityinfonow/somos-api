@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/photos")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "*") // TODO: change back
 public class PhotoController {
 
     @Autowired
@@ -78,14 +78,6 @@ public class PhotoController {
             log.error("an error occurred finding gps coordinates for id: " + id, e);
         }
         return response;
-    }
-
-    @PutMapping("/{id}")
-    public String updatePhoto(@PathVariable("id") Long id, @RequestParam("photoOwner") PhotoOwner photoOwner) {
-        return null;
-        // TODO: if setting to approved, set publicity of file on S3 to public. Use the
-        // urls from S3 for serving static images rather than loading them here and
-        // returning them
     }
 
     // PutMapping("/{id}")

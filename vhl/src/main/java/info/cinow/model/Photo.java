@@ -49,13 +49,22 @@ public class Photo implements Auditable {
      * The owner who originally uploaded photo.
      */
     @Column
-    private Long ownerId;
+    // TODO: manay to one?
+    private String ownerFirstName;
+
+    @Column
+    // TODO: manay to one?
+    private String ownerLastName;
+
+    @Column
+    // TODO: manay to one?
+    private String ownerEmail;
 
     /**
      * The id of the tract to which the photo belongs.
      */
     @Column
-    private Long tractId;
+    private Integer tractId;
 
     /**
      * Whether the photo has been approved for use by CI: Now staff.

@@ -3,12 +3,11 @@ package info.cinow.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
-import info.cinow.model.CensusTract;
+import info.cinow.dto.CensusTractDto;
+import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.repository.CensusTractDao;
 
 /**
@@ -21,15 +20,12 @@ public class CensusTractServiceImpl implements CensusTractService {
     private CensusTractDao censusTractDao;
 
     @Override
-    public List<CensusTract> getAllCensusTracts() {
-        List<CensusTract> censusTracts = new ArrayList<CensusTract>();
-        censusTractDao.findAll().forEach(censusTracts::add);
+    public List<CensusTractDto> getAllCensusTracts() {
+        List<CensusTractDto> censusTracts = new ArrayList<CensusTractDto>();
+        censusTractDao.findAll().forEach(tract -> {
+            censusTracts.add(CensusTractMapper.toDto(tract));
+        });
         return censusTracts;
     }
 
-    @Override
-
-    public FeatureCollection getGeometryCollection() {
-        return censusTractDao.getGeometryCollection();
-    }
 }

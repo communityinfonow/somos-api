@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -26,6 +25,7 @@ import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
+import info.cinow.repository.CensusTractDao;
 import info.cinow.repository.PhotoDao;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,6 +38,9 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Autowired
     private PhotoDao photoDao;
+
+    @Autowired
+    private CensusTractDao censusTractDao;
 
     @Autowired
     private AmazonS3Client amazonS3Client;
@@ -69,6 +72,10 @@ public class PhotoServiceImpl implements PhotoService {
         return photoEntities;
     }
 
+    public PhotoDto updatePhoto(Photo photo) {
+        return PhotoMapper.toPhotoDto(photoDao.save(photo));
+    }
+
     private File convertMultipartFileToFile(MultipartFile file) {
         File convertedFile = new File(file.getOriginalFilename());
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
@@ -88,7 +95,8 @@ public class PhotoServiceImpl implements PhotoService {
             photo.setLongitude(locations.get(0).getLongitude());
             photo.setLatitude(locations.get(0).getLatitude());
         }
-
+        // photo.setTractId(censusTractDao.getContainingTract(photo.getLongitude(),
+        // photo.getLatitude()));
         photo.setFileName(file.getName());
         return this.photoDao.save(photo);
     }

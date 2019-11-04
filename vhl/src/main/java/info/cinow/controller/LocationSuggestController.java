@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/location")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "*")
 public class LocationSuggestController {
     // TODO: Determine whether to use the "/location" prefix if there aren't any
     // real resources that can be referred to as a location

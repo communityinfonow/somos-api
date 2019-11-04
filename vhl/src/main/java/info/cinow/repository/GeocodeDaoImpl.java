@@ -1,15 +1,11 @@
 package info.cinow.repository;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import info.cinow.model.geocodio.GeocodioResponse;
@@ -43,20 +39,21 @@ public class GeocodeDaoImpl implements GeocodeDao {
     }
 
     public GeocodioResponse byAddress(String locationString) {
-        Map<String, String> params = null;
+        Map<String, String> params = new HashMap<String, String>();
         GeocodioResponse response = new GeocodioResponse();
-
-        params = Map.of("api_key", geocodioKey, "q", locationString);
+        params.put("api_key", geocodioKey);
+        params.put("q", locationString);
         response = this.restTemplate.getForObject(geocodioUrl, GeocodioResponse.class, params);
 
         return response;
     }
 
     public LocationIqResult[] byPlaceName(String locationString) {
-        Map<String, String> params = null;
+        Map<String, String> params = new HashMap<String, String>();
         LocationIqResult[] response = null;
-
-        params = Map.of("q", locationString, "format", "json", "key", locationIqKey);
+        params.put("q", locationString);
+        params.put("key", locationIqKey);
+        params.put("format", "json");
         response = this.restTemplate.getForObject(locationIqUrl, LocationIqResult[].class, params);
 
         return response;

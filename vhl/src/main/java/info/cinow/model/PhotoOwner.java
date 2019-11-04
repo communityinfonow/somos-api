@@ -1,22 +1,21 @@
 package info.cinow.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import lombok.Data;
 
 @Data
+@Entity
 public class PhotoOwner {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
-
+    @Column
     String firstName;
-
+    @Column
     String lastName;
 
+    @Id
     String emailAddress;
 
 }

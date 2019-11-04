@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>info.cinow.App</start-class>
-        <java.version>13</java.version>
+        <java.version>8</java.version>
 
         <lombok.version>1.18.10</lombok.version>
         <log4jdbc.log4j2.version>1.16</log4jdbc.log4j2.version>

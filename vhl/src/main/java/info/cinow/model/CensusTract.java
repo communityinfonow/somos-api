@@ -1,17 +1,14 @@
 package info.cinow.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.bedatadriven.jackson.datatype.jts.serialization.GeometryDeserializer;
 import com.bedatadriven.jackson.datatype.jts.serialization.GeometrySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vividsolutions.jts.geom.MultiPolygon;
+
+import org.postgis.*;
 
 import lombok.Data;
 
@@ -21,12 +18,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "bexartracts_2010")
-public class CensusTract implements Serializable {
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+public class CensusTract {
 
     @Id()
     private Integer gid;
@@ -34,9 +26,8 @@ public class CensusTract implements Serializable {
     @Column
     private String tract;
 
-    @JsonSerialize(using = GeometrySerializer.class)
-    @JsonDeserialize(contentUsing = GeometryDeserializer.class)
+    // @JsonSerialize(using = GeometrySerializer.class)
     @Column(name = "geom", columnDefinition = "Geometry")
-    private MultiPolygon geometry;
+    private Geometry geometry;
 
 }

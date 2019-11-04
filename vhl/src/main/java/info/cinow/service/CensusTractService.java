@@ -2,15 +2,12 @@ package info.cinow.service;
 
 import java.util.List;
 
-import org.geojson.FeatureCollection;
-
-import info.cinow.model.CensusTract;
+import info.cinow.dto.CensusTractDto;
 
 /**
  * CensusTractService
  */
 public interface CensusTractService {
-    public List<CensusTract> getAllCensusTracts();
+    public List<CensusTractDto> getAllCensusTracts();
 
-    public FeatureCollection getGeometryCollection();
 }

@@ -29,7 +29,8 @@ public class AppConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
+                registry.addMapping("/**").allowedOrigins("*"); // TODO: change to allow local or aws connections via
+                                                                // properties file
             }
         };
     }

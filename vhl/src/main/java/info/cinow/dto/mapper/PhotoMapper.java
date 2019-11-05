@@ -10,8 +10,10 @@ import info.cinow.model.Photo;
 public class PhotoMapper {
 
     public static PhotoDto toPhotoDto(Photo photo) {
-        return new PhotoDto(photo.getId(), photo.getDescription(), photo.getTractId());
-
+        if (photo != null) {
+            return new PhotoDto(photo.getId(), photo.getDescription(), photo.getTractId());
+        }
+        return null;
     }
 
     public static Photo toPhoto(PhotoSaveDto dto, Integer tractId, Long id) {

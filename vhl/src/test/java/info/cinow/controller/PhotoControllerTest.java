@@ -40,7 +40,7 @@ public class PhotoControllerTest {
 
         Location location = new Location(1.0, 1.0);
 
-        when(service.getGpsCoordinates(anyLong())).thenReturn(location);
+        // when(service.getGpsCoordinates(anyLong())).thenReturn(location);
         mvc.perform(get("/photos/1/gps-coordinates").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.lat").value(location.getLat()))
                 .andExpect(jsonPath("$.lon").value(location.getLng()));

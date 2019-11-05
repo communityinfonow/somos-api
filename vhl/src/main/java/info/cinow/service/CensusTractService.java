@@ -10,4 +10,5 @@ import info.cinow.dto.CensusTractDto;
 public interface CensusTractService {
     public List<CensusTractDto> getAllCensusTracts();
 
+    public CensusTractDto getCensusTract(Integer id);
 }

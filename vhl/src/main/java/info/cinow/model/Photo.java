@@ -1,7 +1,5 @@
 package info.cinow.model;
 
-import java.sql.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -49,15 +47,12 @@ public class Photo implements Auditable {
      * The owner who originally uploaded photo.
      */
     @Column
-    // TODO: manay to one?
     private String ownerFirstName;
 
     @Column
-    // TODO: manay to one?
     private String ownerLastName;
 
     @Column
-    // TODO: manay to one?
     private String ownerEmail;
 
     /**

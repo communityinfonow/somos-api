@@ -28,4 +28,9 @@ public class CensusTractServiceImpl implements CensusTractService {
         return censusTracts;
     }
 
+    @Override
+    public CensusTractDto getCensusTract(Integer id) {
+        return CensusTractMapper.toDto(censusTractDao.findById(id).orElse(null));
+    }
+
 }

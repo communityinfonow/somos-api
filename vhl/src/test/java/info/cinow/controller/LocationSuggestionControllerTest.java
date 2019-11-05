@@ -37,7 +37,7 @@ public class LocationSuggestionControllerTest {
         when(service.getLocationSuggestions(place, LocationType.PLACE)).then(invocation -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         });
-        final ResultActions result = mvc.perform(get("/location/place").param("location", place));
+        final ResultActions result = mvc.perform(get("/place").param("location", place));
         result.andExpect(status().isInternalServerError());
     }
 

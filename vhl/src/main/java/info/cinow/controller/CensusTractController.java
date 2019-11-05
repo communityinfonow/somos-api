@@ -14,14 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.cinow.dto.CensusTractDto;
-import info.cinow.model.CensusTract;
 import info.cinow.service.CensusTractService;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * CensusTractController
  */
-@Slf4j
 @RestController
 @RequestMapping("/census-tracts")
 public class CensusTractController {
@@ -34,16 +31,20 @@ public class CensusTractController {
         List<EntityModel<CensusTractDto>> tracts = censusTractService.getAllCensusTracts().stream()
                 .map(censusTract -> new EntityModel<>(censusTract,
                         linkTo(methodOn(CensusTractPhotoController.class).getPhotos(censusTract.getId()))
-                                .withRel("photos")))
+                                .withRel("photos"),
+                        linkTo(methodOn(CensusTractController.class).getCensusTracts()).withSelfRel()))
                 .collect(Collectors.toList());
 
         return tracts;
     }
 
     @GetMapping("/{id}")
-    public EntityModel<CensusTract> getCensusTract(@PathVariable("id") Integer id) {
-        return null;
-        // TODO
+    public EntityModel<CensusTractDto> getCensusTract(@PathVariable("id") Integer id) {
+        EntityModel<CensusTractDto> tract = new EntityModel<>(censusTractService.getCensusTract(id),
+                linkTo(methodOn(CensusTractController.class).getCensusTract(id)).withSelfRel(),
+                linkTo(methodOn(CensusTractPhotoController.class).getPhotos(id)).withRel("photos"));
+
+        return tract;
     }
 
 }

@@ -44,4 +44,8 @@ public class PhotoServiceImplTest {
         File savedFile = new File(file.getOriginalFilename());
         assertFalse(savedFile.exists());
     }
+
+    // TODO: what if there isn't a file name?
+
+    // TODO: matching file names when saving?
 }

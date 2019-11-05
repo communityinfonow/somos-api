@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -18,14 +19,16 @@ import com.drew.metadata.exif.GpsDirectory;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
-import info.cinow.repository.CensusTractDao;
 import info.cinow.repository.PhotoDao;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,9 +43,6 @@ public class PhotoServiceImpl implements PhotoService {
     private PhotoDao photoDao;
 
     @Autowired
-    private CensusTractDao censusTractDao;
-
-    @Autowired
     private AmazonS3Client amazonS3Client;
 
     /**
@@ -52,9 +52,13 @@ public class PhotoServiceImpl implements PhotoService {
     private String bucketName;
 
     @Override
-    public Location getGpsCoordinates(Long id) {
-        Photo photo = this.photoDao.findById(id).orElse(new Photo());
-        return new Location(photo.getLatitude(), photo.getLongitude()); // TODO test nulls?
+    public Optional<Location> getGpsCoordinates(Long id) {
+        Photo photo = this.photoDao.findById(id).orElse(null);
+        Optional<Location> location = Optional.empty();
+        if (photo != null && photo.getLatitude() != null && photo.getLongitude() != null) {
+            location = Optional.of(new Location(photo.getLatitude(), photo.getLongitude()));
+        }
+        return location;
     }
 
     @Override
@@ -62,12 +66,21 @@ public class PhotoServiceImpl implements PhotoService {
         List<PhotoDto> photoEntities = new ArrayList<PhotoDto>();
         for (MultipartFile photo : photos) {
             File convertedFile = convertMultipartFileToFile(photo);
-            Photo savedPhotoInfo = savePhotoInformationToDatabase(convertedFile); // save photo info to db and return
-                                                                                  // entity
-            photoEntities.add(PhotoMapper.toPhotoDto(savedPhotoInfo));
-            uploadPhotoToS3Bucket(savedPhotoInfo.getFileName(), convertedFile); // use name from database to save file
-                                                                                // to S3 Bucket
-            FileUtils.deleteQuietly(convertedFile.getParentFile()); // clean up temp file TODO: unit test
+            Photo savedPhotoInfo = null;
+            try {
+                savedPhotoInfo = savePhotoInformationToDatabase(convertedFile); // save photo info to db and
+                                                                                // return entity
+                photoEntities.add(PhotoMapper.toPhotoDto(savedPhotoInfo));
+                uploadPhotoToS3Bucket(savedPhotoInfo.getFileName(), convertedFile);
+            } catch (Exception e) {
+                log.error("An error occured saving photo", e);
+                if (!(e instanceof DataAccessException)) {
+                    photoDao.delete(savedPhotoInfo); // if error isn't from JPA, delete photo in database
+                }
+                throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved");
+            } finally {
+                FileUtils.deleteQuietly(convertedFile.getParentFile()); // clean up temp file
+            }
         }
         return photoEntities;
     }
@@ -87,45 +100,44 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private Photo savePhotoInformationToDatabase(File file) {
-        List<GeoLocation> locations = extractGPSMetadata(file);
+        GeoLocation location = extractGPSMetadata(file).orElse(new GeoLocation(0, 0));
         Photo photo = new Photo();
-        // TODO: figure out why there are more than one possibly being created in the
-        // first place
-        if (locations.size() == 1) {
-            photo.setLongitude(locations.get(0).getLongitude());
-            photo.setLatitude(locations.get(0).getLatitude());
+        if (!location.isZero()) {
+            photo.setLongitude(location.getLongitude());
+            photo.setLatitude(location.getLatitude());
         }
-        // photo.setTractId(censusTractDao.getContainingTract(photo.getLongitude(),
-        // photo.getLatitude()));
+
         photo.setFileName(file.getName());
         return this.photoDao.save(photo);
     }
 
-    private void uploadPhotoToS3Bucket(String photoName, File photo) throws IOException {
+    private void uploadPhotoToS3Bucket(String photoName, File photo) {
         amazonS3Client.putObject(new PutObjectRequest(bucketName, photoName, photo));
     }
 
-    // TODO: Unit tests such as same file name
-    private List<GeoLocation> extractGPSMetadata(File photo) {
-        List<GeoLocation> geoLocations = new ArrayList<GeoLocation>();
+    private Optional<GeoLocation> extractGPSMetadata(File photo) {
+        GeoLocation geoLocation = null;
         Metadata metadata;
         Collection<GpsDirectory> gpsDirectories = new ArrayList<GpsDirectory>();
         try {
             metadata = ImageMetadataReader.readMetadata(photo);
             gpsDirectories = metadata.getDirectoriesOfType(GpsDirectory.class);
         } catch (ImageProcessingException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("An error occurred extracting GPS metadata.", e);
         }
+        if (gpsDirectories.size() == 1) {
+            geoLocation = gpsDirectories.stream().findFirst().orElse(new GpsDirectory()).getGeoLocation();
+        }
+        return geoLocation == null ? Optional.empty() : Optional.of(geoLocation);
+    }
 
-        // TODO figure out why there's more than one possible here
-        for (GpsDirectory gpsDirectory : gpsDirectories) {
-            GeoLocation geoLocation = gpsDirectory.getGeoLocation();
-            if (geoLocation != null && !geoLocation.isZero()) {
-                geoLocations.add(geoLocation);
-            }
-        }
-        return geoLocations;
+    @Override
+    public List<PhotoDto> getPhotos() {
+        List<PhotoDto> photos = new ArrayList<PhotoDto>();
+        photoDao.findAll().forEach(photo -> {
+            photos.add(PhotoMapper.toPhotoDto(photo));
+        });
+        return photos;
     }
 
 }

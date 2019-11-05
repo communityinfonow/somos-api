@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,11 +30,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/{locationType}")
 @CrossOrigin(origins = "*")
 public class LocationSuggestController {
-    // TODO: Determine whether to use the "/location" prefix if there aren't any
-    // real resources that can be referred to as a location
     @Autowired
     private GeocodeService geocodeService;
 
@@ -46,7 +44,7 @@ public class LocationSuggestController {
      * @param locationType
      * @return
      */
-    @RequestMapping(value = "/{locationType}", method = RequestMethod.GET)
+    @GetMapping()
     @ResponseBody
     public List<LocationSuggestionDto> getLocationSuggestions(@RequestParam String location,
             @PathVariable LocationType locationType) {
@@ -77,6 +75,8 @@ public class LocationSuggestController {
         case TOO_MANY_REQUESTS:
             log.error("An error occured accessing the REST APIs for geocoding", e);
             throw new InternalError();
+        default:
+            break;
         }
     }
 

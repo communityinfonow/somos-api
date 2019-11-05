@@ -128,8 +128,9 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
-            <version>5.4.4.Final</version>
+            <version>5.3.13.Final</version>
         </dependency>
+
         <dependency>
             <groupId>com.bedatadriven</groupId>
             <artifactId>jackson-datatype-jts</artifactId>
@@ -154,5 +155,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>

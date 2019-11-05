@@ -13,9 +13,7 @@ import info.cinow.model.locationiq.LocationIqResult;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * GeocodeDao TODO: unit tests - test with wrong api key, no api key, not
- * encoded string, etc. Also test with errors from the api such as not having a
- * postal code or city TODO: make this implement an interface
+ * GeocodeDao
  * 
  */
 @Slf4j

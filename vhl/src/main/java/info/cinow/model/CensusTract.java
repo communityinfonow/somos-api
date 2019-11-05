@@ -5,10 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.bedatadriven.jackson.datatype.jts.serialization.GeometrySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import org.postgis.*;
+import com.vividsolutions.jts.geom.MultiPolygon;
 
 import lombok.Data;
 
@@ -26,8 +23,7 @@ public class CensusTract {
     @Column
     private String tract;
 
-    // @JsonSerialize(using = GeometrySerializer.class)
     @Column(name = "geom", columnDefinition = "Geometry")
-    private Geometry geometry;
+    private MultiPolygon polygon;
 
 }

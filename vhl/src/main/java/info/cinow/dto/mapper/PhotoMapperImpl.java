@@ -21,9 +21,8 @@ public class PhotoMapperImpl implements PhotoMapper {
     }
 
     @Override
-    public Photo toPhoto(PhotoSaveDto dto, Integer tractId) {
+    public Photo toPhoto(PhotoSaveDto dto) {
         Photo photo = new Photo();
-        photo.setTractId(tractId);
         photo.setId(dto.getId());
         photo.setOwnerEmail(dto.getOwnerEmail());
         photo.setOwnerFirstName(dto.getOwnerFirstName());

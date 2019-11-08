@@ -44,11 +44,13 @@ public class CensusTractPhotoController {
     @PutMapping()
     public EntityModel<PhotoDto> updatePhoto(@PathVariable("tractId") Integer tractId,
             @RequestBody PhotoSaveDto photo) {
-        PhotoDto dto = photoService.updatePhoto(photoMapper.toPhoto(photo, tractId));
+        Photo photoObj = photoMapper.toPhoto(photo);
+        // photoObj.setCensusTract(tractId); //TODO figure out what to pass here for
+        // tract
+        PhotoDto dto = photoService.updatePhoto(photoObj);
         EntityModel<PhotoDto> response = new EntityModel<>(dto);
 
         return response;
-        // photo with tract Id
     }
 
 }

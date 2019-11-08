@@ -28,6 +28,9 @@ public class CensusTractPhotoController {
     @Autowired
     PhotoService photoService;
 
+    @Autowired
+    PhotoMapper photoMapper;
+
     @GetMapping()
     public EntityModel<Photo> getPhotos(@PathVariable("tractId") Integer tractId) {
         return null;
@@ -38,10 +41,10 @@ public class CensusTractPhotoController {
         return null;
     }
 
-    @PutMapping("/{id}")
-    public EntityModel<PhotoDto> updatePhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long id,
+    @PutMapping()
+    public EntityModel<PhotoDto> updatePhoto(@PathVariable("tractId") Integer tractId,
             @RequestBody PhotoSaveDto photo) {
-        PhotoDto dto = photoService.updatePhoto(PhotoMapper.toPhoto(photo, tractId, id));
+        PhotoDto dto = photoService.updatePhoto(photoMapper.toPhoto(photo, tractId));
         EntityModel<PhotoDto> response = new EntityModel<>(dto);
 
         return response;

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import info.cinow.dto.LocationSuggestionDto;
 import info.cinow.dto.mapper.LocationSuggestionMapper;
 import info.cinow.model.LocationType;
+import info.cinow.model.geocodio.GeocodioResponse;
+import info.cinow.model.locationiq.LocationIqResult;
 import info.cinow.repository.GeocodeDao;
 
 /**
@@ -17,7 +19,16 @@ import info.cinow.repository.GeocodeDao;
 public class GeocodeServiceImpl implements GeocodeService {
 
     @Autowired
-    private GeocodeDao geocodeDao;
+    private GeocodeDao<GeocodioResponse> geocodioDao;
+
+    @Autowired
+    private GeocodeDao<LocationIqResult[]> locationIqDao;
+
+    @Autowired
+    private LocationSuggestionMapper<GeocodioResponse> geocodioMapper;
+
+    @Autowired
+    private LocationSuggestionMapper<LocationIqResult[]> locationIqMapper;
 
     @Override
     public List<LocationSuggestionDto> getLocationSuggestions(String locationString, LocationType locationType) {
@@ -31,9 +42,8 @@ public class GeocodeServiceImpl implements GeocodeService {
      * handling of place search
      */
     private List<LocationSuggestionDto> determineGeocodeDao(String locationString, LocationType locationType) {
-        return locationType.equals(LocationType.ADDRESS)
-                ? LocationSuggestionMapper.toLocationSuggestionDto(geocodeDao.byAddress(locationString))
-                : LocationSuggestionMapper.toLocationSuggestionDto(geocodeDao.byPlaceName(locationString));
+        return locationType.equals(LocationType.ADDRESS) ? geocodioMapper.toDto(geocodioDao.find(locationString))
+                : locationIqMapper.toDto(locationIqDao.find(locationString));
     }
 
 }

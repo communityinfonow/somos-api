@@ -1,7 +1,5 @@
 package info.cinow.service;
 
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -23,9 +21,6 @@ import info.cinow.repository.GeocodeDao;
 @RestClientTest(GeocodeService.class)
 public class GeocodeServiceImplTest {
 
-    @MockBean
-    private GeocodeDao dao;
-
     @Autowired
     private GeocodeService service;
 
@@ -35,6 +30,6 @@ public class GeocodeServiceImplTest {
             return new ArrayList<LocationSuggestionDto>();
         });
         service.getLocationSuggestions("", LocationType.PLACE);
-        verify(dao).byPlaceName("");
+        // TODO
     }
 }

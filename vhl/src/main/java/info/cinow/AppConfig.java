@@ -10,15 +10,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import info.cinow.dto.mapper.CensusTractMapper;
 
 @Configuration
 public class AppConfig {
     @Autowired
     DataSourceProperties dataSourceProperties;
 
-    @Bean
+    @Autowired
+    Environment env;
+
+    @Bean("amazonS3Client")
     public AmazonS3 amazonS3Client(AWSCredentialsProvider credentialsProvider,
             @Value("${cloud.aws.region.static}") String region) {
         return AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).withRegion(region).build();
@@ -29,8 +35,9 @@ public class AppConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*"); // TODO: change to allow local or aws connections via
-                                                                // properties file
+
+                registry.addMapping("/**").allowedOrigins(env.getProperty("app.origin")).allowedMethods("PUT", "GET",
+                        "POST", "DELETE");
             }
         };
     }

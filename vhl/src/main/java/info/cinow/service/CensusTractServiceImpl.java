@@ -19,18 +19,21 @@ public class CensusTractServiceImpl implements CensusTractService {
     @Autowired
     private CensusTractDao censusTractDao;
 
+    @Autowired
+    private CensusTractMapper censusTractMapper;
+
     @Override
     public List<CensusTractDto> getAllCensusTracts() {
         List<CensusTractDto> censusTracts = new ArrayList<CensusTractDto>();
         censusTractDao.findAll().forEach(tract -> {
-            censusTracts.add(CensusTractMapper.toDto(tract));
+            censusTracts.add(censusTractMapper.toDto(tract));
         });
         return censusTracts;
     }
 
     @Override
     public CensusTractDto getCensusTract(Integer id) {
-        return CensusTractMapper.toDto(censusTractDao.findById(id).orElse(null));
+        return censusTractMapper.toDto(censusTractDao.findById(id).orElse(null));
     }
 
 }

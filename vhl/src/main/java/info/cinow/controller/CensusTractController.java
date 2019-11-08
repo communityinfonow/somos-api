@@ -23,28 +23,31 @@ import info.cinow.service.CensusTractService;
 @RequestMapping("/census-tracts")
 public class CensusTractController {
 
-    @Autowired
-    CensusTractService censusTractService;
+        // TODO: error handling for negative id or tract that doesn't exist.
 
-    @GetMapping
-    public List<EntityModel<CensusTractDto>> getCensusTracts() {
-        List<EntityModel<CensusTractDto>> tracts = censusTractService.getAllCensusTracts().stream()
-                .map(censusTract -> new EntityModel<>(censusTract,
-                        linkTo(methodOn(CensusTractPhotoController.class).getPhotos(censusTract.getId()))
-                                .withRel("photos"),
-                        linkTo(methodOn(CensusTractController.class).getCensusTracts()).withSelfRel()))
-                .collect(Collectors.toList());
+        @Autowired
+        CensusTractService censusTractService;
 
-        return tracts;
-    }
+        @GetMapping
+        public List<EntityModel<CensusTractDto>> getCensusTracts() {
+                List<EntityModel<CensusTractDto>> tracts = censusTractService.getAllCensusTracts().stream()
+                                .map(censusTract -> new EntityModel<>(censusTract,
+                                                linkTo(methodOn(CensusTractPhotoController.class)
+                                                                .getPhotos(censusTract.getId())).withRel("photos"),
+                                                linkTo(methodOn(CensusTractController.class).getCensusTracts())
+                                                                .withSelfRel()))
+                                .collect(Collectors.toList());
 
-    @GetMapping("/{id}")
-    public EntityModel<CensusTractDto> getCensusTract(@PathVariable("id") Integer id) {
-        EntityModel<CensusTractDto> tract = new EntityModel<>(censusTractService.getCensusTract(id),
-                linkTo(methodOn(CensusTractController.class).getCensusTract(id)).withSelfRel(),
-                linkTo(methodOn(CensusTractPhotoController.class).getPhotos(id)).withRel("photos"));
+                return tracts;
+        }
 
-        return tract;
-    }
+        @GetMapping("/{id}")
+        public EntityModel<CensusTractDto> getCensusTract(@PathVariable("id") Integer id) {
+                EntityModel<CensusTractDto> tract = new EntityModel<>(censusTractService.getCensusTract(id),
+                                linkTo(methodOn(CensusTractController.class).getCensusTract(id)).withSelfRel(),
+                                linkTo(methodOn(CensusTractPhotoController.class).getPhotos(id)).withRel("photos"));
+
+                return tract;
+        }
 
 }

@@ -88,6 +88,11 @@ public class PhotoController {
                 this.photoLink(id), this.photosLink());
     }
 
+    @PutMapping("/{id}")
+    public EntityModel<PhotoDto> replacePhoto(@PathVariable(id) Long photoId, @RequestParam MultipartFile photo) {
+        return new EntityModel<>(this.photoService.savePhoto(photo, photoId));
+    }
+
     private Link photoMetadataLink(Long id) {
         return linkTo(methodOn(PhotoController.class).getPhotoMetadata(id)).withRel("gps-coordinates");
     }

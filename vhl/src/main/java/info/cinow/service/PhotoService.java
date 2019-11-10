@@ -22,4 +22,6 @@ public interface PhotoService {
     public PhotoDto updatePhoto(Photo photo);
 
     public List<PhotoDto> getPhotos();
+
+    public PhotoDto replacePhoto(MultipartFile photo, Long photoId);
 }

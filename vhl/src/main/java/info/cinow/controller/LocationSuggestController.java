@@ -21,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.dto.LocationSuggestionDto;
 import info.cinow.model.LocationType;
-import info.cinow.model.LocationTypeConvertor;
+import info.cinow.model.LocationTypeConverter;
 import info.cinow.service.GeocodeService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,9 +55,14 @@ public class LocationSuggestController {
         return response;
     }
 
+    /**
+     * Helps serialize enum type TODO
+     * 
+     * @param webdataBinder
+     */
     @InitBinder
     public void initBinder(final WebDataBinder webdataBinder) {
-        webdataBinder.registerCustomEditor(LocationType.class, new LocationTypeConvertor());
+        webdataBinder.registerCustomEditor(LocationType.class, new LocationTypeConverter());
     }
 
     /**
@@ -67,6 +72,7 @@ public class LocationSuggestController {
      */
     @ExceptionHandler(ResponseStatusException.class)
     private void internalServerError(ResponseStatusException e) {
+        // TODO actually make sure this does what I want
         switch (e.getStatus()) {
         // case HttpStatus.NOT_FOUND ->
         case BAD_REQUEST:

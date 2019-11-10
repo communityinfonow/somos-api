@@ -16,5 +16,5 @@ public class PhotoSaveDto {
     private String ownerFirstName;
 
     private String ownerLastName;
-    private Long tractId;
+
 }

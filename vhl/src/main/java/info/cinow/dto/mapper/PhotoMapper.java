@@ -7,22 +7,9 @@ import info.cinow.model.Photo;
 /**
  * PhotoMapper
  */
-public class PhotoMapper {
+public interface PhotoMapper {
 
-    public static PhotoDto toPhotoDto(Photo photo) {
-        if (photo != null) {
-            return new PhotoDto(photo.getId(), photo.getDescription(), photo.getTractId());
-        }
-        return null;
-    }
+    public PhotoDto toDto(Photo photo);
 
-    public static Photo toPhoto(PhotoSaveDto dto, Integer tractId, Long id) {
-        Photo photo = new Photo();
-        photo.setTractId(tractId);
-        photo.setId(id);
-        photo.setOwnerEmail(dto.getOwnerEmail());
-        photo.setOwnerFirstName(dto.getOwnerFirstName());
-        photo.setOwnerLastName(dto.getOwnerLastName());
-        return photo;
-    }
+    public Photo toPhoto(PhotoSaveDto dto);
 }

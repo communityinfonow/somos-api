@@ -14,7 +14,5 @@ public class PhotoDto {
 
     private String description;
 
-    private Integer tractId;
-
     // TODO: link to image on S3 bucket
 }

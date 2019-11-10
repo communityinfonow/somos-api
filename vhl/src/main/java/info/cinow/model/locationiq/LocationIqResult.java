@@ -38,7 +38,7 @@ public class LocationIqResult {
 
     private String type;
 
-    private float importance;
+    private double importance;
 
     private String icon;
 

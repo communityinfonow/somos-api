@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,8 +90,8 @@ public class PhotoController {
     }
 
     @PutMapping("/{id}")
-    public EntityModel<PhotoDto> replacePhoto(@PathVariable(id) Long photoId, @RequestParam MultipartFile photo) {
-        return new EntityModel<>(this.photoService.savePhoto(photo, photoId));
+    public EntityModel<PhotoDto> replacePhoto(@PathVariable("id") Long photoId, @RequestParam MultipartFile photo) {
+        return new EntityModel<>(this.photoService.replacePhoto(photo, photoId));
     }
 
     private Link photoMetadataLink(Long id) {

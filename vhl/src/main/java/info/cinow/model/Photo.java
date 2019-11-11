@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import info.cinow.audit.Audit;
@@ -60,8 +61,8 @@ public class Photo implements Auditable {
     /**
      * The id of the tract to which the photo belongs.
      */
-    @OneToMany
-    @JoinColumn(name = "tractId")
+    @ManyToOne
+    @JoinColumn(name = "gid")
     private CensusTract censusTract;
 
     /**

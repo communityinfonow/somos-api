@@ -143,4 +143,10 @@ public class PhotoServiceImpl implements PhotoService {
         return photos;
     }
 
+    @Override
+    public PhotoDto replacePhoto(MultipartFile photo, Long photoId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

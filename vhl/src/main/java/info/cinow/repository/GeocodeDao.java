@@ -3,15 +3,7 @@ package info.cinow.repository;
 import info.cinow.model.geocodio.GeocodioResponse;
 import info.cinow.model.locationiq.LocationIqResult;
 
-public interface GeocodeDao {
+public interface GeocodeDao<T> {
 
-    /**
-     * Calls
-     * 
-     * @param locationString
-     * @return
-     */
-    public GeocodioResponse byAddress(String locationString);
-
-    public LocationIqResult[] byPlaceName(String locationString);
+    public T find(String location);
 }

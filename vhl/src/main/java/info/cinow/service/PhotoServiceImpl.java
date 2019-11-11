@@ -40,10 +40,13 @@ import lombok.extern.slf4j.Slf4j;
 public class PhotoServiceImpl implements PhotoService {
 
     @Autowired
+    private AmazonS3Client amazonS3Client;
+
+    @Autowired
     private PhotoDao photoDao;
 
     @Autowired
-    private AmazonS3Client amazonS3Client;
+    private PhotoMapper photoMapper;
 
     /**
      * Name of S3 bucket to which photos are saved.
@@ -70,7 +73,7 @@ public class PhotoServiceImpl implements PhotoService {
             try {
                 savedPhotoInfo = savePhotoInformationToDatabase(convertedFile); // save photo info to db and
                                                                                 // return entity
-                photoEntities.add(PhotoMapper.toPhotoDto(savedPhotoInfo));
+                photoEntities.add(photoMapper.toDto(savedPhotoInfo));
                 uploadPhotoToS3Bucket(savedPhotoInfo.getFileName(), convertedFile);
             } catch (Exception e) {
                 log.error("An error occured saving photo", e);
@@ -79,14 +82,14 @@ public class PhotoServiceImpl implements PhotoService {
                 }
                 throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved");
             } finally {
-                FileUtils.deleteQuietly(convertedFile.getParentFile()); // clean up temp file
+                FileUtils.deleteQuietly(convertedFile); // clean up temp file
             }
         }
         return photoEntities;
     }
 
     public PhotoDto updatePhoto(Photo photo) {
-        return PhotoMapper.toPhotoDto(photoDao.save(photo));
+        return photoMapper.toDto(photoDao.save(photo));
     }
 
     private File convertMultipartFileToFile(MultipartFile file) {
@@ -135,7 +138,7 @@ public class PhotoServiceImpl implements PhotoService {
     public List<PhotoDto> getPhotos() {
         List<PhotoDto> photos = new ArrayList<PhotoDto>();
         photoDao.findAll().forEach(photo -> {
-            photos.add(PhotoMapper.toPhotoDto(photo));
+            photos.add(photoMapper.toDto(photo));
         });
         return photos;
     }

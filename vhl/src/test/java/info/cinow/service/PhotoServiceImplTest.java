@@ -1,47 +1,64 @@
 package info.cinow.service;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
+import java.io.FileInputStream;
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;//I got the error in this line
-import org.springframework.web.multipart.MultipartFile;
 
 import info.cinow.dto.PhotoDto;
+import info.cinow.model.Photo;
 import info.cinow.repository.PhotoDao;
 
 /**
  * GeocodeDaoTest
  */
 @RunWith(SpringRunner.class)
-@RestClientTest(PhotoService.class)
+@SpringBootTest
 public class PhotoServiceImplTest {
 
     @MockBean
-    private PhotoDao dao;
+    private PhotoDao photoDao;
 
     @Autowired
     private PhotoService service;
 
-    @Test
-    // TODO: continue working on this
-    public void photoDeletedFromLocalServer() throws Exception {
-        MultipartFile file = new MockMultipartFile("fileThatDoesNotExists.txt", "fileThatDoesNotExists.txt",
-                "text/plain", "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
-        PhotoDto dto = new PhotoDto(1L, "photo", 2);
-        Mockito.when(service.uploadPhotos(new MultipartFile[] { file })).thenReturn(Arrays.asList(dto));
+    private MockMultipartFile[] files;
 
-        service.uploadPhotos(new MultipartFile[] { file });
-        File savedFile = new File(file.getOriginalFilename());
+    @Before
+    public void setup() throws Exception {
+
+        PhotoDto dto = new PhotoDto(1L, "photo");
+
+        Photo returnPhoto = new Photo();
+        returnPhoto.setFileName("photo");
+        returnPhoto.setId(1L);
+
+        Mockito.when(photoDao.save(any(Photo.class))).thenReturn(returnPhoto);
+
+    }
+
+    @Test
+    public void photoDeletedFromLocalServer() throws Exception {
+
+        MockMultipartFile[] files = new MockMultipartFile[1];
+        files[0] = new MockMultipartFile("fileThatDoesNotExists.jpeg", "fileThatDoesNotExists.jpeg", "image/jpeg",
+                new FileInputStream(
+                        new File("visualizing-healthy-lives-api/vhl/src/test/resources/Photo Upload Screen 3.png")));
+        service.uploadPhotos(files);
+        File savedFile = new File(files[0].getOriginalFilename());
         assertFalse(savedFile.exists());
     }
 

@@ -40,7 +40,7 @@ public class PhotoServiceImplTest {
     @Before
     public void setup() throws Exception {
 
-        PhotoDto dto = new PhotoDto(1L, "photo");
+        PhotoDto dto = new PhotoDto(1L, "photo", null, null, null, null);
 
         Photo returnPhoto = new Photo();
         returnPhoto.setFileName("photo");

@@ -1,15 +1,15 @@
 package info.cinow.dto.mapper;
 
-import info.cinow.dto.PhotoDto;
-import info.cinow.dto.PhotoSaveDto;
+import java.util.Optional;
+
 import info.cinow.model.Photo;
 
 /**
  * PhotoMapper
  */
-public interface PhotoMapper {
+public interface PhotoMapper<T> {
 
-    public PhotoDto toDto(Photo photo);
+    public Optional<T> toDto(Photo photo);
 
-    public Photo toPhoto(PhotoSaveDto dto);
+    public Optional<Photo> toPhoto(T dto);
 }

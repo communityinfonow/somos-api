@@ -9,7 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
+import org.springframework.beans.factory.annotation.Value;
 
 import info.cinow.audit.Audit;
 import info.cinow.audit.AuditListener;
@@ -23,6 +24,9 @@ import lombok.Data;
 @Data
 @EntityListeners(AuditListener.class)
 public class Photo implements Auditable {
+
+    @Value("${app.awsServices.bucketName}")
+    private String imageRepositoryPath;
 
     /**
      * Brings last_modified as a column.
@@ -68,13 +72,13 @@ public class Photo implements Auditable {
     /**
      * Whether the photo has been approved for use by CI: Now staff.
      */
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false", nullable = false)
     private Boolean approved;
 
     /**
      * Whether the photo has been deleted or not by CI: Now staff.
      */
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false", nullable = false)
     private Boolean deleted;
 
     @Column
@@ -92,7 +96,18 @@ public class Photo implements Auditable {
      * @return
      */
     public String getFileName() {
+        return this.fileName;
+    }
+
+    /**
+     * Get the original, non-unique file name for this photo
+     */
+    public String getFilePathName() {
         return this.id + "_" + this.fileName;
+    }
+
+    public String getPath() {
+        return imageRepositoryPath + "/" + this.getFileName();
     }
 
 }

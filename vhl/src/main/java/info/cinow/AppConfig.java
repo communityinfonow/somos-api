@@ -14,8 +14,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import info.cinow.dto.mapper.CensusTractMapper;
-
 @Configuration
 public class AppConfig {
     @Autowired

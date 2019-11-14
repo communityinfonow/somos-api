@@ -8,8 +8,15 @@ import lombok.Data;
 @Data
 public class PhotoSaveDto {
 
-    private String description;
     private Long id;
+
+    private String description;
+
+    private String fileName;
+
+    private String filePathName;
+
+    private Boolean approved;
 
     private String ownerEmail;
 

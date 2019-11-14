@@ -20,7 +20,7 @@ public class CensusTractMapperImpl implements CensusTractMapper {
         dto.setId(censusTract.getGid());
         dto.setTract(censusTract.getTract());
         dto.setGeometry(censusTract.getPolygon());
-        dto.setPhotos(censusTract.getPhotos());
+        // dto.setPhotos(censusTract.getPhotos());
         return dto;
     }
 }

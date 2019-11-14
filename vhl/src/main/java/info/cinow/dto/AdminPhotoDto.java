@@ -8,17 +8,11 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class PhotoDto {
+public class AdminPhotoDto {
 
     private Long id;
 
     private String description;
 
     private String path;
-
-    private Integer censusTractId;
-
-    private String fileName;
-
-    private Boolean approved;
 }

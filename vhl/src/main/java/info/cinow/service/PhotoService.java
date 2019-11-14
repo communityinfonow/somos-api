@@ -15,13 +15,21 @@ import info.cinow.model.Photo;
  */
 public interface PhotoService {
 
-    public List<PhotoDto> uploadPhotos(MultipartFile[] photos) throws IOException;
+    public List<Photo> uploadPhotos(MultipartFile[] photos) throws IOException;
 
     public Optional<Location> getGpsCoordinates(Long id);
 
-    public PhotoDto updatePhoto(Photo photo);
+    public Photo updatePhoto(Photo photo);
 
-    public List<PhotoDto> getPhotos();
+    public List<Photo> getPhotos();
 
-    public PhotoDto replacePhoto(MultipartFile photo, Long photoId);
+    public Photo replacePhoto(MultipartFile photo, Long photoId);
+
+    public byte[] getPhoto(String fileName) throws IOException;
+
+    public Optional<Photo> getPhoto(Long id);
+
+    public void deletePhoto(Long id) throws IOException;
+
+    public Photo replacePhoto(Long id, MultipartFile photo);
 }

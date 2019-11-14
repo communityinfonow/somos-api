@@ -13,7 +13,7 @@ import info.cinow.model.locationiq.LocationIqResult;
 import info.cinow.repository.GeocodeDao;
 
 /**
- * GeocodeServiceImpl
+ * GeocodeServiceImpl TODO don't return DTO, return the real object here
  */
 @Service
 public class GeocodeServiceImpl implements GeocodeService {

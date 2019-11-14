@@ -1,20 +1,39 @@
 package info.cinow.controller;
 
+import java.io.IOException;
+import java.util.NoSuchElementException;
+
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
+import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
+import info.cinow.service.CensusTractService;
 import info.cinow.service.PhotoService;
 import lombok.extern.slf4j.Slf4j;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * CensusTractPhotoController
@@ -29,7 +48,13 @@ public class CensusTractPhotoController {
     PhotoService photoService;
 
     @Autowired
-    PhotoMapper photoMapper;
+    PhotoMapper<PhotoDto> photoMapper;
+
+    @Autowired
+    PhotoMapper<PhotoSaveDto> photoSaveMapper;
+
+    @Autowired
+    CensusTractService censusTractService;
 
     @GetMapping()
     public EntityModel<Photo> getPhotos(@PathVariable("tractId") Integer tractId) {
@@ -41,16 +66,85 @@ public class CensusTractPhotoController {
         return null;
     }
 
-    @PutMapping()
-    public EntityModel<PhotoDto> updatePhoto(@PathVariable("tractId") Integer tractId,
-            @RequestBody PhotoSaveDto photo) {
-        Photo photoObj = photoMapper.toPhoto(photo);
-        // photoObj.setCensusTract(tractId); //TODO figure out what to pass here for
-        // tract
-        PhotoDto dto = photoService.updatePhoto(photoObj);
-        EntityModel<PhotoDto> response = new EntityModel<>(dto);
+    @PutMapping("/{id}")
+    public EntityModel<PhotoDto> updatePhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long id,
+            @RequestBody PhotoSaveDto photoDto) {
+        Photo photo = convertToEntity(photoDto);
+        photo.setCensusTract(convertGidToCensusTract(tractId));
+        return new EntityModel<>(
+                photoMapper.toDto(photoService.updatePhoto(photo)).orElseThrow(NoSuchElementException::new)); // TODO
+                                                                                                              // hateoas
+                                                                                                              // links
+    }
 
-        return response;
+    @PostMapping("/{id}")
+    public EntityModel<PhotoDto> replacePhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long id,
+            @RequestParam("photo") MultipartFile photo) {
+        Photo savedPhoto = photoService.replacePhoto(id, photo);
+        EntityModel<PhotoDto> dto = new EntityModel<>(
+                this.photoMapper.toDto(savedPhoto).orElseThrow(NoSuchElementException::new),
+                this.photoLink(savedPhoto.getCensusTract().getGid(), savedPhoto.getId(), true),
+                this.photoFileLink(tractId, savedPhoto.getFilePathName()));
+        return dto;
+    }
+
+    // TODO: secure for public use by modifying query to get accepted
+    @GetMapping(value = "/file/{fileName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public byte[] getPhotoFile(@PathVariable("tractId") Integer tractId, @PathVariable("fileName") String fileName) {
+        try {
+            return photoService.getPhoto(fileName);
+        } catch (IOException e) {
+            log.error("An error occurred loading the photo: " + fileName, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred loading the file");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long photoId) {
+        try {
+            this.photoService.deletePhoto(photoId);
+        } catch (Exception e) {
+            // TODO: handle exception
+            log.error("An error occurred deleting the photo", e);
+        }
+    }
+
+    private CensusTract convertGidToCensusTract(Integer tractId) {
+        if (tractId != null) {
+            CensusTract censusTract = this.censusTractService.getCensusTract(tractId);
+            return censusTract;
+        }
+        return null;
+    }
+
+    private Photo convertToEntity(PhotoSaveDto dto) {
+        Photo photo = photoSaveMapper.toPhoto(dto).orElse(null); // TODO: maybe do something else other than null here?
+
+        if (dto.getId() != null) {
+            try {
+                Photo oldPhoto = this.photoService.getPhoto(dto.getId()).get();
+                photo.setCensusTract(oldPhoto.getCensusTract());
+                photo.setImageRepositoryPath(oldPhoto.getImageRepositoryPath());
+                photo.setOwnerEmail(oldPhoto.getOwnerEmail());
+                photo.setOwnerFirstName(oldPhoto.getOwnerFirstName());
+                photo.setOwnerLastName(oldPhoto.getOwnerLastName());
+                photo.setLatitude(oldPhoto.getLatitude());
+                photo.setLongitude(oldPhoto.getLongitude());
+
+            } catch (NoSuchElementException e) {
+                log.info("No photo exists for id: " + dto.getId(), e);
+            }
+        }
+        return photo;
+    }
+
+    protected Link photoLink(Integer tractId, Long photoId, Boolean self) {
+        return linkTo(methodOn(CensusTractPhotoController.class).getPhoto(tractId, photoId)).withSelfRel();
+    }
+
+    protected Link photoFileLink(Integer tractId, String fileName) {
+        return linkTo(ReflectionUtils.findMethod(CensusTractPhotoController.class, "getPhotoFile", Integer.class,
+                String.class), tractId, fileName).withRel("photo-file");
     }
 
 }

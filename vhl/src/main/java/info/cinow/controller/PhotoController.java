@@ -1,8 +1,5 @@
 package info.cinow.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -13,10 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import info.cinow.controller.connected_links.CensusTractLinks;
+import info.cinow.controller.connected_links.CensusTractPhotoLinks;
+import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.model.Location;
@@ -46,6 +43,18 @@ public class PhotoController {
     @Autowired
     PhotoMapper<PhotoDto> photoMapper;
 
+    private PhotoLinks photoLinks;
+
+    private CensusTractLinks censusTractLinks;
+
+    private CensusTractPhotoLinks censusTractPhotoLinks;
+
+    public PhotoController() {
+        this.photoLinks = new PhotoLinks();
+        this.censusTractLinks = new CensusTractLinks();
+        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
+    }
+
     // TODO: secure behind auth
     @GetMapping
     public CollectionModel<EntityModel<PhotoDto>> getPhotos() {
@@ -56,10 +65,11 @@ public class PhotoController {
                 PhotoDto photoDto = photoMapper.toDto(photo).orElseThrow(NoSuchElementException::new); // TODO really
                                                                                                        // think out this
                                                                                                        // null handling
-                return new EntityModel<>(photoDto, this.photosLink(false),
-                        this.photoFileLink(photoDto.getCensusTractId(), photo.getFilePathName(), false),
-                        this.photoLink(photoDto.getCensusTractId(), photoDto.getId(), true),
-                        this.photoMetadataLink(photoDto.getId(), false), this.photosLink(false));
+                return new EntityModel<>(photoDto, this.photoLinks.photos(false),
+                        this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(),
+                                false),
+                        this.censusTractPhotoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
+                        this.photoLinks.photoMetadata(photoDto.getId(), false), this.photoLinks.photos(false));
             }).collect(Collectors.toList()));
         } catch (Exception e) {
             log.error("An error occurred", e);
@@ -75,9 +85,9 @@ public class PhotoController {
         try {
             photoEntities = new CollectionModel<>(photoService.uploadPhotos(photos).stream().map(photo -> {
                 PhotoDto photoDto = this.photoMapper.toDto(photo).orElseThrow(NoSuchElementException::new);
-                return new EntityModel<>(photoDto, this.photoMetadataLink(photoDto.getId(), false),
-                        this.photosLink(false));
-            }).collect(Collectors.toList()), this.photosLink(false));
+                return new EntityModel<>(photoDto, this.photoLinks.photoMetadata(photoDto.getId(), false),
+                        this.photoLinks.photos(false));
+            }).collect(Collectors.toList()), this.photoLinks.photos(false));
         } catch (IOException e) {
             log.error("An error occurred saving the file", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occureed saving the file(s)");
@@ -90,7 +100,7 @@ public class PhotoController {
     public EntityModel<Location> getPhotoMetadata(@PathVariable("id") Long id) {
 
         return new EntityModel<>(this.photoService.getGpsCoordinates(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)), this.photosLink(false));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)), this.photoLinks.photos(false));
     }
 
     @GetMapping("/{id}")
@@ -99,28 +109,6 @@ public class PhotoController {
                 .toDto(this.photoService.getPhoto(photoId).orElseThrow(EntityNotFoundException::new))
                 .orElseThrow(EntityNotFoundException::new);
         return new EntityModel<>(dto);
-    }
-
-    protected Link photoMetadataLink(Long id, Boolean self) {
-        return configureRelation(linkTo(methodOn(PhotoController.class).getPhotoMetadata(id)), self, "gps-coordinates");
-    }
-
-    protected Link photoFileLink(Integer tractId, String fileName, Boolean self) {
-        return configureRelation(linkTo(ReflectionUtils.findMethod(CensusTractPhotoController.class, "getPhotoFile",
-                Integer.class, String.class), tractId, fileName), self, "photo-file");
-    }
-
-    protected Link photoLink(Integer tractId, Long photoId, Boolean self) {
-        return configureRelation(linkTo(methodOn(CensusTractPhotoController.class).getPhoto(tractId, photoId)), self,
-                "photo");
-    }
-
-    protected Link photosLink(Boolean self) {
-        return configureRelation(linkTo(methodOn(PhotoController.class).getPhotos()), self, "photos");
-    }
-
-    private Link configureRelation(WebMvcLinkBuilder linkBuilder, Boolean self, String defaultRelationName) {
-        return self ? linkBuilder.withSelfRel() : linkBuilder.withRel(defaultRelationName);
     }
 
 }

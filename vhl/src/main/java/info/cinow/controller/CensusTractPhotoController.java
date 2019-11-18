@@ -3,14 +3,10 @@ package info.cinow.controller;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
@@ -31,9 +28,6 @@ import info.cinow.model.Photo;
 import info.cinow.service.CensusTractService;
 import info.cinow.service.PhotoService;
 import lombok.extern.slf4j.Slf4j;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * CensusTractPhotoController
@@ -55,6 +49,12 @@ public class CensusTractPhotoController {
 
     @Autowired
     CensusTractService censusTractService;
+
+    private CensusTractPhotoLinks censusTractPhotoLinks;
+
+    public CensusTractPhotoController() {
+        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
+    }
 
     @GetMapping()
     public EntityModel<Photo> getPhotos(@PathVariable("tractId") Integer tractId) {
@@ -83,8 +83,8 @@ public class CensusTractPhotoController {
         Photo savedPhoto = photoService.replacePhoto(id, photo);
         EntityModel<PhotoDto> dto = new EntityModel<>(
                 this.photoMapper.toDto(savedPhoto).orElseThrow(NoSuchElementException::new),
-                this.photoLink(savedPhoto.getCensusTract().getGid(), savedPhoto.getId(), true),
-                this.photoFileLink(tractId, savedPhoto.getFilePathName()));
+                this.censusTractPhotoLinks.photo(savedPhoto.getCensusTract().getGid(), savedPhoto.getId(), true),
+                this.censusTractPhotoLinks.photoFile(tractId, savedPhoto.getFilePathName(), false));
         return dto;
     }
 
@@ -136,15 +136,6 @@ public class CensusTractPhotoController {
             }
         }
         return photo;
-    }
-
-    protected Link photoLink(Integer tractId, Long photoId, Boolean self) {
-        return linkTo(methodOn(CensusTractPhotoController.class).getPhoto(tractId, photoId)).withSelfRel();
-    }
-
-    protected Link photoFileLink(Integer tractId, String fileName) {
-        return linkTo(ReflectionUtils.findMethod(CensusTractPhotoController.class, "getPhotoFile", Integer.class,
-                String.class), tractId, fileName).withRel("photo-file");
     }
 
 }

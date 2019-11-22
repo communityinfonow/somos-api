@@ -1,8 +1,5 @@
 package info.cinow.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.cinow.controller.connected_links.CensusTractLinks;
+import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.CensusTractDto;
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.service.CensusTractService;
@@ -35,8 +33,11 @@ public class CensusTractController {
 
         private CensusTractLinks censusTractLinks;
 
+        private CensusTractPhotoLinks censusTractPhotoLinks;
+
         public CensusTractController() {
                 this.censusTractLinks = new CensusTractLinks();
+                this.censusTractPhotoLinks = new CensusTractPhotoLinks();
         }
 
         @GetMapping
@@ -44,7 +45,8 @@ public class CensusTractController {
                 CollectionModel<EntityModel<CensusTractDto>> tracts = new CollectionModel<>(
                                 censusTractService.getAllCensusTracts().stream().map(censusTract -> {
                                         CensusTractDto dto = this.censusTractMapper.toDto(censusTract);
-                                        return new EntityModel<>(dto, this.censusTractLinks.photos(dto.getId(), false),
+                                        return new EntityModel<>(dto,
+                                                        this.censusTractPhotoLinks.photos(dto.getId(), false),
                                                         this.censusTractLinks.censusTracts(true));
                                 }).collect(Collectors.toList()));
 
@@ -55,7 +57,8 @@ public class CensusTractController {
         public EntityModel<CensusTractDto> getCensusTract(@PathVariable("id") Integer id) {
                 EntityModel<CensusTractDto> tract = new EntityModel<>(
                                 this.censusTractMapper.toDto(censusTractService.getCensusTract(id)),
-                                this.censusTractLinks.censusTract(id, true), this.censusTractLinks.photos(id, false));
+                                this.censusTractLinks.censusTract(id, true),
+                                this.censusTractPhotoLinks.photos(id, false));
                 return tract;
         }
 

@@ -75,12 +75,6 @@ public class Photo implements Auditable {
     @Column(columnDefinition = "boolean default false", nullable = false)
     private Boolean approved;
 
-    /**
-     * Whether the photo has been deleted or not by CI: Now staff.
-     */
-    @Column(columnDefinition = "boolean default false", nullable = false)
-    private Boolean deleted;
-
     @Column
     private Double latitude;
 
@@ -91,19 +85,24 @@ public class Photo implements Auditable {
     // approved to true. This ensures accessibility standards
 
     /**
-     * Quick convert into string representation of id as the file name.
-     * 
-     * @return
+     * Get the original, non-unique file name for this photo
      */
     public String getFileName() {
         return this.fileName;
     }
 
     /**
-     * Get the original, non-unique file name for this photo
+     * Gets the unique file path name used in S3 Bucket
+     * 
+     * @return
      */
     public String getFilePathName() {
         return this.id + "_" + this.fileName;
+    }
+
+    public String getCroppedFilePathName() {
+        return "CROP" + "_" + this.getFilePathName();
+        // TODO: what if file name is too long?
     }
 
     public String getPath() {

@@ -78,13 +78,14 @@ public class CensusTractPhotoController {
     }
 
     @PostMapping("/{id}")
-    public EntityModel<PhotoDto> replacePhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long id,
+    public EntityModel<PhotoDto> cropPhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long id,
             @RequestParam("photo") MultipartFile photo) {
-        Photo savedPhoto = photoService.replacePhoto(id, photo);
+        Photo savedPhoto = photoService.cropPhoto(photo, id);
         EntityModel<PhotoDto> dto = new EntityModel<>(
                 this.photoMapper.toDto(savedPhoto).orElseThrow(NoSuchElementException::new),
                 this.censusTractPhotoLinks.photo(savedPhoto.getCensusTract().getGid(), savedPhoto.getId(), true),
-                this.censusTractPhotoLinks.photoFile(tractId, savedPhoto.getFilePathName(), false));
+                this.censusTractPhotoLinks.photoFile(tractId, savedPhoto.getFilePathName(), false),
+                this.censusTractPhotoLinks.croppedPhotoFile(tractId, savedPhoto.getCroppedFilePathName(), false));
         return dto;
     }
 

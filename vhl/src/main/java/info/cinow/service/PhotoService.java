@@ -23,13 +23,11 @@ public interface PhotoService {
 
     public List<Photo> getPhotos();
 
-    public Photo replacePhoto(MultipartFile photo, Long photoId);
+    public Photo cropPhoto(MultipartFile photo, Long photoId);
 
     public byte[] getPhoto(String fileName) throws IOException;
 
     public Optional<Photo> getPhoto(Long id);
 
     public void deletePhoto(Long id) throws IOException;
-
-    public Photo replacePhoto(Long id, MultipartFile photo);
 }

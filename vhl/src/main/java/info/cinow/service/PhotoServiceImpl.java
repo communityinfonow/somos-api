@@ -69,17 +69,17 @@ public class PhotoServiceImpl implements PhotoService {
         for (MultipartFile photo : photos) {
             File convertedFile = convertMultipartFileToFile(photo);
             Photo savedPhotoInfo = savePhotoInformationToDatabase(convertedFile);
-            Photo savedPhoto = this.savePhoto(photo, savedPhotoInfo, convertedFile);
+            Photo savedPhoto = this.savePhoto(photo, savedPhotoInfo, convertedFile, false);
             photoEntities.add(savedPhoto);
         }
         return photoEntities;
     }
 
-    private Photo savePhoto(MultipartFile photo, Photo savedPhotoInfo, File photoFile) {
-
+    private Photo savePhoto(MultipartFile photo, Photo savedPhotoInfo, File photoFile, boolean isCropped) {
+        String filePath = isCropped ? savedPhotoInfo.getCroppedFilePathName() : savedPhotoInfo.getFilePathName();
         try {
 
-            uploadPhotoToS3Bucket(savedPhotoInfo.getFilePathName(), photoFile);
+            uploadPhotoToS3Bucket(filePath, photoFile);
         } catch (Exception e) {
             log.error("An error occured saving photo", e);
             if (!(e instanceof DataAccessException)) {
@@ -93,10 +93,10 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Photo replacePhoto(Long id, MultipartFile photo) {
+    public Photo cropPhoto(MultipartFile photo, Long id) {
         File convertedFile = convertMultipartFileToFile(photo);
         Photo savedPhotoInfo = photoDao.findById(id).orElse(null); // TODO: actually handle this
-        return this.savePhoto(photo, savedPhotoInfo, convertedFile);
+        return this.savePhoto(photo, savedPhotoInfo, convertedFile, true);
     }
 
     @Override
@@ -182,12 +182,6 @@ public class PhotoServiceImpl implements PhotoService {
             photos.add(photo);
         });
         return photos;
-    }
-
-    @Override
-    public Photo replacePhoto(MultipartFile photo, Long photoId) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

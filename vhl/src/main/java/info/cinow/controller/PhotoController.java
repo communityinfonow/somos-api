@@ -23,7 +23,9 @@ import org.springframework.web.server.ResponseStatusException;
 import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.controller.connected_links.PhotoLinks;
+import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
+import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.model.Location;
 import info.cinow.service.PhotoService;
@@ -43,6 +45,9 @@ public class PhotoController {
     @Autowired
     PhotoMapper<PhotoDto> photoMapper;
 
+    @Autowired
+    PhotoMapper<PhotoAdminDto> photoAdminMapper;
+
     private PhotoLinks photoLinks;
 
     private CensusTractLinks censusTractLinks;
@@ -56,15 +61,17 @@ public class PhotoController {
     }
 
     // TODO: secure behind auth
+    // TODO refactor PhotoSaveDto since we're now using it to get as well
     @GetMapping
-    public CollectionModel<EntityModel<PhotoDto>> getPhotos() {
+    public CollectionModel<EntityModel<PhotoAdminDto>> getPhotos() {
         // TODO: do links and entitymodels and collection models correctly
-        CollectionModel<EntityModel<PhotoDto>> photoEntities = new CollectionModel<>(Arrays.asList());
+        CollectionModel<EntityModel<PhotoAdminDto>> photoEntities = new CollectionModel<>(Arrays.asList());
         try {
             photoEntities = new CollectionModel<>(photoService.getPhotos().stream().map(photo -> {
-                PhotoDto photoDto = photoMapper.toDto(photo).orElseThrow(NoSuchElementException::new); // TODO really
-                                                                                                       // think out this
-                                                                                                       // null handling
+                PhotoAdminDto photoDto = photoAdminMapper.toDto(photo).orElseThrow(NoSuchElementException::new); // TODO
+                // really
+                // think out this
+                // null handling
                 return new EntityModel<>(photoDto, this.photoLinks.photos(false),
                         this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(),
                                 false),

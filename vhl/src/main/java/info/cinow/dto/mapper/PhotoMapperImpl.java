@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import info.cinow.dto.PhotoDto;
+import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
 
 /**
@@ -16,9 +17,9 @@ public class PhotoMapperImpl implements PhotoMapper<PhotoDto> {
     @Override
     public Optional<PhotoDto> toDto(Photo photo) {
         return photo == null ? Optional.empty()
-                : Optional.of(new PhotoDto(photo.getId(), photo.getDescription(), null,
-                        photo.getCensusTract() != null ? photo.getCensusTract().getGid() : null, photo.getFileName(),
-                        photo.getApproved()));
+                : Optional.of(new PhotoDto(photo.getId(), photo.getDescription().orElse(null),
+                        photo.getCensusTract().orElse(new CensusTract()).getGid(), photo.getFileName().orElse(null),
+                        photo.getApproved().orElse(false)));
     }
 
     @Override
@@ -32,6 +33,9 @@ public class PhotoMapperImpl implements PhotoMapper<PhotoDto> {
             photoObj.setDescription(dto.getDescription());
             photoObj.setFileName(dto.getFileName());
             photoObj.setApproved(dto.getApproved());
+            CensusTract tract = new CensusTract();
+            tract.setGid(dto.getCensusTractId());
+            photoObj.setCensusTract(tract);
             photo = Optional.of(photoObj);
         }
         return photo;

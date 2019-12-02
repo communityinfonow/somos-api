@@ -21,12 +21,12 @@ public class PhotoSaveMapper implements PhotoMapper<PhotoSaveDto> {
         } else {
             PhotoSaveDto dtoObj = new PhotoSaveDto();
             dtoObj.setId(photo.getId());
-            dtoObj.setDescription(photo.getDescription());
-            dtoObj.setOwnerEmail(photo.getOwnerEmail());
-            dtoObj.setOwnerFirstName(photo.getOwnerFirstName());
-            dtoObj.setOwnerLastName(photo.getOwnerLastName());
-            dtoObj.setApproved(photo.getApproved());
-            dtoObj.setFileName(photo.getFileName());
+            dtoObj.setDescription(photo.getDescription().orElse(null));
+            dtoObj.setOwnerEmail(photo.getOwnerEmail().orElse(null));
+            dtoObj.setOwnerFirstName(photo.getOwnerFirstName().orElse(null));
+            dtoObj.setOwnerLastName(photo.getOwnerLastName().orElse(null));
+            dtoObj.setApproved(photo.getApproved().orElse(false));
+            dtoObj.setFileName(photo.getFileName().orElse(null));
             dto = Optional.of(dtoObj);
         }
         return dto;

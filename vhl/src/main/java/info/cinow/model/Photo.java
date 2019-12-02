@@ -1,5 +1,7 @@
 package info.cinow.model;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -81,14 +83,31 @@ public class Photo implements Auditable {
     @Column
     private Double longitude;
 
-    // TODO: possible constraint where a description must be included if updated
-    // approved to true. This ensures accessibility standards
+    public Optional<String> getDescription() {
+        return Optional.ofNullable(this.description);
+    }
 
     /**
      * Get the original, non-unique file name for this photo
      */
-    public String getFileName() {
-        return this.fileName;
+    public Optional<String> getFileName() {
+        return Optional.ofNullable(this.fileName);
+    }
+
+    public Optional<String> getOwnerFirstName() {
+        return Optional.ofNullable(this.ownerFirstName);
+    }
+
+    public Optional<String> getOwnerLastName() {
+        return Optional.ofNullable(this.ownerLastName);
+    }
+
+    public Optional<String> getOwnerEmail() {
+        return Optional.ofNullable(this.ownerEmail);
+    }
+
+    public Optional<Boolean> getApproved() {
+        return Optional.ofNullable(this.approved);
     }
 
     /**
@@ -107,6 +126,18 @@ public class Photo implements Auditable {
 
     public String getPath() {
         return imageRepositoryPath + "/" + this.getFileName();
+    }
+
+    public Optional<CensusTract> getCensusTract() {
+        return Optional.ofNullable(this.censusTract);
+    }
+
+    public Optional<Double> getLongitude() {
+        return Optional.ofNullable(this.longitude);
+    }
+
+    public Optional<Double> getLatitude() {
+        return Optional.ofNullable(this.latitude);
     }
 
 }

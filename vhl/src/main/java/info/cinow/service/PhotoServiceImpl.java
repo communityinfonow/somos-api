@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
 import info.cinow.repository.PhotoDao;
@@ -58,7 +61,7 @@ public class PhotoServiceImpl implements PhotoService {
         Photo photo = this.photoDao.findById(id).orElse(null);
         Optional<Location> location = Optional.empty();
         if (photo != null && photo.getLatitude() != null && photo.getLongitude() != null) {
-            location = Optional.of(new Location(photo.getLatitude(), photo.getLongitude()));
+            location = Optional.of(new Location(photo.getLatitude().orElse(null), photo.getLongitude().orElse(null)));
         }
         return location;
     }
@@ -100,7 +103,15 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Photo updatePhoto(Photo photo) {
+    public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException {
+        // photo can't be approved until de scription is complete
+        photo = this.convertToEntity(photo);
+        if (photo.getApproved().orElse(false) && photo.getDescription().orElse("").isEmpty()) {
+            throw new NoDescriptionException(photo.getFilePathName());
+        }
+        if (!photo.getCensusTract().isPresent()) {
+            throw new CensusTractDoesNotExistException(photo.getFilePathName());
+        }
         return photoDao.save(photo);
         // TODO: update name of file on S3
     }
@@ -182,6 +193,25 @@ public class PhotoServiceImpl implements PhotoService {
             photos.add(photo);
         });
         return photos;
+    }
+
+    private Photo convertToEntity(Photo photo) {
+        if (photo.getId() != null) {
+            try {
+                Photo oldPhoto = this.getPhoto(photo.getId()).get();
+                photo.setCensusTract(oldPhoto.getCensusTract().orElse(null));
+                photo.setImageRepositoryPath(oldPhoto.getImageRepositoryPath());
+                photo.setOwnerEmail(oldPhoto.getOwnerEmail().orElse(null));
+                photo.setOwnerFirstName(oldPhoto.getOwnerFirstName().orElse(null));
+                photo.setOwnerLastName(oldPhoto.getOwnerLastName().orElse(null));
+                photo.setLatitude(oldPhoto.getLatitude().orElse(null));
+                photo.setLongitude(oldPhoto.getLongitude().orElse(null));
+
+            } catch (NoSuchElementException e) {
+                log.info("No photo exists for id: " + photo.getId(), e);
+            }
+        }
+        return photo;
     }
 
 }

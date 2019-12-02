@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import info.cinow.dto.PhotoDto;
+import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
 
@@ -19,7 +21,7 @@ public interface PhotoService {
 
     public Optional<Location> getGpsCoordinates(Long id);
 
-    public Photo updatePhoto(Photo photo);
+    public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException;
 
     public List<Photo> getPhotos();
 

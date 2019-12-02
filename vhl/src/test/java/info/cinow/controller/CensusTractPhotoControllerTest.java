@@ -44,6 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
+import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
 import info.cinow.repository.PhotoDao;
@@ -75,12 +77,11 @@ public class CensusTractPhotoControllerTest {
     PhotoSaveDto dto;
 
     @Before
-    public void setup() throws IOException {
+    public void setup() throws IOException, NoDescriptionException, CensusTractDoesNotExistException {
         dto = new PhotoSaveDto();
         dto.setApproved(false);
         dto.setDescription("This is the new description");
         dto.setFileName("photo");
-        dto.setFilePathName("photo.png");
         dto.setId(32L);
         dto.setOwnerEmail("owner@email.com");
         dto.setOwnerFirstName("First");

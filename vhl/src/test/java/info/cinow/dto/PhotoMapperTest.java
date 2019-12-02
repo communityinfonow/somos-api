@@ -1,0 +1,219 @@
+package info.cinow.dto;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import info.cinow.dto.mapper.PhotoAdminMapper;
+import info.cinow.dto.mapper.PhotoMapper;
+import info.cinow.dto.mapper.PhotoMapperImpl;
+import info.cinow.dto.mapper.PhotoSaveMapper;
+import info.cinow.model.CensusTract;
+import info.cinow.model.Photo;
+
+/**
+ * PhotoMapperTest
+ */
+@RunWith(SpringRunner.class)
+// @SpringBootTest
+public class PhotoMapperTest {
+
+    @TestConfiguration
+    static class PhotoMapperTestContextConfig {
+
+        @Bean
+        public PhotoMapper<PhotoDto> photoMapper() {
+            return new PhotoMapperImpl();
+        }
+
+        @Bean
+        public PhotoMapper<PhotoSaveDto> photoSaveMapper() {
+            return new PhotoSaveMapper();
+        }
+
+        @Bean
+        public PhotoMapper<PhotoAdminDto> photoAdminMapper() {
+            return new PhotoAdminMapper();
+        }
+    }
+
+    @Autowired
+    PhotoMapper<PhotoDto> photoMapper;
+
+    @Autowired
+    PhotoMapper<PhotoSaveDto> photoSaveMapper;
+
+    @Autowired
+    PhotoMapper<PhotoAdminDto> photoAdminMapper;
+
+    Photo photo;
+
+    Photo dtoPhoto;
+
+    Photo saveDtoPhoto;
+
+    Photo adminDtoPhoto;
+
+    PhotoDto dto;
+
+    PhotoSaveDto saveDto;
+
+    PhotoAdminDto adminDto;
+
+    @Before
+    public void setup() {
+        CensusTract tract = new CensusTract();
+        tract.setGid(1);
+
+        this.photo = new Photo();
+        this.photo.setApproved(true);
+        this.photo.setDescription("Description");
+        this.photo.setId(1L);
+        this.photo.setFileName("fileName");
+        this.photo.setCensusTract(tract);
+        this.photo.setImageRepositoryPath("1_fileName");
+        this.photo.setOwnerEmail("email");
+        this.photo.setOwnerFirstName("First");
+        this.photo.setOwnerLastName("Last");
+
+        this.dto = new PhotoDto();
+        this.dto.setApproved(true);
+        this.dto.setDescription("Description");
+        this.dto.setId(1L);
+        this.dto.setFileName("fileName");
+        this.dto.setCensusTractId(tract.getGid());
+
+        this.dtoPhoto = new Photo();
+        this.dtoPhoto.setApproved(true);
+        this.dtoPhoto.setDescription("Description");
+        this.dtoPhoto.setId(1L);
+        this.dtoPhoto.setFileName("fileName");
+        this.dtoPhoto.setCensusTract(tract);
+
+        this.saveDto = new PhotoSaveDto();
+        this.saveDto.setApproved(true);
+        this.saveDto.setDescription("Description");
+        this.saveDto.setId(1L);
+        this.saveDto.setFileName("fileName");
+        this.saveDto.setOwnerEmail("email");
+        this.saveDto.setOwnerFirstName("First");
+        this.saveDto.setOwnerLastName("Last");
+
+        this.saveDtoPhoto = new Photo();
+        this.saveDtoPhoto.setApproved(true);
+        this.saveDtoPhoto.setDescription("Description");
+        this.saveDtoPhoto.setId(1L);
+        this.saveDtoPhoto.setFileName("fileName");
+        this.saveDtoPhoto.setOwnerEmail("email");
+        this.saveDtoPhoto.setOwnerFirstName("First");
+        this.saveDtoPhoto.setOwnerLastName("Last");
+
+        this.adminDto = new PhotoAdminDto();
+        this.adminDto.setApproved(true);
+        this.adminDto.setDescription("Description");
+        this.adminDto.setId(1L);
+        this.adminDto.setFileName("fileName");
+        this.adminDto.setOwnerEmail("email");
+        this.adminDto.setOwnerFirstName("First");
+        this.adminDto.setCensusTractId(tract.getGid());
+        this.adminDto.setOwnerLastName("Last");
+
+        this.adminDtoPhoto = new Photo();
+        this.adminDtoPhoto.setApproved(true);
+        this.adminDtoPhoto.setDescription("Description");
+        this.adminDtoPhoto.setId(1L);
+        this.adminDtoPhoto.setFileName("fileName");
+        this.adminDtoPhoto.setOwnerEmail("email");
+        this.adminDtoPhoto.setOwnerFirstName("First");
+        this.adminDtoPhoto.setOwnerLastName("Last");
+        this.adminDtoPhoto.setCensusTract(tract);
+
+    }
+
+    @Test
+    public void photoMapper_ReturnsDto() {
+        PhotoDto returnDto = this.photoMapper.toDto(photo).orElse(null);
+        assertNotNull(returnDto);
+        assertEquals(returnDto, dto);
+    }
+
+    @Test
+    public void photoMapper_ReturnsPhoto() {
+        Photo returnPhoto = this.photoMapper.toPhoto(dto).orElse(null);
+        assertNotNull(returnPhoto);
+        assertEquals(returnPhoto, dtoPhoto);
+    }
+
+    @Test
+    public void photoMapper_ReturnsEmptyPhoto() {
+        Photo returnPhoto = this.photoMapper.toPhoto(null).orElse(null);
+        assertNull(returnPhoto);
+    }
+
+    @Test
+    public void photoMapper_ReturnsEmptyDto() {
+        PhotoDto returnDto = this.photoMapper.toDto(null).orElse(null);
+        assertNull(returnDto);
+    }
+
+    @Test
+    public void photoSaveMapper_ReturnsDto() {
+        PhotoSaveDto returnDto = this.photoSaveMapper.toDto(photo).orElse(null);
+        assertNotNull(returnDto);
+        assertEquals(returnDto, saveDto);
+    }
+
+    @Test
+    public void photoSaveMapper_ReturnsPhoto() {
+        Photo returnPhoto = this.photoSaveMapper.toPhoto(saveDto).orElse(null);
+        assertNotNull(returnPhoto);
+        assertEquals(returnPhoto, saveDtoPhoto);
+    }
+
+    @Test
+    public void photoSaveMapper_ReturnsEmptyPhoto() {
+        Photo returnPhoto = this.photoSaveMapper.toPhoto(null).orElse(null);
+        assertNull(returnPhoto);
+    }
+
+    @Test
+    public void photoSaveMapper_ReturnsEmptyDto() {
+        PhotoSaveDto returnDto = this.photoSaveMapper.toDto(null).orElse(null);
+        assertNull(returnDto);
+    }
+
+    @Test
+    public void photoAdminMapper_ReturnsDto() {
+        PhotoAdminDto returnDto = this.photoAdminMapper.toDto(photo).orElse(null);
+        assertNotNull(returnDto);
+        assertEquals(returnDto, adminDto);
+    }
+
+    @Test
+    public void photoAdminMapper_ReturnsPhoto() {
+        Photo returnPhoto = this.photoAdminMapper.toPhoto(adminDto).orElse(null);
+        assertNotNull(returnPhoto);
+        assertEquals(returnPhoto, adminDtoPhoto);
+    }
+
+    @Test
+    public void photoAdminMapper_ReturnsEmptyPhoto() {
+        Photo returnPhoto = this.photoAdminMapper.toPhoto(null).orElse(null);
+        assertNull(returnPhoto);
+    }
+
+    @Test
+    public void photoAdminMapper_ReturnsEmptyDto() {
+        PhotoAdminDto returnDto = this.photoAdminMapper.toDto(null).orElse(null);
+        assertNull(returnDto);
+    }
+
+}

@@ -15,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import info.cinow.dto.CensusTractDto;
+import info.cinow.model.CensusTract;
 import info.cinow.service.CensusTractService;
 
 /**
@@ -33,10 +33,9 @@ public class CensusTractControllerTest {
 
     @Test
     public void canReturnGeometry() throws Exception {
-        CensusTractDto dto = new CensusTractDto();
-        // Polygon poly = new Polygon
-        dto.setGeometry(new GeometryFactory().createMultiPolygon(new Polygon[10]));
-        when(service.getCensusTract(1)).thenReturn(dto);
+        CensusTract tract = new CensusTract();
+        tract.setPolygon(new GeometryFactory().createMultiPolygon(new Polygon[10]));
+        when(service.getCensusTract(1)).thenReturn(tract);
         mvc.perform(get("/census-tracts/1")).andExpect(status().isOk());
     }
 

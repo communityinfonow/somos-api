@@ -1,8 +1,10 @@
 package info.cinow.dto;
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.MultiPolygon;
 
+import info.cinow.model.Photo;
 import lombok.Data;
 
 /**
@@ -16,5 +18,7 @@ public class CensusTractDto {
     private String tract;
 
     private MultiPolygon geometry;
+
+    List<Photo> photos;
 
 }

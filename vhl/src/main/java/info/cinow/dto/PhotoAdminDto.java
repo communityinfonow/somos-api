@@ -3,12 +3,14 @@ package info.cinow.dto;
 import lombok.Data;
 
 /**
- * PhotoSaveDto
+ * PhotoAdminDto
  */
 @Data
-public class PhotoSaveDto {
+public class PhotoAdminDto {
 
     private Long id;
+
+    private Integer censusTractId;
 
     private String description;
 

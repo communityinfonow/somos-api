@@ -29,7 +29,7 @@ public class CensusTract {
     @Column(name = "geom", columnDefinition = "Geometry")
     private MultiPolygon polygon;
 
-    @OneToMany(mappedBy = "tract")
+    @OneToMany(mappedBy = "censusTract")
     private List<Photo> photos;
 
 }

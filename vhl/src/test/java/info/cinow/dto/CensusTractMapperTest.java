@@ -1,9 +1,6 @@
 package info.cinow.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.model.CensusTract;
-import info.cinow.model.Photo;
 import info.cinow.repository.CensusTractDao;
 
 /**
@@ -28,8 +24,6 @@ public class CensusTractMapperTest {
     private CensusTractMapper mapper;
 
     private CensusTract censusTract;
-
-    private CensusTractDao censusTractDto;
 
     @Before
     public void setup() {

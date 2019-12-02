@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import info.cinow.dto.PhotoDto;
+import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
 
@@ -15,11 +17,19 @@ import info.cinow.model.Photo;
  */
 public interface PhotoService {
 
-    public List<PhotoDto> uploadPhotos(MultipartFile[] photos) throws IOException;
+    public List<Photo> uploadPhotos(MultipartFile[] photos) throws IOException;
 
     public Optional<Location> getGpsCoordinates(Long id);
 
-    public PhotoDto updatePhoto(Photo photo);
+    public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException;
 
-    public List<PhotoDto> getPhotos();
+    public List<Photo> getPhotos();
+
+    public Photo cropPhoto(MultipartFile photo, Long photoId);
+
+    public byte[] getPhoto(String fileName) throws IOException;
+
+    public Optional<Photo> getPhoto(Long id);
+
+    public void deletePhoto(Long id) throws IOException;
 }

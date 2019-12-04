@@ -4,7 +4,11 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.LastModifiedBy;
+
+import info.cinow.authentication.User;
 import lombok.Data;
 
 @Embeddable
@@ -16,4 +20,8 @@ public class Audit {
 
     @Column(name = "last_modified")
     private LocalDateTime lastModified;
+
+    @ManyToOne
+    @LastModifiedBy
+    private User lastModifiedBy;
 }

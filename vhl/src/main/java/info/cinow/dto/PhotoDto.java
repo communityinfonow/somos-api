@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
  * PhotoDto
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PhotoDto {
 
     private Long id;
@@ -21,4 +19,5 @@ public class PhotoDto {
     private String fileName;
 
     private Boolean approved;
+
 }

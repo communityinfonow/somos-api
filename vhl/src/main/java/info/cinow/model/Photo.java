@@ -33,6 +33,7 @@ public class Photo implements Auditable {
     /**
      * Brings last_modified as a column.
      */
+
     @Embedded
     private Audit audit;
 

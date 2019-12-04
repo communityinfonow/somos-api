@@ -22,4 +22,8 @@ public class PhotoSaveDto {
 
     private String ownerLastName;
 
+    private String lastEditedBy;
+
+    private String lastEdited;
+
 }

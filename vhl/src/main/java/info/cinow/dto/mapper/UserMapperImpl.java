@@ -18,6 +18,7 @@ public class UserMapperImpl implements UserMapper {
     @Autowired
     RoleMapper roleMapper;
 
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Override
@@ -30,6 +31,7 @@ public class UserMapperImpl implements UserMapper {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setId(user.getId());
+
         if (user.getRoles() != null) {
             dto.setRoles(
                     user.getRoles().stream().map(role -> this.roleMapper.toDto(role)).collect(Collectors.toList()));

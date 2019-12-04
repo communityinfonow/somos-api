@@ -27,6 +27,11 @@ public class PhotoSaveMapper implements PhotoMapper<PhotoSaveDto> {
             dtoObj.setOwnerLastName(photo.getOwnerLastName().orElse(null));
             dtoObj.setApproved(photo.getApproved().orElse(false));
             dtoObj.setFileName(photo.getFileName().orElse(null));
+            if (photo.getAudit() != null) {
+                dtoObj.setLastEdited(photo.getAudit().getLastModified().toString());
+                dtoObj.setLastEditedBy(photo.getAudit().getLastModifiedBy().toString());
+            }
+
             dto = Optional.of(dtoObj);
         }
         return dto;

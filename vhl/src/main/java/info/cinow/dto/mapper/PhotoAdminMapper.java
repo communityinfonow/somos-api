@@ -1,5 +1,6 @@
 package info.cinow.dto.mapper;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class PhotoAdminMapper implements PhotoMapper<PhotoAdminDto> {
 
     @Override
     public Optional<PhotoAdminDto> toDto(Photo photo) {
+
         if (photo == null) {
             return Optional.empty();
         }
@@ -27,6 +29,15 @@ public class PhotoAdminMapper implements PhotoMapper<PhotoAdminDto> {
         dto.setFileName(photo.getFileName().orElse(null));
         dto.setId(photo.getId());
         dto.setOwnerEmail(photo.getOwnerEmail().orElse(null));
+        if (photo.getAudit() != null) {
+            if (photo.getAudit().getLastModifiedBy() != null) {
+                dto.setLastEditedBy(photo.getAudit().getLastModifiedBy().toString());
+            }
+            if (photo.getAudit().getLastModified() != null) {
+                dto.setLastEdited(photo.getAudit().getLastModified().format(DateTimeFormatter.ISO_LOCAL_DATE));
+            }
+
+        }
         dto.setOwnerFirstName(photo.getOwnerFirstName().orElse(null));
         dto.setOwnerLastName(photo.getOwnerLastName().orElse(null));
         return Optional.of(dto);
@@ -49,6 +60,7 @@ public class PhotoAdminMapper implements PhotoMapper<PhotoAdminDto> {
         photo.setOwnerEmail(dto.getOwnerEmail());
         photo.setOwnerFirstName(dto.getOwnerFirstName());
         photo.setOwnerLastName(dto.getOwnerLastName());
+
         return Optional.of(photo);
     }
 

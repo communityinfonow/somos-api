@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,6 +24,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     @Autowired
     private PrivilegeDao privilegeDao;
 
+    @Autowired
+    PasswordEncoder encoder;
+
+    @Autowired
+    UserDao userDao;
+
     @Override
     // @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -36,6 +43,14 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         Role adminRole = this.createRoleIfNotFound("ROLE_ADMIN", Arrays.asList(read, write));
         Role superUserRole = this.createRoleIfNotFound("ROLE_SUPER_USER", Arrays.asList(manageUsers));
+
+        User user = new User();
+        user.setId(320L);
+        user.setEmailAddress("joemoran231@gmail.com");
+        user.setRoles(Arrays.asList(adminRole, superUserRole));
+        user.setPassword(encoder.encode("test"));
+
+        this.userDao.save(user);
 
         isSetup = true;
     }

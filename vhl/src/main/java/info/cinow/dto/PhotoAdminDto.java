@@ -24,4 +24,8 @@ public class PhotoAdminDto {
 
     private String ownerLastName;
 
+    private String lastEditedBy;
+
+    private String lastEdited;
+
 }

@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.time.LocalDateTime;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import info.cinow.audit.Audit;
+import info.cinow.authentication.User;
 import info.cinow.dto.mapper.PhotoAdminMapper;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.dto.mapper.PhotoMapperImpl;
@@ -73,7 +77,15 @@ public class PhotoMapperTest {
         CensusTract tract = new CensusTract();
         tract.setGid(1);
 
+        User user = new User();
+        user.setFirstName("First");
+        user.setLastName("last");
+        Audit audit = new Audit();
+        audit.setLastModified(LocalDateTime.now());
+        audit.setLastModifiedBy(user);
+
         this.photo = new Photo();
+        this.photo.setAudit(audit);
         this.photo.setApproved(true);
         this.photo.setDescription("Description");
         this.photo.setId(1L);
@@ -106,6 +118,8 @@ public class PhotoMapperTest {
         this.saveDto.setOwnerEmail("email");
         this.saveDto.setOwnerFirstName("First");
         this.saveDto.setOwnerLastName("Last");
+        this.saveDto.setLastEditedBy(audit.getLastModifiedBy().toString());
+        this.saveDto.setLastEdited(audit.getLastModified().toString());
 
         this.saveDtoPhoto = new Photo();
         this.saveDtoPhoto.setApproved(true);
@@ -125,6 +139,8 @@ public class PhotoMapperTest {
         this.adminDto.setOwnerFirstName("First");
         this.adminDto.setCensusTractId(tract.getGid());
         this.adminDto.setOwnerLastName("Last");
+        this.adminDto.setLastEditedBy(audit.getLastModifiedBy().toString());
+        this.adminDto.setLastEdited(audit.getLastModified().toString());
 
         this.adminDtoPhoto = new Photo();
         this.adminDtoPhoto.setApproved(true);
@@ -142,14 +158,14 @@ public class PhotoMapperTest {
     public void photoMapper_ReturnsDto() {
         PhotoDto returnDto = this.photoMapper.toDto(photo).orElse(null);
         assertNotNull(returnDto);
-        assertEquals(returnDto, dto);
+        assertEquals(dto, returnDto);
     }
 
     @Test
     public void photoMapper_ReturnsPhoto() {
         Photo returnPhoto = this.photoMapper.toPhoto(dto).orElse(null);
         assertNotNull(returnPhoto);
-        assertEquals(returnPhoto, dtoPhoto);
+        assertEquals(dtoPhoto, returnPhoto);
     }
 
     @Test

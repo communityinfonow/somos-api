@@ -16,10 +16,19 @@ public class PhotoMapperImpl implements PhotoMapper<PhotoDto> {
 
     @Override
     public Optional<PhotoDto> toDto(Photo photo) {
-        return photo == null ? Optional.empty()
-                : Optional.of(new PhotoDto(photo.getId(), photo.getDescription().orElse(null),
-                        photo.getCensusTract().orElse(new CensusTract()).getGid(), photo.getFileName().orElse(null),
-                        photo.getApproved().orElse(false)));
+        Optional<PhotoDto> dto;
+        if (photo == null) {
+            dto = Optional.empty();
+        } else {
+            PhotoDto dtoObj = new PhotoDto();
+            dtoObj.setId(photo.getId());
+            dtoObj.setDescription(photo.getDescription().orElse(null));
+            dtoObj.setApproved(photo.getApproved().orElse(false));
+            dtoObj.setFileName(photo.getFileName().orElse(null));
+            dtoObj.setCensusTractId(photo.getCensusTract().isPresent() ? photo.getCensusTract().get().getGid() : null);
+            dto = Optional.of(dtoObj);
+        }
+        return dto;
     }
 
     @Override

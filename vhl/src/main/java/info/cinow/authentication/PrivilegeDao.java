@@ -15,3 +15,5 @@ public interface PrivilegeDao extends CrudRepository<Privilege, Long> {
     public Optional<Privilege> findByName(@Param("name") String name);
 
 }
+// TODO: move this and all other authentication files to their respective
+// folders for repository, service, and controller

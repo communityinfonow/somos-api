@@ -25,6 +25,7 @@ import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.exceptions.CensusTractDoesNotExistException;
 import info.cinow.exceptions.NoDescriptionException;
+import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
 import info.cinow.service.CensusTractService;
 import info.cinow.service.PhotoService;
@@ -74,6 +75,9 @@ public class CensusTractPhotoController {
             @RequestBody PhotoSaveDto photoDto) {
         Photo photo = photoSaveMapper.toPhoto(photoDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
+        CensusTract tract = new CensusTract();
+        tract.setGid(tractId);
+        photo.setCensusTract(tract);
         try {
             return new EntityModel<>(photoMapper.toDto(photoService.updatePhoto(photo))
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ""))); // TODO

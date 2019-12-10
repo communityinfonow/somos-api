@@ -1,5 +1,6 @@
 package info.cinow.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import info.cinow.model.CensusTract;
@@ -11,4 +12,6 @@ public interface CensusTractService {
     public List<CensusTract> getAllCensusTracts();
 
     public CensusTract getCensusTract(Integer id);
+
+    public List<CensusTract> getMatchedTracts(Integer id);
 }

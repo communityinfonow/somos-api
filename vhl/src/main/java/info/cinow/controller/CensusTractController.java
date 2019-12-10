@@ -62,4 +62,17 @@ public class CensusTractController {
                 return tract;
         }
 
+        @GetMapping("/{id}/matched-tracts")
+        public CollectionModel<EntityModel<CensusTractDto>> getMatchedTracts(@PathVariable("id") Integer id) {
+                CollectionModel<EntityModel<CensusTractDto>> matchedTracts = new CollectionModel<>(
+                                censusTractService.getMatchedTracts(id).stream().map(censusTract -> {
+                                        CensusTractDto dto = this.censusTractMapper.toDto(censusTract);
+                                        return new EntityModel<>(dto,
+                                                        this.censusTractPhotoLinks.photos(dto.getId(), false),
+                                                        this.censusTractLinks.censusTracts(true));
+                                }).collect(Collectors.toList()));
+
+                return matchedTracts;
+        }
+
 }

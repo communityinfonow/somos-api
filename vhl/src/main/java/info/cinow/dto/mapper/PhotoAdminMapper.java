@@ -30,9 +30,9 @@ public class PhotoAdminMapper implements PhotoMapper<PhotoAdminDto> {
         dto.setId(photo.getId());
         dto.setOwnerEmail(photo.getOwnerEmail().orElse(null));
         if (photo.getAudit() != null) {
-            if (photo.getAudit().getLastModifiedBy() != null) {
-                dto.setLastEditedBy(photo.getAudit().getLastModifiedBy().toString());
-            }
+            // if (photo.getAudit().getLastModifiedBy() != null) {
+            // dto.setLastEditedBy(photo.getAudit().getLastModifiedBy().toString());
+            // }
             if (photo.getAudit().getLastModified() != null) {
                 dto.setLastEdited(photo.getAudit().getLastModified().format(DateTimeFormatter.ISO_LOCAL_DATE));
             }

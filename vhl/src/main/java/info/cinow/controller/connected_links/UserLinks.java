@@ -1,6 +1,6 @@
 package info.cinow.controller.connected_links;
 
-import info.cinow.authentication.UserController;
+// import info.cinow.authentication.UserController;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -16,11 +16,15 @@ public class UserLinks {
         this.connectedLinks = new ConnectedLinks();
     }
 
-    public Link users(Boolean self) {
-        return this.connectedLinks.configureRelation(linkTo(methodOn(UserController.class).getUsers()), self, "users");
-    }
+    // public Link users(Boolean self) {
+    // return
+    // this.connectedLinks.configureRelation(linkTo(methodOn(UserController.class).getUsers()),
+    // self, "users");
+    // }
 
-    public Link user(Long id, Boolean self) {
-        return this.connectedLinks.configureRelation(linkTo(methodOn(UserController.class).getUser(id)), self, "user");
-    }
+    // public Link user(Long id, Boolean self) {
+    // return
+    // this.connectedLinks.configureRelation(linkTo(methodOn(UserController.class).getUser(id)),
+    // self, "user");
+    // }
 }

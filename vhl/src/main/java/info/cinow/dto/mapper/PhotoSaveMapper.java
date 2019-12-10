@@ -29,7 +29,7 @@ public class PhotoSaveMapper implements PhotoMapper<PhotoSaveDto> {
             dtoObj.setFileName(photo.getFileName().orElse(null));
             if (photo.getAudit() != null) {
                 dtoObj.setLastEdited(photo.getAudit().getLastModified().toString());
-                dtoObj.setLastEditedBy(photo.getAudit().getLastModifiedBy().toString());
+                // dtoObj.setLastEditedBy(photo.getAudit().getLastModifiedBy().toString());
             }
 
             dto = Optional.of(dtoObj);

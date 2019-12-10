@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import info.cinow.audit.Audit;
-import info.cinow.authentication.User;
+// import info.cinow.authentication.User;
 import info.cinow.dto.mapper.PhotoAdminMapper;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.dto.mapper.PhotoMapperImpl;
@@ -77,12 +77,12 @@ public class PhotoMapperTest {
         CensusTract tract = new CensusTract();
         tract.setGid(1);
 
-        User user = new User();
-        user.setFirstName("First");
-        user.setLastName("last");
+        // User user = new User();
+        // user.setFirstName("First");
+        // user.setLastName("last");
         Audit audit = new Audit();
         audit.setLastModified(LocalDateTime.now());
-        audit.setLastModifiedBy(user);
+        // audit.setLastModifiedBy(user);
 
         this.photo = new Photo();
         this.photo.setAudit(audit);
@@ -118,7 +118,7 @@ public class PhotoMapperTest {
         this.saveDto.setOwnerEmail("email");
         this.saveDto.setOwnerFirstName("First");
         this.saveDto.setOwnerLastName("Last");
-        this.saveDto.setLastEditedBy(audit.getLastModifiedBy().toString());
+        // this.saveDto.setLastEditedBy(audit.getLastModifiedBy().toString());
         this.saveDto.setLastEdited(audit.getLastModified().toString());
 
         this.saveDtoPhoto = new Photo();
@@ -139,7 +139,7 @@ public class PhotoMapperTest {
         this.adminDto.setOwnerFirstName("First");
         this.adminDto.setCensusTractId(tract.getGid());
         this.adminDto.setOwnerLastName("Last");
-        this.adminDto.setLastEditedBy(audit.getLastModifiedBy().toString());
+        // this.adminDto.setLastEditedBy(audit.getLastModifiedBy().toString());
         this.adminDto.setLastEdited(audit.getLastModified().toString());
 
         this.adminDtoPhoto = new Photo();

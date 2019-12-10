@@ -153,6 +153,10 @@ public class PhotoServiceImpl implements PhotoService {
             photo.setLatitude(location.getLatitude());
         }
 
+        if (!photo.getApproved().isPresent()) {
+            photo.setApproved(false);
+        }
+
         photo.setFileName(file.getName());
         return this.photoDao.save(photo);
     }

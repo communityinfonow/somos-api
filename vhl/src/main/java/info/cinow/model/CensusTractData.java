@@ -23,7 +23,8 @@ public class CensusTractData {
                                                         // manually to the database
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "data")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(columnDefinition = "gid")
     private CensusTract censusTract;
 
     @Column(name = "life_expectancy")

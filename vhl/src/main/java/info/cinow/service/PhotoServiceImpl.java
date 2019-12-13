@@ -67,15 +67,12 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<Photo> uploadPhotos(MultipartFile[] photos) throws IOException {
-        List<Photo> photoEntities = new ArrayList<Photo>();
-        for (MultipartFile photo : photos) {
-            File convertedFile = convertMultipartFileToFile(photo);
-            Photo savedPhotoInfo = savePhotoInformationToDatabase(convertedFile);
-            Photo savedPhoto = this.savePhoto(photo, savedPhotoInfo, convertedFile, false);
-            photoEntities.add(savedPhoto);
-        }
-        return photoEntities;
+    public Photo uploadPhoto(MultipartFile photo) throws IOException {
+
+        File convertedFile = convertMultipartFileToFile(photo);
+        Photo savedPhotoInfo = savePhotoInformationToDatabase(convertedFile);
+        return this.savePhoto(photo, savedPhotoInfo, convertedFile, false);
+
     }
 
     private Photo savePhoto(MultipartFile photo, Photo savedPhotoInfo, File photoFile, boolean isCropped) {
@@ -203,13 +200,13 @@ public class PhotoServiceImpl implements PhotoService {
         if (photo.getId() != null) {
             try {
                 Photo oldPhoto = this.getPhoto(photo.getId()).get();
-                photo.setCensusTract(oldPhoto.getCensusTract().orElse(null));
+                photo.setCensusTract(oldPhoto.getCensusTract().orElse(photo.getCensusTract().orElse(null)));
                 photo.setImageRepositoryPath(oldPhoto.getImageRepositoryPath());
-                photo.setOwnerEmail(oldPhoto.getOwnerEmail().orElse(null));
-                photo.setOwnerFirstName(oldPhoto.getOwnerFirstName().orElse(null));
-                photo.setOwnerLastName(oldPhoto.getOwnerLastName().orElse(null));
-                photo.setLatitude(oldPhoto.getLatitude().orElse(null));
-                photo.setLongitude(oldPhoto.getLongitude().orElse(null));
+                photo.setOwnerEmail(oldPhoto.getOwnerEmail().orElse(photo.getOwnerEmail().orElse(null)));
+                photo.setOwnerFirstName(oldPhoto.getOwnerFirstName().orElse(photo.getOwnerFirstName().orElse(null)));
+                photo.setOwnerLastName(oldPhoto.getOwnerLastName().orElse(photo.getOwnerLastName().orElse(null)));
+                photo.setLatitude(oldPhoto.getLatitude().orElse(photo.getLatitude().orElse(null)));
+                photo.setLongitude(oldPhoto.getLongitude().orElse(photo.getLongitude().orElse(null)));
 
             } catch (NoSuchElementException e) {
                 log.info("No photo exists for id: " + photo.getId(), e);

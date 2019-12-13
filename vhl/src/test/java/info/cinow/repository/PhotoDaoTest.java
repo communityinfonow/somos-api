@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import info.cinow.model.Photo;
 
@@ -27,6 +28,7 @@ public class PhotoDaoTest {
     public void getsModifiedInformation() {
         Photo photo = new Photo();
         photo.setFileName("name");
+
         photo = this.dao.save(photo);
         assertNotNull(photo.getAudit().getLastModified());
         assertEquals(LocalDateTime.now().getDayOfYear(), photo.getAudit().getLastModified().getDayOfYear());

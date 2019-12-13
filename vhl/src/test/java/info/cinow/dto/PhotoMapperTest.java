@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -140,7 +141,7 @@ public class PhotoMapperTest {
         this.adminDto.setCensusTractId(tract.getGid());
         this.adminDto.setOwnerLastName("Last");
         // this.adminDto.setLastEditedBy(audit.getLastModifiedBy().toString());
-        this.adminDto.setLastEdited(audit.getLastModified().toString());
+        this.adminDto.setLastEdited(audit.getLastModified().format(DateTimeFormatter.ISO_LOCAL_DATE).toString());
 
         this.adminDtoPhoto = new Photo();
         this.adminDtoPhoto.setApproved(true);
@@ -210,7 +211,15 @@ public class PhotoMapperTest {
     public void photoAdminMapper_ReturnsDto() {
         PhotoAdminDto returnDto = this.photoAdminMapper.toDto(photo).orElse(null);
         assertNotNull(returnDto);
-        assertEquals(returnDto, adminDto);
+        assertEquals(adminDto, returnDto);
+    }
+
+    @Test
+    public void photoAdminMapper_DtoHasCorrectDateFormat() {
+        PhotoAdminDto returnDto = this.photoAdminMapper.toDto(photo).orElse(null);
+        assertNotNull(returnDto);
+        assertEquals(photo.getAudit().getLastModified().format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
+                returnDto.getLastEdited());
     }
 
     @Test

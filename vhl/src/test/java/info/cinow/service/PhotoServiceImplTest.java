@@ -122,10 +122,9 @@ public class PhotoServiceImplTest {
     @Test
     public void photoDeletedFromLocalServer() throws Exception {
 
-        MockMultipartFile[] files = new MockMultipartFile[1];
-        files[0] = mockFile;
-        service.uploadPhotos(files);
-        File savedFile = new File(files[0].getOriginalFilename());
+        MockMultipartFile file = mockFile;
+        service.uploadPhoto(file);
+        File savedFile = new File(file.getOriginalFilename());
         assertFalse(savedFile.exists());
     }
 

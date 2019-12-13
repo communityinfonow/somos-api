@@ -88,21 +88,18 @@ public class PhotoController {
     }
 
     @PostMapping
-    public CollectionModel<EntityModel<PhotoDto>> savePhotos(@RequestParam("photos") MultipartFile[] photos) {
+    public EntityModel<PhotoDto> savePhoto(@RequestParam("photo") MultipartFile photo) {
         // TODO: saving of file name is not working
-        CollectionModel<EntityModel<PhotoDto>> photoEntities = new CollectionModel<>(Arrays.asList());
+        PhotoDto dto;
         try {
-            photoEntities = new CollectionModel<>(photoService.uploadPhotos(photos).stream().map(photo -> {
-                PhotoDto photoDto = this.photoMapper.toDto(photo).orElseThrow(NoSuchElementException::new);
-                return new EntityModel<>(photoDto, this.photoLinks.photoMetadata(photoDto.getId(), false),
-                        this.photoLinks.photos(false));
-            }).collect(Collectors.toList()), this.photoLinks.photos(false));
+            dto = this.photoMapper.toDto(photoService.uploadPhoto(photo)).orElseThrow(NoSuchElementException::new);
+
         } catch (IOException e) {
             log.error("An error occurred saving the file", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occureed saving the file(s)");
         }
 
-        return photoEntities;
+        return new EntityModel<>(dto, this.photoLinks.photoMetadata(dto.getId(), false), this.photoLinks.photos(false));
     }
 
     @GetMapping("/{id}/gps-coordinates")

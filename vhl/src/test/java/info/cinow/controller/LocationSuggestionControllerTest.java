@@ -31,14 +31,4 @@ public class LocationSuggestionControllerTest {
     @MockBean
     private GeocodeService service;
 
-    @Test
-    public void catch404() throws Exception {
-        String place = "van andel arena";
-        when(service.getLocationSuggestions(place, LocationType.PLACE)).then(invocation -> {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        });
-        final ResultActions result = mvc.perform(get("/place").param("location", place));
-        result.andExpect(status().isInternalServerError());
-    }
-
 }

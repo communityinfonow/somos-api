@@ -17,7 +17,7 @@ import info.cinow.model.Photo;
  */
 public interface PhotoService {
 
-    public List<Photo> uploadPhotos(MultipartFile[] photos) throws IOException;
+    public Photo uploadPhoto(MultipartFile photo) throws IOException;
 
     public Optional<Location> getGpsCoordinates(Long id);
 

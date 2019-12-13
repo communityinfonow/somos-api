@@ -84,6 +84,10 @@ public class Photo implements Auditable {
     @Column
     private Double longitude;
 
+    public Photo() {
+        this.approved = false;
+    }
+
     public Optional<String> getDescription() {
         return Optional.ofNullable(this.description);
     }

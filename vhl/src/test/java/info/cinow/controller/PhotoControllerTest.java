@@ -1,10 +1,8 @@
 package info.cinow.controller;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-
-import org.mockito.Mockito;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,9 +11,9 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -42,14 +40,19 @@ public class PhotoControllerTest {
 
     private Location location;
 
+    private Photo photo;
+
     @Before
     public void setup() {
-        Photo photo = new Photo();
+        photo = new Photo();
         photo.setLatitude(1.0);
         photo.setLongitude(2.0);
+        photo.setId(1L);
 
         location = new Location(1.0, 1.0);
         Mockito.when(service.getGpsCoordinates(anyLong())).thenReturn(Optional.of(location));
+        Mockito.when(service.getPhoto(photo.getId())).thenReturn(Optional.of(photo));
+
     }
 
     @Test
@@ -63,6 +66,23 @@ public class PhotoControllerTest {
 
     }
 
-    // TODO: all endpoints
+    @Test
+    public void getPhotos() throws Exception {
+        // TODO
+        mvc.perform(get("/photos").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void getPhoto() throws Exception {
+        mvc.perform(get("/photos/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(photo.getId()));
+
+    }
+
+    @Test
+    public void savePhotos() throws Exception {
+        mvc.perform(post("/photos").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        // TODO
+    }
 
 }

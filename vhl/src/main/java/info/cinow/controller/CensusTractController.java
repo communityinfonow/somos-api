@@ -19,7 +19,7 @@ import info.cinow.service.CensusTractService;
 /**
  * CensusTractController
  */
-@RestController
+@RestController(value = "census-tracts")
 @RequestMapping("/census-tracts")
 public class CensusTractController {
 

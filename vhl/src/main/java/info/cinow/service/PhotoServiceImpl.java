@@ -68,7 +68,6 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public Photo uploadPhoto(MultipartFile photo) throws IOException {
-
         File convertedFile = convertMultipartFileToFile(photo);
         Photo savedPhotoInfo = savePhotoInformationToDatabase(convertedFile);
         return this.savePhoto(photo, savedPhotoInfo, convertedFile, false);
@@ -76,6 +75,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private Photo savePhoto(MultipartFile photo, Photo savedPhotoInfo, File photoFile, boolean isCropped) {
+        // TODO: throw error if file is not image
         String filePath = isCropped ? savedPhotoInfo.getCroppedFilePathName() : savedPhotoInfo.getFilePathName();
         try {
 
@@ -94,7 +94,14 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public Photo cropPhoto(MultipartFile photo, Long id) {
-        File convertedFile = convertMultipartFileToFile(photo);
+        File convertedFile;
+        try {
+            convertedFile = convertMultipartFileToFile(photo);
+        } catch (IOException e) {
+            log.error("An error occurred saving the file", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "An error occureed saving the cropped file");
+        }
         Photo savedPhotoInfo = photoDao.findById(id).orElse(null); // TODO: actually handle this
         return this.savePhoto(photo, savedPhotoInfo, convertedFile, true);
     }
@@ -132,13 +139,11 @@ public class PhotoServiceImpl implements PhotoService {
 
     }
 
-    private File convertMultipartFileToFile(MultipartFile file) {
+    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
-        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-            fos.write(file.getBytes());
-        } catch (IOException e) {
-            log.error("Error converting multipartFile to file", e);
-        }
+        FileOutputStream fos = new FileOutputStream(convertedFile);
+        fos.write(file.getBytes());
+        fos.close();
         return convertedFile;
     }
 

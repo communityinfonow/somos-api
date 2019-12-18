@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import info.cinow.exceptions.ImageNameTooLongException;
 import info.cinow.exceptions.ImageTooLargeException;
 import info.cinow.exceptions.WrongFileTypeException;
+import info.cinow.model.CensusTract;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
 import info.cinow.repository.PhotoDao;
@@ -63,6 +66,9 @@ public class PhotoControllerTest {
         photo.setLatitude(1.0);
         photo.setLongitude(2.0);
         photo.setId(1L);
+        CensusTract tract = new CensusTract();
+        tract.setGid(1);
+        photo.setCensusTract(tract);
 
         location = new Location(1.0, 1.0);
         Mockito.when(service.getGpsCoordinates(anyLong())).thenReturn(Optional.of(location));
@@ -70,6 +76,9 @@ public class PhotoControllerTest {
         Mockito.when(service.uploadPhoto(any(MultipartFile.class))).thenReturn(photo);
         Mockito.when(dao.save(any(Photo.class))).thenReturn(photo);
 
+        this.mockFile = new MockMultipartFile("fileThatDoesNotExists.jpeg", "fileThatDoesNotExists.jpeg", "image/jpeg",
+                new FileInputStream(
+                        new File("visualizing-healthy-lives-api/vhl/src/test/resources/Photo Upload Screen 3.png")));
     }
 
     @Test

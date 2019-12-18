@@ -80,7 +80,7 @@ public class CensusTractPhotoControllerTest {
         photo.setCensusTract(tract);
 
         Mockito.when(censusService.getCensusTract(tract.getGid())).thenReturn(tract);
-        Mockito.when(service.getPhoto(photo.getId())).thenReturn(Optional.of(photo));
+        Mockito.when(service.getPhotoById(photo.getId())).thenReturn(Optional.of(photo));
 
         Mockito.when(service.updatePhoto(any(Photo.class))).thenReturn(photo);
     }
@@ -93,6 +93,20 @@ public class CensusTractPhotoControllerTest {
                 .content(new ObjectMapper().writeValueAsString(dto))).andExpect(status().isOk());
         photo.setDescription(dto.getDescription());
         Mockito.verify(service).updatePhoto(photo);
+    }
+
+    @Test
+    public void photoUpdate_NoDescriptionThrowsException() throws Exception {
+        Mockito.when(service.updatePhoto(any(Photo.class))).thenThrow(new NoDescriptionException(null));
+        mvc.perform(put("/census-tracts/1/photos/{id}", dto.getId()).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(dto))).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void photoUpdate_NoTractThrowsException() throws Exception {
+        Mockito.when(service.updatePhoto(any(Photo.class))).thenThrow(new CensusTractDoesNotExistException(null));
+        mvc.perform(put("/census-tracts/1/photos/{id}", dto.getId()).contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(dto))).andExpect(status().isUnprocessableEntity());
     }
 
 }

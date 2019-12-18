@@ -2,28 +2,41 @@ package info.cinow.utility;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import info.cinow.exceptions.ImageNameTooLongException;
+import info.cinow.exceptions.ImageTooLargeException;
+import info.cinow.exceptions.WrongFileTypeException;
 
 /**
  * FileSaveErrorHandling
  */
+@Component
 public class FileSaveErrorHandling {
 
-    @Value("${image-file.max-size}")
+    @Value("${image.max-size}")
     private long maxFileSize;
 
-    public void checkFileSize(MultipartFile photo) {
+    private final int S3_FILE_CHARACTER_LIMIT = 1000;
+
+    public void checkFileSize(MultipartFile photo) throws ImageTooLargeException {
         if (photo.getSize() > maxFileSize * 1048576) {// convert MB to bytes
-            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
-                    "Image is too large. Please upload images less than 15MB in size.");
+            throw new ImageTooLargeException(maxFileSize + "MB");
         }
 
     }
 
-    public void checkContentType(MultipartFile photo) {
+    public void checkContentType(MultipartFile photo) throws WrongFileTypeException {
         if (!photo.getContentType().contains("image")) {
-            throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            throw new WrongFileTypeException();
+        }
+    }
+
+    public void checkFileNameSize(String fileName) throws ImageNameTooLongException {
+        if (fileName.length() >= this.S3_FILE_CHARACTER_LIMIT) {
+            throw new ImageNameTooLongException(this.S3_FILE_CHARACTER_LIMIT);
         }
     }
 }

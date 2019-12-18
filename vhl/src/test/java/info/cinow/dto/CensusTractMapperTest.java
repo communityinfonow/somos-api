@@ -14,7 +14,7 @@ import info.cinow.model.CensusTract;
 import info.cinow.repository.CensusTractDao;
 
 /**
- * CensusTractMapperTest TODO
+ * CensusTractMapperTest
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

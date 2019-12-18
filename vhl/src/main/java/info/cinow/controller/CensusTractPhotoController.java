@@ -24,7 +24,10 @@ import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.ImageNameTooLongException;
+import info.cinow.exceptions.ImageTooLargeException;
 import info.cinow.exceptions.NoDescriptionException;
+import info.cinow.exceptions.WrongFileTypeException;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
 import info.cinow.service.CensusTractService;
@@ -91,8 +94,17 @@ public class CensusTractPhotoController {
     @PostMapping("/{id}")
     // TODO secure with auth
     public EntityModel<PhotoDto> cropPhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long id,
-            @RequestParam("photo") MultipartFile photo) {
-        Photo savedPhoto = photoService.cropPhoto(photo, id);
+            @RequestParam("photo") MultipartFile photo) throws ImageNameTooLongException, WrongFileTypeException {
+        Photo savedPhoto = null;
+        try {
+            savedPhoto = photoService.cropPhoto(photo, id);
+        } catch (IOException e) {
+            log.error("An error occurred saving the file", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred saving the file");
+        } catch (ImageTooLargeException e) {
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, e.getMessage());
+        }
+
         EntityModel<PhotoDto> dto = new EntityModel<>(
                 this.photoMapper.toDto(savedPhoto).orElseThrow(NoSuchElementException::new),
                 this.censusTractPhotoLinks.photo(tractId, savedPhoto.getId(), true),
@@ -105,7 +117,7 @@ public class CensusTractPhotoController {
     @GetMapping(value = "/file/{fileName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public byte[] getPhotoFile(@PathVariable("tractId") Integer tractId, @PathVariable("fileName") String fileName) {
         try {
-            return photoService.getPhoto(fileName);
+            return photoService.getPhotoByFileName(fileName);
         } catch (IOException e) {
             log.error("An error occurred loading the photo: " + fileName, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred loading the file");
@@ -114,12 +126,14 @@ public class CensusTractPhotoController {
 
     @DeleteMapping("/{id}")
     public void deletePhoto(@PathVariable("tractId") Integer tractId, @PathVariable("id") Long photoId) {
+
         try {
             this.photoService.deletePhoto(photoId);
-        } catch (Exception e) {
-            // TODO: handle exception
-            log.error("An error occurred deleting the photo", e);
+        } catch (IOException e) {
+            log.error("An error occurred deleting the photo for tract: " + tractId + ", photo: " + photoId, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred deleting the file");
         }
+
     }
 
 }

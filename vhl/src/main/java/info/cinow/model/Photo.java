@@ -118,15 +118,13 @@ public class Photo implements Auditable {
     /**
      * Gets the unique file path name used in S3 Bucket
      * 
-     * @return
      */
     public String getFilePathName() {
         return this.id + "_" + this.fileName;
     }
 
     public String getCroppedFilePathName() {
-        return "CROP" + "_" + this.getFilePathName();
-        // TODO: what if file name is too long?
+        return "CROP_" + this.getFilePathName();
     }
 
     public String getPath() {

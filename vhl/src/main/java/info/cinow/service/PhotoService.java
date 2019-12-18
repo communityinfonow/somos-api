@@ -6,9 +6,11 @@ import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import info.cinow.dto.PhotoDto;
 import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.ImageNameTooLongException;
+import info.cinow.exceptions.ImageTooLargeException;
 import info.cinow.exceptions.NoDescriptionException;
+import info.cinow.exceptions.WrongFileTypeException;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
 
@@ -17,19 +19,21 @@ import info.cinow.model.Photo;
  */
 public interface PhotoService {
 
-    public Photo uploadPhoto(MultipartFile photo) throws IOException;
+    public Photo uploadPhoto(MultipartFile photo)
+            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException;
 
     public Optional<Location> getGpsCoordinates(Long id);
 
     public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException;
 
-    public List<Photo> getPhotos();
+    public List<Photo> getAllPhotos();
 
-    public Photo cropPhoto(MultipartFile photo, Long photoId);
+    public Photo cropPhoto(MultipartFile photo, Long photoId)
+            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException;
 
-    public byte[] getPhoto(String fileName) throws IOException;
+    public byte[] getPhotoByFileName(String fileName) throws IOException;
 
-    public Optional<Photo> getPhoto(Long id);
+    public Optional<Photo> getPhotoById(Long id);
 
     public void deletePhoto(Long id) throws IOException;
 }

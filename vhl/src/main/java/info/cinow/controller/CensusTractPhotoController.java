@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/census-tracts/{tractId}/photos")
+@RequestMapping("/census-tracts/{censusTractId}/photos")
 
 public class CensusTractPhotoController {
 
@@ -68,31 +68,36 @@ public class CensusTractPhotoController {
     }
 
     @GetMapping()
-    public CollectionModel<EntityModel<PhotoDto>> getAllPhotosForTract(@PathVariable("tractId") final Integer tractId) {
-        return new CollectionModel<>(this.censusTractPhotoService.getAllPhotosForTract(tractId).stream().map(photo -> {
-            return new EntityModel<>(this.photoMapper.toDto(photo).orElseThrow(NoSuchElementException::new),
-                    this.censusTractPhotoLinks.photo(tractId, photo.getId(), true),
-                    this.censusTractPhotoLinks.photoFile(tractId, photo.getFilePathName(), false),
-                    this.censusTractPhotoLinks.croppedPhotoFile(tractId, photo.getCroppedFilePathName(), false));
-        }).collect(Collectors.toList())
+    public CollectionModel<EntityModel<PhotoDto>> getAllPhotosForTract(
+            @PathVariable("censusTractId") final Integer censusTractId) {
+        return new CollectionModel<>(
+                this.censusTractPhotoService.getAllPhotosForTract(censusTractId).stream().map(photo -> {
+                    return new EntityModel<>(this.photoMapper.toDto(photo).orElseThrow(NoSuchElementException::new),
+                            this.censusTractPhotoLinks.photo(censusTractId, photo.getId(), true),
+                            this.censusTractPhotoLinks.photoFile(censusTractId, photo.getFilePathName(), false),
+                            this.censusTractPhotoLinks.croppedPhotoFile(censusTractId, photo.getCroppedFilePathName(),
+                                    false));
+                }).collect(Collectors.toList())
 
         );
     }
 
     @GetMapping("/{id}")
-    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("tractId") final Integer tractId,
+    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
             @PathVariable("id") final Long id) {
-        return new EntityModel<>(this.photoMapper.toDto(this.censusTractPhotoService.getPhotoByIdForTract(tractId, id))
-                .orElseThrow(NoSuchElementException::new), this.censusTractPhotoLinks.photo(tractId, id, true));
+        return new EntityModel<>(
+                this.photoMapper.toDto(this.censusTractPhotoService.getPhotoByIdForTract(censusTractId, id))
+                        .orElseThrow(NoSuchElementException::new),
+                this.censusTractPhotoLinks.photo(censusTractId, id, true));
     }
 
     @PutMapping("/{id}")
-    public EntityModel<PhotoDto> updatePhotoForTract(@PathVariable("tractId") final Integer tractId,
+    public EntityModel<PhotoDto> updatePhotoForTract(@PathVariable("censusTractId") final Integer censusTractId,
             @PathVariable("id") final Long id, @RequestBody final PhotoSaveDto photoDto) {
         final Photo photo = photoSaveMapper.toPhoto(photoDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         final CensusTract tract = new CensusTract();
-        tract.setGid(tractId);
+        tract.setGid(censusTractId);
         photo.setCensusTract(tract);
         try {
             return new EntityModel<>(photoMapper.toDto(photoService.updatePhoto(photo))
@@ -106,7 +111,7 @@ public class CensusTractPhotoController {
 
     @PostMapping("/{id}")
     // TODO secure with auth
-    public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("tractId") final Integer tractId,
+    public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("censusTractId") final Integer censusTractId,
             @PathVariable("id") final Long id, @RequestParam("photo") final MultipartFile photo)
             throws ImageNameTooLongException, WrongFileTypeException {
         Photo savedPhoto = null;
@@ -121,15 +126,15 @@ public class CensusTractPhotoController {
 
         final EntityModel<PhotoDto> dto = new EntityModel<>(
                 this.photoMapper.toDto(savedPhoto).orElseThrow(NoSuchElementException::new),
-                this.censusTractPhotoLinks.photo(tractId, savedPhoto.getId(), true),
-                this.censusTractPhotoLinks.photoFile(tractId, savedPhoto.getFilePathName(), false),
-                this.censusTractPhotoLinks.croppedPhotoFile(tractId, savedPhoto.getCroppedFilePathName(), false));
+                this.censusTractPhotoLinks.photo(censusTractId, savedPhoto.getId(), true),
+                this.censusTractPhotoLinks.photoFile(censusTractId, savedPhoto.getFilePathName(), false),
+                this.censusTractPhotoLinks.croppedPhotoFile(censusTractId, savedPhoto.getCroppedFilePathName(), false));
         return dto;
     }
 
     // TODO: secure for public use by modifying query to get accepted
     @GetMapping(value = "/{fileName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public byte[] getPhotoFileByFileNameForTract(@PathVariable("tractId") final Integer tractId,
+    public byte[] getPhotoFileByFileNameForTract(@PathVariable("censusTractId") final Integer censusTractId,
             @PathVariable("fileName") final String fileName) {
         try {
             return photoService.getPhotoByFileName(fileName);
@@ -140,13 +145,13 @@ public class CensusTractPhotoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletePhotoByIdForTract(@PathVariable("tractId") final Integer tractId,
+    public void deletePhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
             @PathVariable("id") final Long photoId) {
 
         try {
             this.photoService.deletePhoto(photoId);
         } catch (final IOException e) {
-            log.error("An error occurred deleting the photo for tract: " + tractId + ", photo: " + photoId, e);
+            log.error("An error occurred deleting the photo for tract: " + censusTractId + ", photo: " + photoId, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred deleting the file");
         }
 

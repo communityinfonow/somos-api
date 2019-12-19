@@ -1,8 +1,8 @@
 package info.cinow.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
@@ -23,11 +23,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
+import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.exceptions.CensusTractDoesNotExistException;
 import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
+import info.cinow.service.CensusTractPhotoService;
 import info.cinow.service.CensusTractService;
 import info.cinow.service.PhotoService;
 
@@ -47,14 +50,23 @@ public class CensusTractPhotoControllerTest {
     @MockBean
     private CensusTractService censusService;
 
+    @MockBean
+    private CensusTractPhotoService censusTractPhotoService;
+
+    @MockBean
+    private PhotoMapper<PhotoSaveDto> photoSaveMapper;
+
+    @MockBean
+    private PhotoMapper<PhotoDto> photoMapper;
+
     @Captor
-    ArgumentCaptor<Photo> captor;
+    private ArgumentCaptor<Photo> captor;
 
-    Photo photo;
+    private Photo photo;
 
-    PhotoSaveDto dto;
+    private PhotoSaveDto dto;
 
-    CensusTract tract;
+    private CensusTract tract;
 
     @Before
     public void setup() throws IOException, NoDescriptionException, CensusTractDoesNotExistException {

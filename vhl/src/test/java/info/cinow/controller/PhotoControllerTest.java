@@ -19,9 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,10 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
-import info.cinow.dto.mapper.PhotoAdminMapper;
 import info.cinow.dto.mapper.PhotoMapper;
-import info.cinow.dto.mapper.PhotoMapperImpl;
-import info.cinow.dto.mapper.PhotoSaveMapper;
 import info.cinow.exceptions.ImageNameTooLongException;
 import info.cinow.exceptions.ImageTooLargeException;
 import info.cinow.exceptions.WrongFileTypeException;
@@ -51,25 +46,6 @@ import info.cinow.service.PhotoService;
 @WebMvcTest(PhotoController.class)
 public class PhotoControllerTest {
 
-    @TestConfiguration
-    static class PhotoMapperTestContextConfig {
-
-        @Bean
-        public PhotoMapper<PhotoDto> photoMapper() {
-            return new PhotoMapperImpl();
-        }
-
-        @Bean
-        public PhotoMapper<PhotoSaveDto> photoSaveMapper() {
-            return new PhotoSaveMapper();
-        }
-
-        @Bean
-        public PhotoMapper<PhotoAdminDto> photoAdminMapper() {
-            return new PhotoAdminMapper();
-        }
-    }
-
     @Autowired
     private MockMvc mvc;
 
@@ -78,6 +54,15 @@ public class PhotoControllerTest {
 
     @MockBean
     private PhotoDao dao;
+
+    @MockBean
+    private PhotoMapper<PhotoDto> photoMapper;
+
+    @MockBean
+    private PhotoMapper<PhotoSaveDto> photoSaveMapper;
+
+    @MockBean
+    private PhotoMapper<PhotoAdminDto> photoAdminMapper;
 
     private Location location;
 

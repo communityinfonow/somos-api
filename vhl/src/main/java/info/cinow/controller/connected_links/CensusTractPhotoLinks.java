@@ -18,29 +18,31 @@ public class CensusTractPhotoLinks {
                 this.connectedLinks = new ConnectedLinks();
         }
 
-        public Link photoFile(Integer tractId, String fileName, Boolean self) {
-                return this.connectedLinks
-                                .configureRelation(linkTo(
-                                                ReflectionUtils.findMethod(CensusTractPhotoController.class,
-                                                                "getPhotoFile", Integer.class, String.class),
-                                                tractId, fileName), self, "photo-file");
-        }
-
-        public Link croppedPhotoFile(Integer tractId, String fileName, Boolean self) {
+        public Link photoFile(Integer censusTractId, String fileName, Boolean self) {
                 return this.connectedLinks.configureRelation(
                                 linkTo(ReflectionUtils.findMethod(CensusTractPhotoController.class, "getPhotoFile",
-                                                Integer.class, String.class), tractId, fileName),
+                                                Integer.class, String.class), censusTractId, fileName),
+                                self, "photo-file");
+        }
+
+        public Link croppedPhotoFile(Integer censusTractId, String fileName, Boolean self) {
+                return this.connectedLinks.configureRelation(
+                                linkTo(ReflectionUtils.findMethod(CensusTractPhotoController.class, "getPhotoFile",
+                                                Integer.class, String.class), censusTractId, fileName),
                                 self, "cropped-photo-file");
         }
 
-        public Link photo(Integer tractId, Long photoId, Boolean self) {
-                return this.connectedLinks.configureRelation(
-                                linkTo(methodOn(CensusTractPhotoController.class).getPhoto(tractId, photoId)), self,
-                                "photo");
+        public Link photo(Integer censusTractId, Long photoId, Boolean self) {
+                return this.connectedLinks
+                                .configureRelation(
+                                                linkTo(methodOn(CensusTractPhotoController.class)
+                                                                .getPhotoByIdForTract(censusTractId, photoId)),
+                                                self, "photo");
         }
 
-        public Link photos(Integer tractId, Boolean self) {
+        public Link photos(Integer censusTractId, Boolean self) {
                 return this.connectedLinks.configureRelation(
-                                linkTo(methodOn(CensusTractPhotoController.class).getPhotos(tractId)), self, "photos");
+                                linkTo(methodOn(CensusTractPhotoController.class).getAllPhotosForTract(censusTractId)),
+                                self, "photos");
         }
 }

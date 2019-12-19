@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -27,9 +26,11 @@ import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;
+import info.cinow.exceptions.ImageNameTooLongException;
+import info.cinow.exceptions.ImageTooLargeException;
+import info.cinow.exceptions.WrongFileTypeException;
 import info.cinow.model.Location;
 import info.cinow.service.PhotoService;
-import info.cinow.utility.FileSaveErrorHandling;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -55,55 +56,48 @@ public class PhotoController {
 
     private CensusTractPhotoLinks censusTractPhotoLinks;
 
-    private FileSaveErrorHandling fileErrorHandling;
-
     public PhotoController() {
         this.photoLinks = new PhotoLinks();
         this.censusTractLinks = new CensusTractLinks();
         this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-        this.fileErrorHandling = new FileSaveErrorHandling();
+
     }
 
     // TODO: secure behind auth
-    // TODO refactor PhotoSaveDto since we're now using it to get as well
     @GetMapping
     public CollectionModel<EntityModel<PhotoAdminDto>> getPhotos() {
         // TODO: do links and entitymodels and collection models correctly
         CollectionModel<EntityModel<PhotoAdminDto>> photoEntities = new CollectionModel<>(Arrays.asList());
-        try {
-            photoEntities = new CollectionModel<>(photoService.getPhotos().stream().map(photo -> {
-                PhotoAdminDto photoDto = photoAdminMapper.toDto(photo).orElseThrow(NoSuchElementException::new); // TODO
-                // really
-                // think out this
-                // null handling
-                return new EntityModel<>(photoDto, this.photoLinks.photos(false),
-                        this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(),
-                                false),
-                        this.censusTractPhotoLinks.croppedPhotoFile(photoDto.getCensusTractId(),
-                                photo.getCroppedFilePathName(), false),
-                        this.censusTractPhotoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
-                        this.photoLinks.photoMetadata(photoDto.getId(), false), this.photoLinks.photos(false));
-            }).collect(Collectors.toList()));
-        } catch (Exception e) {
-            log.error("An error occurred", e);
-            // TODO response error handler
-        }
+
+        photoEntities = new CollectionModel<>(photoService.getAllPhotos().stream().map(photo -> {
+            PhotoAdminDto photoDto = photoAdminMapper.toDto(photo).orElseThrow(NoSuchElementException::new);
+
+            return new EntityModel<>(photoDto, this.photoLinks.photos(false),
+                    this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(), false),
+                    this.censusTractPhotoLinks.croppedPhotoFile(photoDto.getCensusTractId(),
+                            photo.getCroppedFilePathName(), false),
+                    this.censusTractPhotoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
+                    this.photoLinks.photoMetadata(photoDto.getId(), false), this.photoLinks.photos(false));
+        }).collect(Collectors.toList()));
+
         return photoEntities;
     }
 
     @PostMapping
     public EntityModel<PhotoDto> savePhoto(@RequestParam("photo") MultipartFile photo) {
-        this.fileErrorHandling.checkContentType(photo);
-        this.fileErrorHandling.checkFileSize(photo);
-        // TODO test error throwing
 
-        // TODO: saving of file name is not working. Look into this still?
         PhotoDto dto;
         try {
             dto = this.photoMapper.toDto(photoService.uploadPhoto(photo)).orElseThrow(NoSuchElementException::new);
         } catch (IOException e) {
             log.error("An error occurred saving the file", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred saving the file");
+        } catch (ImageTooLargeException e) {
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, e.getMessage());
+        } catch (ImageNameTooLongException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+        } catch (WrongFileTypeException e) {
+            throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
         }
         return new EntityModel<>(dto, this.photoLinks.photoMetadata(dto.getId(), false), this.photoLinks.photos(false));
     }
@@ -118,7 +112,7 @@ public class PhotoController {
     @GetMapping("/{id}")
     public EntityModel<PhotoDto> getPhoto(@PathVariable("id") Long photoId) {
         PhotoDto dto = this.photoMapper
-                .toDto(this.photoService.getPhoto(photoId).orElseThrow(EntityNotFoundException::new))
+                .toDto(this.photoService.getPhotoById(photoId).orElseThrow(EntityNotFoundException::new))
                 .orElseThrow(EntityNotFoundException::new);
         return new EntityModel<>(dto);
     }

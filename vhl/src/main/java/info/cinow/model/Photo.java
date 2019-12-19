@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import info.cinow.audit.Audit;
 import info.cinow.audit.AuditListener;
 import info.cinow.audit.Auditable;
@@ -26,9 +24,6 @@ import lombok.Data;
 @Data
 @EntityListeners(AuditListener.class)
 public class Photo implements Auditable {
-
-    @Value("${app.awsServices.bucketName}")
-    private String imageRepositoryPath;
 
     /**
      * Brings last_modified as a column.
@@ -118,19 +113,13 @@ public class Photo implements Auditable {
     /**
      * Gets the unique file path name used in S3 Bucket
      * 
-     * @return
      */
     public String getFilePathName() {
         return this.id + "_" + this.fileName;
     }
 
     public String getCroppedFilePathName() {
-        return "CROP" + "_" + this.getFilePathName();
-        // TODO: what if file name is too long?
-    }
-
-    public String getPath() {
-        return imageRepositoryPath + "/" + this.getFileName();
+        return "CROP_" + this.getFilePathName();
     }
 
     public Optional<CensusTract> getCensusTract() {

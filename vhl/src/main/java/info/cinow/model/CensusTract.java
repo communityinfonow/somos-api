@@ -24,6 +24,14 @@ import lombok.Data;
 @Data
 public class CensusTract {
 
+    public CensusTract() {
+
+    }
+
+    public CensusTract(Integer gid) {
+        this.gid = gid;
+    }
+
     @Id()
     private Integer gid;
 

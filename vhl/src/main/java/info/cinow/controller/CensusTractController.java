@@ -23,8 +23,6 @@ import info.cinow.service.CensusTractService;
 @RequestMapping("/census-tracts")
 public class CensusTractController {
 
-        // TODO: error handling for negative id or tract that doesn't exist.
-
         @Autowired
         CensusTractService censusTractService;
 

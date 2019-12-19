@@ -10,17 +10,11 @@ import java.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import info.cinow.audit.Audit;
-// import info.cinow.authentication.User;
-import info.cinow.dto.mapper.PhotoAdminMapper;
 import info.cinow.dto.mapper.PhotoMapper;
-import info.cinow.dto.mapper.PhotoMapperImpl;
-import info.cinow.dto.mapper.PhotoSaveMapper;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
 
@@ -28,37 +22,16 @@ import info.cinow.model.Photo;
  * PhotoMapperTest
  */
 @RunWith(SpringRunner.class)
-// @SpringBootTest
 public class PhotoMapperTest {
 
-    @TestConfiguration
-    static class PhotoMapperTestContextConfig {
+    @MockBean
+    public PhotoMapper<PhotoDto> photoMapper;
 
-        @Bean
-        public PhotoMapper<PhotoDto> photoMapper() {
-            return new PhotoMapperImpl();
-        }
+    @MockBean
+    public PhotoMapper<PhotoSaveDto> photoSaveMapper;
 
-        @Bean
-        public PhotoMapper<PhotoSaveDto> photoSaveMapper() {
-            return new PhotoSaveMapper();
-        }
-
-        @Bean
-        public PhotoMapper<PhotoAdminDto> photoAdminMapper() {
-            return new PhotoAdminMapper();
-        }
-    }
-
-    @Autowired
-    PhotoMapper<PhotoDto> photoMapper;
-
-    @Autowired
-    PhotoMapper<PhotoSaveDto> photoSaveMapper;
-
-    @Autowired
-    PhotoMapper<PhotoAdminDto> photoAdminMapper;
-
+    @MockBean
+    public PhotoMapper<PhotoAdminDto> photoAdminMapper;
     Photo photo;
 
     Photo dtoPhoto;
@@ -92,7 +65,6 @@ public class PhotoMapperTest {
         this.photo.setId(1L);
         this.photo.setFileName("fileName");
         this.photo.setCensusTract(tract);
-        this.photo.setImageRepositoryPath("1_fileName");
         this.photo.setOwnerEmail("email");
         this.photo.setOwnerFirstName("First");
         this.photo.setOwnerLastName("Last");

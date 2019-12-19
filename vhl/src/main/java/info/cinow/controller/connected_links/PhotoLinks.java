@@ -1,15 +1,11 @@
 package info.cinow.controller.connected_links;
 
-import org.springframework.util.ReflectionUtils;
-
-import info.cinow.controller.CensusTractPhotoController;
-import info.cinow.controller.PhotoController;
-import info.cinow.controller.connected_links.ConnectedLinks;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.Link;
+
+import info.cinow.controller.PhotoController;
 
 /**
  * PhotoLinks
@@ -30,6 +26,11 @@ public class PhotoLinks {
     public Link photos(Boolean self) {
         return this.connectedLinks.configureRelation(linkTo(methodOn(PhotoController.class).getPhotos()), self,
                 "photos");
+    }
+
+    public Link photo(Long id, Boolean self) {
+        return this.connectedLinks.configureRelation(linkTo(methodOn(PhotoController.class).getPhoto(id)), self,
+                "photo");
     }
 
 }

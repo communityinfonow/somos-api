@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.cinow.controller.connected_links.CensusTractLinks;
-import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.controller.connected_links.UserLinks;
 import info.cinow.model.AppLinks;
@@ -19,15 +18,13 @@ public class AppController {
 
     private CensusTractLinks censusTractLinks;
 
-    private CensusTractPhotoLinks censusTractPhotoLinks;
-
     private PhotoLinks photoLinks;
 
     private UserLinks userLinks;
 
     public AppController() {
         this.censusTractLinks = new CensusTractLinks();
-        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
+
         this.photoLinks = new PhotoLinks();
         this.userLinks = new UserLinks();
     }

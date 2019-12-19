@@ -4,9 +4,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
-
-import org.springframework.data.annotation.LastModifiedBy;
 
 // import info.cinow.authentication.User;
 import lombok.Data;

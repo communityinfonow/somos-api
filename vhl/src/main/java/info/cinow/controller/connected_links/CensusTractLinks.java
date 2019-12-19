@@ -4,10 +4,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.Link;
-import org.springframework.util.ReflectionUtils;
 
 import info.cinow.controller.CensusTractController;
-import info.cinow.controller.CensusTractPhotoController;
 
 /**
  * CensusTractLinks
@@ -24,9 +22,9 @@ public class CensusTractLinks {
                 self, "census-tracts");
     }
 
-    public Link censusTract(Integer tractId, Boolean self) {
+    public Link censusTract(Integer censusTractId, Boolean self) {
         return this.connectedLinks.configureRelation(
-                linkTo(methodOn(CensusTractController.class).getCensusTract(tractId)), self, "census-tract");
+                linkTo(methodOn(CensusTractController.class).getCensusTract(censusTractId)), self, "census-tract");
     }
 
     // TODO matched tracts

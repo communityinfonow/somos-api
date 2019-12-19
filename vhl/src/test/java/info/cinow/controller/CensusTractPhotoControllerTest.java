@@ -2,6 +2,7 @@ package info.cinow.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
@@ -16,8 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,8 +35,7 @@ import info.cinow.service.PhotoService;
  * CensusTractPhotoControllerTest
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(CensusTractPhotoController.class)
 public class CensusTractPhotoControllerTest {
 
     @Autowired
@@ -54,6 +53,8 @@ public class CensusTractPhotoControllerTest {
     Photo photo;
 
     PhotoSaveDto dto;
+
+    CensusTract tract;
 
     @Before
     public void setup() throws IOException, NoDescriptionException, CensusTractDoesNotExistException {
@@ -75,7 +76,7 @@ public class CensusTractPhotoControllerTest {
         photo.setOwnerFirstName("First");
         photo.setOwnerLastName("Last");
 
-        CensusTract tract = new CensusTract();
+        tract = new CensusTract();
         tract.setGid(1);
         photo.setCensusTract(tract);
 
@@ -83,6 +84,12 @@ public class CensusTractPhotoControllerTest {
         Mockito.when(service.getPhotoById(photo.getId())).thenReturn(Optional.of(photo));
 
         Mockito.when(service.updatePhoto(any(Photo.class))).thenReturn(photo);
+    }
+
+    @Test
+    public void getAllPhotos() throws Exception {
+        mvc.perform(get("/census-tracts/{id}/photos", this.tract.getGid()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     // TODO: add basic testing for all endpoints

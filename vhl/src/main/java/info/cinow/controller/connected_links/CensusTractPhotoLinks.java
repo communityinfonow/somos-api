@@ -34,13 +34,14 @@ public class CensusTractPhotoLinks {
         }
 
         public Link photo(Integer tractId, Long photoId, Boolean self) {
-                return this.connectedLinks.configureRelation(
-                                linkTo(methodOn(CensusTractPhotoController.class).getPhoto(tractId, photoId)), self,
-                                "photo");
+                return this.connectedLinks.configureRelation(linkTo(
+                                methodOn(CensusTractPhotoController.class).getPhotoByIdForTract(tractId, photoId)),
+                                self, "photo");
         }
 
         public Link photos(Integer tractId, Boolean self) {
                 return this.connectedLinks.configureRelation(
-                                linkTo(methodOn(CensusTractPhotoController.class).getPhotos(tractId)), self, "photos");
+                                linkTo(methodOn(CensusTractPhotoController.class).getAllPhotosForTract(tractId)), self,
+                                "photos");
         }
 }

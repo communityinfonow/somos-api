@@ -266,7 +266,6 @@ public class PhotoServiceImpl implements PhotoService {
             try {
                 Photo oldPhoto = this.getPhotoById(photo.getId()).get();
                 photo.setCensusTract(oldPhoto.getCensusTract().orElse(photo.getCensusTract().orElse(null)));
-                photo.setImageRepositoryPath(oldPhoto.getImageRepositoryPath());
                 photo.setOwnerEmail(oldPhoto.getOwnerEmail().orElse(photo.getOwnerEmail().orElse(null)));
                 photo.setOwnerFirstName(oldPhoto.getOwnerFirstName().orElse(photo.getOwnerFirstName().orElse(null)));
                 photo.setOwnerLastName(oldPhoto.getOwnerLastName().orElse(photo.getOwnerLastName().orElse(null)));

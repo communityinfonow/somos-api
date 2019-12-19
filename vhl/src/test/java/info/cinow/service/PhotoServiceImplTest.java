@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -145,37 +146,30 @@ public class PhotoServiceImplTest {
         this.service.updatePhoto(withoutTract);
     }
 
-    @Test(expected = CensusTractDoesNotExistException.class)
+    @Test(expected = ImageNameTooLongException.class)
     public void uploadPhotoWithLongName_ExpectError()
             throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
-        try {
-            this.service.uploadPhoto(mockFileLongName);
-        } catch (ResponseStatusException ex) {
-            assertEquals(HttpStatus.NOT_ACCEPTABLE, ex.getStatus());
-        }
-
+        Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
+        this.service.uploadPhoto(mockFileLongName);
     }
 
-    @Test(expected = CensusTractDoesNotExistException.class)
+    @Test(expected = WrongFileTypeException.class)
     public void uploadPhotoWithWrongContentType_ExpectError()
             throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
-        try {
-            this.service.uploadPhoto(mockFileWrongType);
-        } catch (ResponseStatusException ex) {
-            assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getStatus());
-        }
-
+        Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
+        this.service.uploadPhoto(mockFileWrongType);
     }
 
     @Test(expected = ImageTooLargeException.class)
     public void uploadPhotoWithLargeSize_ExpectError()
             throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
+        Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
         this.service.uploadPhoto(mockFileLargeSize);
     }
 
     @Test
     public void photoDeletedFromLocalServer() throws Exception {
-
+        Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
         MockMultipartFile file = mockFile;
         service.uploadPhoto(file);
         File savedFile = new File(file.getOriginalFilename());
@@ -191,9 +185,28 @@ public class PhotoServiceImplTest {
         amazonS3Client.deleteObject(bucketName, returnPhoto.getCroppedFilePathName());
     }
 
-    // TODO: test for stripped metadata
+    @Test
+    public void uploadPhotoS3()
+            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
+        Mockito.when(photoDao.findById(returnPhoto.getId())).thenReturn(Optional.of(returnPhoto));
+        service.uploadPhoto(mockFile);
+        assertTrue(amazonS3Client.doesObjectExist(bucketName, returnPhoto.getFilePathName()));
+        amazonS3Client.deleteObject(bucketName, returnPhoto.getFilePathName());
+    }
 
-    // TODO: what if there isn't a file name?
+    @Test
+    public void updatePhotoName_UpdatesInBothPlaces() {
+        // TODO: test for updating file name and updates in s3 and database
+    }
 
-    // TODO: matching file names when saving?
+    @Test
+    public void savedImageStripsMetadata() {
+        // TODO: test for stripped metadata
+    }
+
+    @Test
+    public void getImageByFileName() {
+        // TODO: test getting image by file name
+    }
+
 }

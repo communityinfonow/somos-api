@@ -28,4 +28,9 @@ public class PhotoLinks {
                 "photos");
     }
 
+    public Link photo(Long id, Boolean self) {
+        return this.connectedLinks.configureRelation(linkTo(methodOn(PhotoController.class).getPhoto(id)), self,
+                "photo");
+    }
+
 }

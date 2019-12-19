@@ -86,7 +86,6 @@ public class PhotoController {
     @PostMapping
     public EntityModel<PhotoDto> savePhoto(@RequestParam("photo") MultipartFile photo) {
 
-        // TODO: test saving of file name
         PhotoDto dto;
         try {
             dto = this.photoMapper.toDto(photoService.uploadPhoto(photo)).orElseThrow(NoSuchElementException::new);

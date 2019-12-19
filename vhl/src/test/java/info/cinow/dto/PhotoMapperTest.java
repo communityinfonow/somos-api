@@ -92,7 +92,6 @@ public class PhotoMapperTest {
         this.photo.setId(1L);
         this.photo.setFileName("fileName");
         this.photo.setCensusTract(tract);
-        this.photo.setImageRepositoryPath("1_fileName");
         this.photo.setOwnerEmail("email");
         this.photo.setOwnerFirstName("First");
         this.photo.setOwnerLastName("Last");

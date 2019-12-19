@@ -18,15 +18,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
+import info.cinow.dto.PhotoAdminDto;
+import info.cinow.dto.PhotoDto;
+import info.cinow.dto.PhotoSaveDto;
+import info.cinow.dto.mapper.PhotoAdminMapper;
+import info.cinow.dto.mapper.PhotoMapper;
+import info.cinow.dto.mapper.PhotoMapperImpl;
+import info.cinow.dto.mapper.PhotoSaveMapper;
 import info.cinow.exceptions.ImageNameTooLongException;
 import info.cinow.exceptions.ImageTooLargeException;
 import info.cinow.exceptions.WrongFileTypeException;
@@ -40,9 +48,27 @@ import info.cinow.service.PhotoService;
  * LocationSuggestionControllerTest
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(PhotoController.class)
 public class PhotoControllerTest {
+
+    @TestConfiguration
+    static class PhotoMapperTestContextConfig {
+
+        @Bean
+        public PhotoMapper<PhotoDto> photoMapper() {
+            return new PhotoMapperImpl();
+        }
+
+        @Bean
+        public PhotoMapper<PhotoSaveDto> photoSaveMapper() {
+            return new PhotoSaveMapper();
+        }
+
+        @Bean
+        public PhotoMapper<PhotoAdminDto> photoAdminMapper() {
+            return new PhotoAdminMapper();
+        }
+    }
 
     @Autowired
     private MockMvc mvc;
@@ -76,9 +102,8 @@ public class PhotoControllerTest {
         Mockito.when(service.uploadPhoto(any(MultipartFile.class))).thenReturn(photo);
         Mockito.when(dao.save(any(Photo.class))).thenReturn(photo);
 
-        this.mockFile = new MockMultipartFile("fileThatDoesNotExists.jpeg", "fileThatDoesNotExists.jpeg", "image/jpeg",
-                new FileInputStream(
-                        new File("visualizing-healthy-lives-api/vhl/src/test/resources/Photo Upload Screen 3.png")));
+        this.mockFile = new MockMultipartFile("photo", "fileThatDoesNotExists.jpeg", "image/jpeg", new FileInputStream(
+                new File("visualizing-healthy-lives-api/vhl/src/test/resources/Photo Upload Screen 3.png")));
     }
 
     @Test

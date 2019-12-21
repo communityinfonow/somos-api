@@ -1,9 +1,7 @@
 package info.cinow.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.io.File;
@@ -21,14 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;//I got the error in this line
-import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.audit.Audit;
 // import info.cinow.authentication.User;
@@ -46,22 +39,17 @@ import info.cinow.repository.PhotoDao;
  * GeocodeDaoTest
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+
 public class PhotoServiceImplTest {
 
     @MockBean
     private PhotoDao photoDao;
 
-    @Autowired
+    @MockBean
     private PhotoService service;
 
-    @Autowired
+    @MockBean
     private AmazonS3Client amazonS3Client;
-
-    @Value("${app.awsServices.bucketName}")
-    private String bucketName;
-
-    private MockMultipartFile mockFile;
 
     private MockMultipartFile mockFileLongName;
 
@@ -90,10 +78,6 @@ public class PhotoServiceImplTest {
         audit.setLastModified(LocalDateTime.now());
         // audit.setLastModifiedBy(user);
         returnPhoto.setAudit(audit);
-        mockFile = new MockMultipartFile("fileThatDoesNotExists.jpeg", "fileThatDoesNotExists.jpeg", "image/jpeg",
-                new FileInputStream(
-                        new File("visualizing-healthy-lives-api/vhl/src/test/resources/Photo Upload Screen 3.png")));
-        ;
 
         mockFileLongName = new MockMultipartFile("photo", StringUtils.repeat("j", 1010) + ".jpeg", "image/jpeg",
                 new FileInputStream(
@@ -165,43 +149,6 @@ public class PhotoServiceImplTest {
             throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
         Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
         this.service.uploadPhoto(mockFileLargeSize);
-    }
-
-    @Test
-    public void photoDeletedFromLocalServer() throws Exception {
-        Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
-        MockMultipartFile file = mockFile;
-        service.uploadPhoto(file);
-        File savedFile = new File(file.getOriginalFilename());
-        assertFalse(savedFile.exists());
-    }
-
-    @Test
-    public void savesCroppedPhotoToS3()
-            throws ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException, IOException {
-        Mockito.when(photoDao.findById(returnPhoto.getId())).thenReturn(Optional.of(returnPhoto));
-        service.cropPhoto(mockFile, 1L);
-        assertTrue(amazonS3Client.doesObjectExist(bucketName, returnPhoto.getCroppedFilePathName()));
-        amazonS3Client.deleteObject(bucketName, returnPhoto.getCroppedFilePathName());
-    }
-
-    @Test
-    public void uploadPhotoS3()
-            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
-        Mockito.when(photoDao.findById(returnPhoto.getId())).thenReturn(Optional.of(returnPhoto));
-        service.uploadPhoto(mockFile);
-        assertTrue(amazonS3Client.doesObjectExist(bucketName, returnPhoto.getFilePathName()));
-        amazonS3Client.deleteObject(bucketName, returnPhoto.getFilePathName());
-    }
-
-    @Test
-    public void updatePhotoName_UpdatesInBothPlaces() {
-        // TODO: test for updating file name and updates in s3 and database
-    }
-
-    @Test
-    public void savedImageStripsMetadata() {
-        // TODO: test for stripped metadata
     }
 
     @Test

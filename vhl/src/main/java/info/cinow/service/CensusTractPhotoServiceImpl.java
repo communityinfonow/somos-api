@@ -3,6 +3,7 @@ package info.cinow.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import info.cinow.model.Photo;
 import info.cinow.repository.CensusTractPhotoDao;
@@ -10,6 +11,7 @@ import info.cinow.repository.CensusTractPhotoDao;
 /**
  * CensusTractPhotoService
  */
+@Service
 public class CensusTractPhotoServiceImpl implements CensusTractPhotoService {
 
     @Autowired

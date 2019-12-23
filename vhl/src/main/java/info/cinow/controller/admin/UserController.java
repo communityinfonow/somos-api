@@ -1,4 +1,4 @@
-package info.cinow.controller;
+package info.cinow.controller.admin;
 
 import java.util.stream.Collectors;
 

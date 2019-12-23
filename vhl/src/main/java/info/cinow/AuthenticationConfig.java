@@ -24,7 +24,14 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        // httpSecurity.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
+        httpSecurity.csrf().disable().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN").and().httpBasic();
+
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN")
+                .and().withUser("user").password(passwordEncoder().encode("userPass")).roles("USER");
     }
 
     @Autowired

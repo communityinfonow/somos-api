@@ -5,7 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.Link;
 
-import info.cinow.controller.UserController;
+import info.cinow.controller.admin.UserController;
 
 /**
  * UserLinks

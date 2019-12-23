@@ -23,11 +23,6 @@ public class PhotoLinks {
                 "gps-coordinates");
     }
 
-    public Link photos(Boolean self) {
-        return this.connectedLinks.configureRelation(linkTo(methodOn(PhotoController.class).getPhotos()), self,
-                "photos");
-    }
-
     public Link photo(Long id, Boolean self) {
         return this.connectedLinks.configureRelation(linkTo(methodOn(PhotoController.class).getPhoto(id)), self,
                 "photo");

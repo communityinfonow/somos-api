@@ -1,14 +1,9 @@
 package info.cinow.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import info.cinow.controller.connected_links.CensusTractLinks;
-import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
@@ -52,35 +45,8 @@ public class PhotoController {
 
     private PhotoLinks photoLinks;
 
-    private CensusTractLinks censusTractLinks;
-
-    private CensusTractPhotoLinks censusTractPhotoLinks;
-
     public PhotoController() {
         this.photoLinks = new PhotoLinks();
-        this.censusTractLinks = new CensusTractLinks();
-        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-
-    }
-
-    // TODO: secure behind auth
-    @GetMapping
-    public CollectionModel<EntityModel<PhotoAdminDto>> getPhotos() {
-        // TODO: do links and entitymodels and collection models correctly
-        CollectionModel<EntityModel<PhotoAdminDto>> photoEntities = new CollectionModel<>(Arrays.asList());
-
-        photoEntities = new CollectionModel<>(photoService.getAllPhotos().stream().map(photo -> {
-            PhotoAdminDto photoDto = photoAdminMapper.toDto(photo).orElseThrow(NoSuchElementException::new);
-
-            return new EntityModel<>(photoDto, this.photoLinks.photos(false),
-                    this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(), false),
-                    this.censusTractPhotoLinks.croppedPhotoFile(photoDto.getCensusTractId(),
-                            photo.getCroppedFilePathName(), false),
-                    this.censusTractPhotoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
-                    this.photoLinks.photoMetadata(photoDto.getId(), false), this.photoLinks.photos(false));
-        }).collect(Collectors.toList()));
-
-        return photoEntities;
     }
 
     @PostMapping
@@ -99,21 +65,20 @@ public class PhotoController {
         } catch (WrongFileTypeException e) {
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
         }
-        return new EntityModel<>(dto, this.photoLinks.photoMetadata(dto.getId(), false), this.photoLinks.photos(false));
+        return new EntityModel<>(dto, this.photoLinks.photoMetadata(dto.getId(), false));
     }
 
     @GetMapping("/{id}/gps-coordinates")
     public EntityModel<Location> getPhotoMetadata(@PathVariable("id") Long id) {
 
         return new EntityModel<>(this.photoService.getGpsCoordinates(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)), this.photoLinks.photos(false));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))); // TODO LINKS
     }
 
     @GetMapping("/{id}")
     public EntityModel<PhotoDto> getPhoto(@PathVariable("id") Long photoId) {
-        PhotoDto dto = this.photoMapper
-                .toDto(this.photoService.getPhotoById(photoId).orElseThrow(EntityNotFoundException::new))
-                .orElseThrow(EntityNotFoundException::new);
+        PhotoDto dto = this.photoMapper.toDto(this.photoService.getPhotoById(photoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))).orElse(null);
         return new EntityModel<>(dto);
     }
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import info.cinow.model.CensusTract;
-import info.cinow.model.MatchingCensusTracts;
 import info.cinow.repository.CensusTractDao;
 
 /**

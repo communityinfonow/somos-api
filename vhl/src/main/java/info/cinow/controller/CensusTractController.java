@@ -52,7 +52,7 @@ public class CensusTractController {
         }
 
         @GetMapping("/{id}")
-        public EntityModel<CensusTractDto> getCensusTract(@PathVariable("id") Integer id) {
+        public EntityModel<CensusTractDto> getCensusTractById(@PathVariable("id") Integer id) {
                 EntityModel<CensusTractDto> tract = new EntityModel<>(
                                 this.censusTractMapper.toDto(censusTractService.getCensusTract(id)),
                                 this.censusTractLinks.censusTract(id, true),
@@ -61,13 +61,17 @@ public class CensusTractController {
         }
 
         @GetMapping("/{id}/matched-tracts")
-        public CollectionModel<EntityModel<CensusTractDto>> getMatchedTracts(@PathVariable("id") Integer id) {
+        public CollectionModel<EntityModel<CensusTractDto>> getMatchedTractsByParentId(@PathVariable("id") Integer id) {
                 CollectionModel<EntityModel<CensusTractDto>> matchedTracts = new CollectionModel<>(
-                                censusTractService.getMatchedTracts(id).stream().map(censusTract -> {
-                                        CensusTractDto dto = this.censusTractMapper.toDto(censusTract);
+                                censusTractService.getMatchedTracts(id).stream().map(childCensusTract -> {
+                                        CensusTractDto dto = this.censusTractMapper.toDto(childCensusTract);
                                         return new EntityModel<>(dto,
-                                                        this.censusTractPhotoLinks.photos(dto.getId(), false),
-                                                        this.censusTractLinks.censusTracts(true));
+                                                        this.censusTractPhotoLinks.photos(childCensusTract.getGid(),
+                                                                        false),
+                                                        this.censusTractLinks.censusTract(childCensusTract.getGid(),
+                                                                        true),
+                                                        this.censusTractLinks.matchedTractsByParentId(
+                                                                        childCensusTract.getGid()));
                                 }).collect(Collectors.toList()));
 
                 return matchedTracts;

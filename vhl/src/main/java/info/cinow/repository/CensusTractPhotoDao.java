@@ -15,12 +15,10 @@ import info.cinow.model.Photo;
 @Component("censusTractPhotoDao")
 public interface CensusTractPhotoDao extends CrudRepository<Photo, Integer> {
 
-    @Query(value = "select * from photo where gid = :censusTractId", nativeQuery = true)
-    public List<Photo> findByCensusTractId(@Param("censusTractId") Integer censusTractId); // TODO rename all "tractId
-                                                                                           // "to "censusTractId"
-                                                                                           // throughout project
+    @Query(value = "select * from photo where gid = :censusTractId and approved = true", nativeQuery = true)
+    public List<Photo> findPublicByCensusTractId(@Param("censusTractId") Integer censusTractId);
 
-    @Query(value = "select * from photo where id = :photoId and gid = :censusTractId", nativeQuery = true)
-    public Photo findByCensusTractPhotoId(@Param("censusTractId") Integer censusTractId,
+    @Query(value = "select * from photo where id = :photoId and gid = :censusTractId and approved = true", nativeQuery = true)
+    public Photo findPublicByCensusTractPhotoId(@Param("censusTractId") Integer censusTractId,
             @Param("photoId") Long photoId);
 }

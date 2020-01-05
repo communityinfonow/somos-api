@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,7 @@ import info.cinow.model.Location;
 import info.cinow.model.Photo;
 import info.cinow.repository.PhotoDao;
 import info.cinow.service.PhotoService;
+import info.cinow.utility.FileSaveErrorHandling;
 
 /**
  * LocationSuggestionControllerTest
@@ -63,6 +66,12 @@ public class PhotoControllerTest {
 
     @MockBean
     private PhotoMapper<PhotoAdminDto> photoAdminMapper;
+
+    @MockBean
+    private AmazonS3Client amazonS3Client;
+
+    @MockBean
+    private FileSaveErrorHandling fileErrorHandling;
 
     private Location location;
 

@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.model.CensusTract;
+import info.cinow.repository.CensusTractDao;
 import info.cinow.service.CensusTractService;
 
 /**
@@ -34,6 +35,9 @@ public class CensusTractControllerTest {
 
     @MockBean
     private CensusTractMapper tractMapper;
+
+    @MockBean
+    private CensusTractDao censusTractDao;
 
     private CensusTract tract;
 

@@ -30,6 +30,8 @@ import info.cinow.exceptions.CensusTractDoesNotExistException;
 import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
+import info.cinow.repository.CensusTractDao;
+import info.cinow.repository.CensusTractPhotoDao;
 import info.cinow.service.CensusTractPhotoService;
 import info.cinow.service.CensusTractService;
 import info.cinow.service.PhotoService;
@@ -61,6 +63,12 @@ public class CensusTractPhotoControllerTest {
 
     @Captor
     private ArgumentCaptor<Photo> captor;
+
+    @MockBean
+    private CensusTractDao censusTractDao;
+
+    @MockBean
+    private CensusTractPhotoDao dao;
 
     private Photo photo;
 

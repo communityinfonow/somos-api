@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,12 +19,9 @@ import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
 import info.cinow.dto.mapper.PhotoMapper;
-import info.cinow.exceptions.CensusTractDoesNotExistException;
 import info.cinow.exceptions.ImageNameTooLongException;
 import info.cinow.exceptions.ImageTooLargeException;
-import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.exceptions.WrongFileTypeException;
-import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
 import info.cinow.service.CensusTractPhotoService;
 import info.cinow.service.CensusTractService;
@@ -61,24 +56,6 @@ public class AdminCensusTractPhotoController {
 
     public AdminCensusTractPhotoController() {
         this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-    }
-
-    @PutMapping("/{id}")
-    public EntityModel<PhotoDto> updatePhotoForTract(@PathVariable("censusTractId") final Integer censusTractId,
-            @PathVariable("id") final Long id, @RequestBody final PhotoSaveDto photoDto) {
-        final Photo photo = photoSaveMapper.toPhoto(photoDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
-        final CensusTract tract = new CensusTract();
-        tract.setGid(censusTractId);
-        photo.setCensusTract(tract);
-        try {
-            return new EntityModel<>(photoMapper.toDto(photoService.updatePhoto(photo))
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ""))); // TODO
-            // hateoas
-            // links
-        } catch (NoDescriptionException | CensusTractDoesNotExistException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
     }
 
     @PostMapping("/{id}")

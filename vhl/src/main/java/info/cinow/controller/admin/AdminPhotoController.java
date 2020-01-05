@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import info.cinow.controller.connected_links.AdminPhotoLinks;
 import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
-import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;

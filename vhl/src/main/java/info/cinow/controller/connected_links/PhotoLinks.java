@@ -28,4 +28,8 @@ public class PhotoLinks {
                 "photo");
     }
 
+    public Link photos(Boolean self) {
+        return this.connectedLinks.configureRelation(linkTo(PhotoController.class), self, "photos");
+    }
+
 }

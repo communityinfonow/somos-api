@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import info.cinow.dto.LocationSuggestionDto;
 import info.cinow.dto.mapper.LocationSuggestionMapper;
+import info.cinow.model.CensusTract;
 import info.cinow.model.LocationType;
 import info.cinow.model.geocodio.GeocodioResponse;
 import info.cinow.model.locationiq.LocationIqResult;
@@ -41,8 +42,7 @@ public class GeocodeServiceImpl implements GeocodeService {
     }
 
     private boolean isLocationWithinCensusTracts(double longitude, double latitude) {
-        Long censusTractId = this.censusTractDao.getContainingTract(longitude, latitude);
-        return censusTractId == null ? false : true;
+        return this.censusTractDao.getContainingTract(longitude, latitude).isPresent();
     }
 
     /**

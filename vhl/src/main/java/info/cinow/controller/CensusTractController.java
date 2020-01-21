@@ -1,14 +1,19 @@
 package info.cinow.controller;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
@@ -49,6 +54,14 @@ public class CensusTractController {
                                 }).collect(Collectors.toList()));
 
                 return tracts;
+        }
+
+        @GetMapping("/{latlng}")
+        public EntityModel<CensusTractDto> getContainingCensusTract(@MatrixVariable Map<String, Long> latLng) {
+                return new EntityModel<>(this.censusTractMapper
+                                .toDto(censusTractService.getCensusTract(latLng.get("lat"), latLng.get("lng"))
+                                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))));
+
         }
 
         @GetMapping("/{id}")

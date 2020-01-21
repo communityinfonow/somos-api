@@ -30,30 +30,16 @@ import info.cinow.repository.UserDao;
 @RunWith(SpringRunner.class)
 public class UserServiceImplTest {
 
-    @TestConfiguration
-    static class UserServiceContextConfig {
+    @MockBean
+    public UserMapper userMapper;
 
-        @Bean
-        public UserService userService() {
-            return new UserServiceImpl();
-        }
-
-        @Bean
-        public UserMapper userMapper() {
-            return new UserMapperImpl();
-        }
-
-        @Bean
-        public RoleMapper roleMapper() {
-            return new RoleMapperImpl();
-        }
-
-    }
+    @MockBean
+    private RoleMapper roleMapper;
 
     @MockBean
     private UserDao userDao;
 
-    @Autowired
+    @MockBean
     private UserService userService;
 
     private User user;

@@ -141,7 +141,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public byte[] getPhotoByFileName(String fileName) throws IOException {
+    public byte[] getPublicPhotoByFileName(String fileName) throws IOException {
         return loadPhotoFromS3Bucket(fileName);
     }
 

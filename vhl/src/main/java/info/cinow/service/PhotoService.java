@@ -19,21 +19,21 @@ import info.cinow.model.Photo;
  */
 public interface PhotoService {
 
-    public Photo uploadPhoto(MultipartFile photo)
-            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException;
+        public Photo uploadPhoto(MultipartFile photo)
+                        throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException;
 
-    public Optional<Location> getGpsCoordinates(Long id);
+        public Optional<Location> getGpsCoordinates(Long id);
 
-    public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException;
+        public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException;
 
-    public List<Photo> getAllPhotos();
+        public List<Photo> getAllPhotos();
 
-    public Photo cropPhoto(MultipartFile photo, Long photoId)
-            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException;
+        public Photo cropPhoto(MultipartFile photo, Long photoId)
+                        throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException;
 
-    public byte[] getPhotoByFileName(String fileName) throws IOException;
+        public byte[] getPublicPhotoByFileName(String fileName) throws IOException;
 
-    public Optional<Photo> getPhotoById(Long id);
+        public Optional<Photo> getPhotoById(Long id);
 
-    public void deletePhoto(Long id) throws IOException;
+        public void deletePhoto(Long id) throws IOException;
 }

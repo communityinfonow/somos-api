@@ -53,7 +53,7 @@ public class CensusTractPhotoDaoIntegrationTest {
 
     @Test
     public void getAllPhotosForCensusTract() {
-        List<Photo> photos = this.dao.findByCensusTractId(this.censusTract.getGid());
+        List<Photo> photos = this.dao.findPublicByCensusTractId(this.censusTract.getGid());
         assertFalse(photos.isEmpty());
         assertTrue(photos.contains(photo));
 
@@ -61,7 +61,7 @@ public class CensusTractPhotoDaoIntegrationTest {
 
     @Test
     public void getPhotoByCensusTractIdPhotoId() {
-        Photo queriedPhoto = this.dao.findByCensusTractPhotoId(this.censusTract.getGid(), this.photo.getId());
+        Photo queriedPhoto = this.dao.findPublicByCensusTractPhotoId(this.censusTract.getGid(), this.photo.getId());
         assertNotNull(queriedPhoto);
         assertEquals(photo.getId(), queriedPhoto.getId());
     }

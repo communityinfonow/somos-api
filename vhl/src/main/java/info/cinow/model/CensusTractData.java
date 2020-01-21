@@ -3,10 +3,9 @@ package info.cinow.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import lombok.Data;
@@ -18,13 +17,12 @@ import lombok.Data;
 @Data
 public class CensusTractData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // using IDENTITY here since I need to insert data without ids
-                                                        // manually to the database
-    private Long id;
+    @Id // manually to the database
+    private Integer gid;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(columnDefinition = "gid")
+    @MapsId
+    @JoinColumn(name = "gid")
     private CensusTract censusTract;
 
     @Column(name = "life_expectancy")

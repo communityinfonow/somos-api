@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,8 +22,9 @@ import lombok.Data;
  */
 
 @Entity
-@Table(name = "bexartracts_2010")
 @Data
+@Table(name = "bexartracts_2010")
+// @Data
 public class CensusTract {
 
     public CensusTract() {
@@ -32,7 +35,7 @@ public class CensusTract {
         this.gid = gid;
     }
 
-    @Id()
+    @Id
     private Integer gid;
 
     @Column
@@ -49,8 +52,5 @@ public class CensusTract {
 
     @OneToMany(mappedBy = "parentTract", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingCensusTracts> matchingCensusTracts;
-
-    @OneToOne(mappedBy = "censusTract", fetch = FetchType.LAZY)
-    private CensusTractData data;
 
 }

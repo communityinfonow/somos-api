@@ -2,6 +2,7 @@ package info.cinow.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,10 @@ public class CensusTractServiceImpl implements CensusTractService {
 
         return tract.getMatchingCensusTracts().stream().map(matchingTracts -> matchingTracts.getChildTract())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<CensusTract> getCensusTract(double lat, double lng) {
+        return this.censusTractDao.getContainingTract(lng, lat);
     }
 }

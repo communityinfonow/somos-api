@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.LastModifiedBy;
 
-import info.cinow.model.User;
+// import info.cinow.model.User;
 // import info.cinow.authentication.User;
 import lombok.Data;
 
@@ -22,7 +22,7 @@ public class Audit {
     @Column(name = "last_modified")
     private LocalDateTime lastModified;
 
-    @ManyToOne
-    @LastModifiedBy
-    private User lastModifiedBy;
+    // @ManyToOne
+    // @LastModifiedBy
+    // private User lastModifiedBy;
 }

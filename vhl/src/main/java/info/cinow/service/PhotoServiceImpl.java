@@ -172,11 +172,13 @@ public class PhotoServiceImpl implements PhotoService {
         try {
             uploadPhotoToS3Bucket(filePath, photoFile);
         } catch (Exception e) {
-            log.error("An error occured saving photo", e);
+            log.error("An error occured saving photo:" + savedPhotoInfo.toString(), e);
             if (!(e instanceof DataAccessException)) {
                 photoDao.delete(savedPhotoInfo); // if error isn't from JPA, delete photo in database
             }
-            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved");
+            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved"); // TODO move this
+                                                                                                       // throw to the
+                                                                                                       // controller
         } finally {
             FileUtils.deleteQuietly(photoFile); // clean up temp file
         }

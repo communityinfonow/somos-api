@@ -33,8 +33,8 @@ import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.exceptions.WrongFileTypeException;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
-import info.cinow.model.User;
-import info.cinow.model.User;
+// import info.cinow.model.User;
+// import info.cinow.model.User;
 import info.cinow.repository.PhotoDao;
 
 /**
@@ -73,12 +73,12 @@ public class PhotoServiceImplTest {
         returnPhoto.setApproved(true);
         returnPhoto.setDescription("description");
         returnPhoto.setCensusTract(new CensusTract());
-        User user = new User();
-        user.setFirstName("First");
-        user.setLastName("last");
+        // User user = new User();
+        // user.setFirstName("First");
+        // user.setLastName("last");
         Audit audit = new Audit();
         audit.setLastModified(LocalDateTime.now());
-        audit.setLastModifiedBy(user);
+        // audit.setLastModifiedBy(user);
         returnPhoto.setAudit(audit);
 
         mockFileLongName = new MockMultipartFile("photo", StringUtils.repeat("j", 1010) + ".jpeg", "image/jpeg",
@@ -112,8 +112,8 @@ public class PhotoServiceImplTest {
         assertNotNull(photo);
         assertNotNull(photo.getAudit());
         assertNotNull(photo.getAudit().getLastModified());
-        assertNotNull(photo.getAudit().getLastModifiedBy());
-        assertEquals(photo.getAudit().getLastModifiedBy().getFirstName(), "First");
+        // assertNotNull(photo.getAudit().getLastModifiedBy());
+        // assertEquals(photo.getAudit().getLastModifiedBy().getFirstName(), "First");
 
     }
 

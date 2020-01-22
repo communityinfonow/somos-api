@@ -62,7 +62,7 @@ public class AdminPhotoController {
                     this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(), false),
                     this.censusTractPhotoLinks.croppedPhotoFile(photoDto.getCensusTractId(),
                             photo.getCroppedFilePathName(), false),
-                    this.censusTractPhotoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
+                    this.photoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
                     this.photoLinks.photoMetadata(photoDto.getId(), false), this.photoLinks.photos(false));
         }).collect(Collectors.toList()));
 

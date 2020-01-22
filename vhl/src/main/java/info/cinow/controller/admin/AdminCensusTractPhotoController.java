@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import info.cinow.controller.connected_links.AdminPhotoLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.PhotoSaveDto;
@@ -54,8 +56,20 @@ public class AdminCensusTractPhotoController {
 
     private final CensusTractPhotoLinks censusTractPhotoLinks;
 
+    private final AdminPhotoLinks adminPhotoLinks;
+
     public AdminCensusTractPhotoController() {
         this.censusTractPhotoLinks = new CensusTractPhotoLinks();
+        this.adminPhotoLinks = new AdminPhotoLinks();
+    }
+
+    @GetMapping("/{id}")
+    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+            @PathVariable("id") final Long id) {
+        return new EntityModel<>(
+                this.photoMapper.toDto(this.censusTractPhotoService.getPublicPhotoByIdForTract(censusTractId, id))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)),
+                this.adminPhotoLinks.photo(censusTractId, id, true));
     }
 
     @PostMapping("/{id}")
@@ -67,14 +81,15 @@ public class AdminCensusTractPhotoController {
         try {
             savedPhoto = photoService.cropPhoto(photo, id);
         } catch (final IOException e) {
-            log.error("An error occurred saving the file", e);
+            log.error("An error occurred saving the file for census tract: " + censusTractId + ", photo id: " + id, e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred saving the file");
         } catch (final ImageTooLargeException e) {
+            log.error("An error occurred saving the file for census tract: " + censusTractId + ", photo id: " + id, e);
             throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, e.getMessage());
         }
 
         final EntityModel<PhotoDto> dto = new EntityModel<>(
-                this.photoMapper.toDto(savedPhoto).orElseThrow(NoSuchElementException::new),
+                this.photoMapper.toDto(savedPhoto).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)),
                 this.censusTractPhotoLinks.photo(censusTractId, savedPhoto.getId(), true),
                 this.censusTractPhotoLinks.photoFile(censusTractId, savedPhoto.getFilePathName(), false),
                 this.censusTractPhotoLinks.croppedPhotoFile(censusTractId, savedPhoto.getCroppedFilePathName(), false));

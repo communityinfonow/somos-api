@@ -2,12 +2,13 @@ package info.cinow.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import info.cinow.dto.CensusTractDto;
-import info.cinow.dto.mapper.CensusTractMapper;
+import info.cinow.model.CensusTract;
 import info.cinow.repository.CensusTractDao;
 
 /**
@@ -19,21 +20,30 @@ public class CensusTractServiceImpl implements CensusTractService {
     @Autowired
     private CensusTractDao censusTractDao;
 
-    @Autowired
-    private CensusTractMapper censusTractMapper;
-
     @Override
-    public List<CensusTractDto> getAllCensusTracts() {
-        List<CensusTractDto> censusTracts = new ArrayList<CensusTractDto>();
+    public List<CensusTract> getAllCensusTracts() {
+        List<CensusTract> censusTracts = new ArrayList<CensusTract>();
         censusTractDao.findAll().forEach(tract -> {
-            censusTracts.add(censusTractMapper.toDto(tract));
+            censusTracts.add(tract);
         });
         return censusTracts;
     }
 
     @Override
-    public CensusTractDto getCensusTract(Integer id) {
-        return censusTractMapper.toDto(censusTractDao.findById(id).orElse(null));
+    public CensusTract getCensusTract(Integer id) {
+        return censusTractDao.findById(id).orElse(null);
     }
 
+    @Override
+    public List<CensusTract> getMatchedTracts(Integer id) {
+        CensusTract tract = censusTractDao.findById(id).orElse(null);
+
+        return tract.getMatchingCensusTracts().stream().map(matchingTracts -> matchingTracts.getChildTract())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<CensusTract> getCensusTract(double lat, double lng) {
+        return this.censusTractDao.getContainingTract(lng, lat);
+    }
 }

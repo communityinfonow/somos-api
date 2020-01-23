@@ -1,35 +1,30 @@
 package info.cinow.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.model.CensusTract;
-import info.cinow.model.Photo;
-import info.cinow.repository.CensusTractDao;
 
 /**
- * CensusTractMapperTest TODO
+ * CensusTractMapperTest
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class CensusTractMapperTest {
 
     @Autowired
     private CensusTractMapper mapper;
 
-    private CensusTract censusTract;
+    @MockBean
+    private CensusTractMapper tractmapper;
 
-    private CensusTractDao censusTractDto;
+    private CensusTract censusTract;
 
     @Before
     public void setup() {

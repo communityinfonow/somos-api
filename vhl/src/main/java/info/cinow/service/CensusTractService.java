@@ -1,14 +1,19 @@
 package info.cinow.service;
 
 import java.util.List;
+import java.util.Optional;
 
-import info.cinow.dto.CensusTractDto;
+import info.cinow.model.CensusTract;
 
 /**
  * CensusTractService
  */
 public interface CensusTractService {
-    public List<CensusTractDto> getAllCensusTracts();
+    public List<CensusTract> getAllCensusTracts();
 
-    public CensusTractDto getCensusTract(Integer id);
+    public CensusTract getCensusTract(Integer id);
+
+    public List<CensusTract> getMatchedTracts(Integer id);
+
+    public Optional<CensusTract> getCensusTract(double lat, double lng);
 }

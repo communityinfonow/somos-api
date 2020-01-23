@@ -1,5 +1,7 @@
 package info.cinow.model;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -8,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 import info.cinow.audit.Audit;
 import info.cinow.audit.AuditListener;
@@ -26,6 +28,7 @@ public class Photo implements Auditable {
     /**
      * Brings last_modified as a column.
      */
+
     @Embedded
     private Audit audit;
 
@@ -60,21 +63,15 @@ public class Photo implements Auditable {
     /**
      * The id of the tract to which the photo belongs.
      */
-    @OneToMany
-    @JoinColumn(name = "tractId")
+    @ManyToOne
+    @JoinColumn(name = "gid")
     private CensusTract censusTract;
 
     /**
      * Whether the photo has been approved for use by CI: Now staff.
      */
-    @Column(columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false", nullable = false)
     private Boolean approved;
-
-    /**
-     * Whether the photo has been deleted or not by CI: Now staff.
-     */
-    @Column(columnDefinition = "boolean default false")
-    private Boolean deleted;
 
     @Column
     private Double latitude;
@@ -82,16 +79,59 @@ public class Photo implements Auditable {
     @Column
     private Double longitude;
 
-    // TODO: possible constraint where a description must be included if updated
-    // approved to true. This ensures accessibility standards
+    public Photo() {
+        this.approved = false;
+    }
+
+    public Optional<String> getDescription() {
+        return Optional.ofNullable(this.description);
+    }
 
     /**
-     * Quick convert into string representation of id as the file name.
-     * 
-     * @return
+     * Get the original, non-unique file name for this photo
      */
-    public String getFileName() {
+    public Optional<String> getFileName() {
+        return Optional.ofNullable(this.fileName);
+    }
+
+    public Optional<String> getOwnerFirstName() {
+        return Optional.ofNullable(this.ownerFirstName);
+    }
+
+    public Optional<String> getOwnerLastName() {
+        return Optional.ofNullable(this.ownerLastName);
+    }
+
+    public Optional<String> getOwnerEmail() {
+        return Optional.ofNullable(this.ownerEmail);
+    }
+
+    public Optional<Boolean> getApproved() {
+        return Optional.ofNullable(this.approved);
+    }
+
+    /**
+     * Gets the unique file path name used in S3 Bucket
+     * 
+     */
+    public String getFilePathName() {
         return this.id + "_" + this.fileName;
+    }
+
+    public String getCroppedFilePathName() {
+        return "CROP_" + this.getFilePathName();
+    }
+
+    public Optional<CensusTract> getCensusTract() {
+        return Optional.ofNullable(this.censusTract);
+    }
+
+    public Optional<Double> getLongitude() {
+        return Optional.ofNullable(this.longitude);
+    }
+
+    public Optional<Double> getLatitude() {
+        return Optional.ofNullable(this.latitude);
     }
 
 }

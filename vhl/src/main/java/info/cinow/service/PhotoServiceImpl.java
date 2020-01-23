@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.IOUtils;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.lang.GeoLocation;
@@ -25,11 +28,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import info.cinow.dto.PhotoDto;
-import info.cinow.dto.mapper.PhotoMapper;
+import info.cinow.exceptions.CensusTractDoesNotExistException;
+import info.cinow.exceptions.ImageNameTooLongException;
+import info.cinow.exceptions.ImageTooLargeException;
+import info.cinow.exceptions.NoDescriptionException;
+import info.cinow.exceptions.WrongFileTypeException;
 import info.cinow.model.Location;
 import info.cinow.model.Photo;
 import info.cinow.repository.PhotoDao;
+import info.cinow.utility.FileSaveErrorHandling;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -46,7 +53,7 @@ public class PhotoServiceImpl implements PhotoService {
     private PhotoDao photoDao;
 
     @Autowired
-    private PhotoMapper photoMapper;
+    private FileSaveErrorHandling fileErrorHandling;
 
     /**
      * Name of S3 bucket to which photos are saved.
@@ -55,50 +62,146 @@ public class PhotoServiceImpl implements PhotoService {
     private String bucketName;
 
     @Override
+    public List<Photo> getAllPhotos() {
+        List<Photo> photos = new ArrayList<Photo>();
+        photoDao.findAll().forEach(photo -> {
+            photos.add(photo);
+        });
+        return photos;
+    }
+
+    @Override
     public Optional<Location> getGpsCoordinates(Long id) {
         Photo photo = this.photoDao.findById(id).orElse(null);
         Optional<Location> location = Optional.empty();
         if (photo != null && photo.getLatitude() != null && photo.getLongitude() != null) {
-            location = Optional.of(new Location(photo.getLatitude(), photo.getLongitude()));
+            location = Optional.of(new Location(photo.getLatitude().orElse(null), photo.getLongitude().orElse(null)));
         }
         return location;
     }
 
     @Override
-    public List<PhotoDto> uploadPhotos(MultipartFile[] photos) throws IOException {
-        List<PhotoDto> photoEntities = new ArrayList<PhotoDto>();
-        for (MultipartFile photo : photos) {
-            File convertedFile = convertMultipartFileToFile(photo);
-            Photo savedPhotoInfo = null;
-            try {
-                savedPhotoInfo = savePhotoInformationToDatabase(convertedFile); // save photo info to db and
-                                                                                // return entity
-                photoEntities.add(photoMapper.toDto(savedPhotoInfo));
-                uploadPhotoToS3Bucket(savedPhotoInfo.getFileName(), convertedFile);
-            } catch (Exception e) {
-                log.error("An error occured saving photo", e);
-                if (!(e instanceof DataAccessException)) {
-                    photoDao.delete(savedPhotoInfo); // if error isn't from JPA, delete photo in database
-                }
-                throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved");
-            } finally {
-                FileUtils.deleteQuietly(convertedFile); // clean up temp file
+    public Photo uploadPhoto(MultipartFile photo)
+            throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
+        this.fileErrorHandling.checkContentType(photo);
+        this.fileErrorHandling.checkFileSize(photo);
+        this.fileErrorHandling.checkFileNameSize(photo.getOriginalFilename());
+        File convertedFile = this.convertMultipartFileToFile(photo);
+        Photo savedPhotoInfo = this.savePhotoInformationToDatabase(convertedFile);
+        this.saveImageFile(photo, savedPhotoInfo, convertedFile, false);
+        return savedPhotoInfo;
+    }
+
+    @Override
+    public Photo cropPhoto(MultipartFile photo, Long id)
+            throws ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException, IOException {
+        this.fileErrorHandling.checkContentType(photo);
+        this.fileErrorHandling.checkFileSize(photo);
+        this.fileErrorHandling.checkFileNameSize(photo.getOriginalFilename());
+        File convertedFile;
+
+        convertedFile = convertMultipartFileToFile(photo);
+
+        Photo originalPhotoInfo = photoDao.findById(id).get();
+        this.saveImageFile(photo, originalPhotoInfo, convertedFile, true);
+
+        return originalPhotoInfo;
+    }
+
+    @Override
+    public Photo updatePhoto(Photo photo) throws NoDescriptionException, CensusTractDoesNotExistException {
+
+        // photo can't be approved until description is complete
+        photo = this.convertToEntity(photo);
+        if (photo.getApproved().orElse(false) && photo.getDescription().orElse("").isEmpty()) {
+            throw new NoDescriptionException(photo.getFilePathName());
+        }
+        if (!photo.getCensusTract().isPresent()) {
+            throw new CensusTractDoesNotExistException(photo.getFilePathName());
+        }
+        this.updateS3FileName(photo.getId(), photo.getFileName().get(), photo.getFilePathName());
+        return photoDao.save(photo);
+
+        // TODO test s3 name update
+
+    }
+
+    /**
+     * Updates the file path/name in S3 if the name has been updated
+     * 
+     * @param photo
+     */
+    private void updateS3FileName(Long photoId, String photoName, String photoPath) {
+        // TODO test
+        Photo oldPhoto = this.photoDao.findById(photoId).get();
+        if (!oldPhoto.getFileName().get().equals(photoName)) {
+            amazonS3Client.copyObject(bucketName, oldPhoto.getFilePathName(), bucketName, photoPath);
+            amazonS3Client.deleteObject(bucketName, oldPhoto.getFilePathName());
+        }
+    }
+
+    @Override
+    public byte[] getPublicPhotoByFileName(String fileName) throws IOException {
+        return loadPhotoFromS3Bucket(fileName);
+    }
+
+    @Override
+    public Optional<Photo> getPhotoById(Long id) {
+        return this.photoDao.findById(id);
+    }
+
+    @Override
+    public void deletePhoto(Long id) throws IOException {
+        Photo photo = this.photoDao.findById(id).get();
+        this.photoDao.deleteById(id);
+        this.deletePhotoFromS3Bucket(photo.getFilePathName());
+    }
+
+    /**
+     * Saves the image file.
+     * 
+     * @param photo
+     * @param savedPhotoInfo
+     * @param photoFile
+     * @param isCropped
+     * @return the saved photo
+     */
+    private void saveImageFile(MultipartFile photo, Photo savedPhotoInfo, File photoFile, boolean isCropped) {
+
+        String filePath = this.determineS3PhotoFilePath(savedPhotoInfo, isCropped);
+        try {
+            uploadPhotoToS3Bucket(filePath, photoFile);
+        } catch (Exception e) {
+            log.error("An error occured saving photo:" + savedPhotoInfo.toString(), e);
+            if (!(e instanceof DataAccessException)) {
+                photoDao.delete(savedPhotoInfo); // if error isn't from JPA, delete photo in database
             }
+            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved"); // TODO move this
+                                                                                                       // throw to the
+                                                                                                       // controller
+        } finally {
+            FileUtils.deleteQuietly(photoFile); // clean up temp file
         }
-        return photoEntities;
+
     }
 
-    public PhotoDto updatePhoto(Photo photo) {
-        return photoMapper.toDto(photoDao.save(photo));
+    /**
+     * Determines the file path in S3 of a photo based on whether it is cropped or
+     * not.
+     * 
+     * @param photo
+     * @param isPhotoCropped
+     * @return the file path
+     */
+    private String determineS3PhotoFilePath(Photo photo, boolean isPhotoCropped) {
+        return isPhotoCropped ? photo.getCroppedFilePathName() : photo.getFilePathName();
     }
 
-    private File convertMultipartFileToFile(MultipartFile file) {
+    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
-        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-            fos.write(file.getBytes());
-        } catch (IOException e) {
-            log.error("Error converting multipartFile to file", e);
-        }
+        FileOutputStream fos = new FileOutputStream(convertedFile);
+        fos.write(file.getBytes());
+        fos.close();
         return convertedFile;
     }
 
@@ -110,6 +213,10 @@ public class PhotoServiceImpl implements PhotoService {
             photo.setLatitude(location.getLatitude());
         }
 
+        if (!photo.getApproved().isPresent()) {
+            photo.setApproved(false);
+        }
+
         photo.setFileName(file.getName());
         return this.photoDao.save(photo);
     }
@@ -118,6 +225,21 @@ public class PhotoServiceImpl implements PhotoService {
         amazonS3Client.putObject(new PutObjectRequest(bucketName, photoName, photo));
     }
 
+    private byte[] loadPhotoFromS3Bucket(String photoName) throws IOException {
+        S3ObjectInputStream stream = amazonS3Client.getObject(bucketName, photoName).getObjectContent();
+        return IOUtils.toByteArray(stream);
+    }
+
+    private void deletePhotoFromS3Bucket(String photoName) throws IOException {
+        amazonS3Client.deleteObject(bucketName, photoName);
+    }
+
+    /**
+     * Extracts GPS metadata from photo
+     * 
+     * @param photo
+     * @return the GPS coordinates
+     */
     private Optional<GeoLocation> extractGPSMetadata(File photo) {
         GeoLocation geoLocation = null;
         Metadata metadata;
@@ -134,13 +256,29 @@ public class PhotoServiceImpl implements PhotoService {
         return geoLocation == null ? Optional.empty() : Optional.of(geoLocation);
     }
 
-    @Override
-    public List<PhotoDto> getPhotos() {
-        List<PhotoDto> photos = new ArrayList<PhotoDto>();
-        photoDao.findAll().forEach(photo -> {
-            photos.add(photoMapper.toDto(photo));
-        });
-        return photos;
+    /**
+     * Converts the photo into an entity that already exists by first querying for
+     * the entity then modifying it.
+     * 
+     * @param photo the updated photo
+     * @return the altered entity
+     */
+    private Photo convertToEntity(Photo photo) {
+        if (photo.getId() != null) {
+            try {
+                Photo oldPhoto = this.getPhotoById(photo.getId()).get();
+                photo.setCensusTract(oldPhoto.getCensusTract().orElse(photo.getCensusTract().orElse(null)));
+                photo.setOwnerEmail(oldPhoto.getOwnerEmail().orElse(photo.getOwnerEmail().orElse(null)));
+                photo.setOwnerFirstName(oldPhoto.getOwnerFirstName().orElse(photo.getOwnerFirstName().orElse(null)));
+                photo.setOwnerLastName(oldPhoto.getOwnerLastName().orElse(photo.getOwnerLastName().orElse(null)));
+                photo.setLatitude(oldPhoto.getLatitude().orElse(photo.getLatitude().orElse(null)));
+                photo.setLongitude(oldPhoto.getLongitude().orElse(photo.getLongitude().orElse(null)));
+
+            } catch (NoSuchElementException e) {
+                log.info("No photo exists for id: " + photo.getId(), e);
+            }
+        }
+        return photo;
     }
 
 }

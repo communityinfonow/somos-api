@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import info.cinow.dto.LocationSuggestionDto;
-import info.cinow.model.Location;
 import info.cinow.model.geocodio.GeocodioResponse;
-import info.cinow.model.locationiq.LocationIqResult;
 
 /**
  * LocationSuggestionMapper

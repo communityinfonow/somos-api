@@ -56,11 +56,13 @@ public class CensusTractController {
                 return tracts;
         }
 
-        @GetMapping("/{latlng}")
-        public EntityModel<CensusTractDto> getContainingCensusTract(@MatrixVariable Map<String, Long> latLng) {
-                return new EntityModel<>(this.censusTractMapper
-                                .toDto(censusTractService.getCensusTract(latLng.get("lat"), latLng.get("lng"))
-                                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))));
+        @GetMapping("/latlng/{latlng}")
+        public EntityModel<CensusTractDto> getContainingCensusTract(@MatrixVariable Map<String, String> latLng) {
+                CensusTractDto dto = this.censusTractMapper.toDto(censusTractService
+                                .getCensusTract(Double.parseDouble(latLng.get("lat")),
+                                                Double.parseDouble(latLng.get("lng")))
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+                return new EntityModel<>(dto, this.censusTractPhotoLinks.photos(dto.getId(), false));
 
         }
 

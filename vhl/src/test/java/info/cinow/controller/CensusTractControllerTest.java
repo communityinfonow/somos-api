@@ -24,8 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import info.cinow.AuthenticationConfig;
-import info.cinow.authentication.AuthFilter;
-import info.cinow.authentication.JwtUtils;
+
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.model.CensusTract;
 import info.cinow.repository.CensusTractDao;
@@ -36,7 +35,7 @@ import info.cinow.service.CensusTractService;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(CensusTractController.class)
-@Import({ AuthenticationConfig.class, AuthFilter.class })
+@Import({ AuthenticationConfig.class })
 public class CensusTractControllerTest {
 
     @Autowired
@@ -53,9 +52,6 @@ public class CensusTractControllerTest {
 
     // @MockBean
     // AuthenticationManagerBuilder builder;
-
-    @MockBean
-    JwtUtils jwtUtils;
 
     @MockBean
     DataSource dataSource;

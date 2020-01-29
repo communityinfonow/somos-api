@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import info.cinow.authentication.JwtUtils;
 import info.cinow.authentication.LoginRequest;
 import info.cinow.service.AuthService;
 
@@ -28,9 +27,6 @@ public class AuthControllerUnitTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    JwtUtils jwtUtils;
 
     @MockBean
     AuthService authService;

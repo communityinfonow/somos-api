@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import info.cinow.authentication.JwtUtils;
 import info.cinow.authentication.LoginRequest;
 import info.cinow.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/")
 @Slf4j
 public class AuthController {
-
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @Autowired
     private AuthService authService;

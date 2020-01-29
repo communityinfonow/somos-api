@@ -12,15 +12,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
-import info.cinow.authentication.AuthFilter;
+import info.cinow.controller.LocationSuggestController;
 
 /**
  * AuthenticationConfig
@@ -32,9 +29,6 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
-    @Autowired
-    AuthFilter authenticationJwtTokenFilter;
-
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().antMatchers("/admin/**")
@@ -44,15 +38,22 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         // test
         // this
 
-        // httpSecurity.addFilterBefore(authenticationJwtTokenFilter,
-        // UsernamePasswordAuthenticationFilter.class);
-
     }
 
+    /**
+     * Allows semicolon for use in the {@link LocationSuggestController }
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
         web.httpFirewall(allowUrlSemicolonhHttpFirewall());
+    }
+
+    @Bean
+    public HttpFirewall allowUrlSemicolonhHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowSemicolon(true);
+        return firewall;
     }
 
     @Override
@@ -79,10 +80,4 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public HttpFirewall allowUrlSemicolonhHttpFirewall() {
-        StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowSemicolon(true);
-        return firewall;
-    }
 }

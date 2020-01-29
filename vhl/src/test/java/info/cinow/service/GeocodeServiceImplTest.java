@@ -22,13 +22,4 @@ public class GeocodeServiceImplTest {
     @MockBean
     private GeocodeService geocodeService;
 
-    @Test
-    public void correctDaoIsUsed() {
-        Mockito.when(geocodeService.getLocationSuggestions("", LocationType.PLACE)).then(invocation -> {
-            return new ArrayList<LocationSuggestionDto>();
-        });
-        geocodeService.getLocationSuggestions("", LocationType.PLACE);
-
-    }
-
 }

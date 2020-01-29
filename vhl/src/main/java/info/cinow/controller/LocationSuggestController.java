@@ -6,11 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,8 +18,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.dto.LocationSuggestionDto;
+import info.cinow.dto.mapper.LocationSuggestionMapper;
 import info.cinow.model.LocationType;
 import info.cinow.model.LocationTypeConverter;
+import info.cinow.model.locationiq.LocationIqResult;
 import info.cinow.service.GeocodeService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,29 +30,27 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/{locationType}")
-@CrossOrigin(origins = "*")
+@RequestMapping("/location-search")
 public class LocationSuggestController {
+
     @Autowired
     private GeocodeService geocodeService;
+
+    @Autowired
+    private LocationSuggestionMapper<LocationIqResult[]> locationIqMapper;
 
     /**
      * Catches 400, 401, 403, 429, 500, and restClient errors and passes as 500 to
      * client
      * 
      * @param location
-     * @param locationType
      * @return
      */
     @GetMapping()
     @ResponseBody
-    public List<LocationSuggestionDto> getLocationSuggestions(@RequestParam String location,
-            @PathVariable LocationType locationType) {
-        List<LocationSuggestionDto> response = new ArrayList<LocationSuggestionDto>();
+    public List<LocationSuggestionDto> getLocationSuggestions(@RequestParam String location) {
+        return locationIqMapper.toDto(geocodeService.getLocationSuggestions(location));
 
-        response = geocodeService.getLocationSuggestions(location, locationType);
-
-        return response;
     }
 
     /**

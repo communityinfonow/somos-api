@@ -23,7 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import info.cinow.AuthenticationConfig;
+import info.cinow.AuthenticationConfigTest;
 
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.model.CensusTract;
@@ -35,7 +35,7 @@ import info.cinow.service.CensusTractService;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(CensusTractController.class)
-@Import({ AuthenticationConfig.class })
+@Import({ AuthenticationConfigTest.class })
 public class CensusTractControllerTest {
 
     @Autowired

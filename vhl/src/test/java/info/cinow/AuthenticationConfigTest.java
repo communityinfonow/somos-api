@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Import(AuthenticationConfig.class)
+@Import(AuthenticationConfigTest.class)
 public class AuthenticationConfigTest {
 
     @Autowired

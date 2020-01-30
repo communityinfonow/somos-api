@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,19 +25,16 @@ import info.cinow.controller.LocationSuggestController;
  */
 @Configuration
 @EnableWebSecurity
-public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
+@Profile({ "dev", "staging" })
+public class AuthenticationConfigTest extends WebSecurityConfigurerAdapter {
 
     @Autowired
     DataSource dataSource;
 
     @Override
+
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().antMatchers("/admin/**")
-                .hasRole("ADMIN").and().httpBasic().and().csrf().disable();
-        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()); // TODO
-        // integration
-        // test
-        // this
+        httpSecurity.authorizeRequests().antMatchers("/**").permitAll().and().httpBasic().and().csrf().disable();
 
     }
 

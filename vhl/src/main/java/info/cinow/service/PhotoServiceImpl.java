@@ -217,7 +217,7 @@ public class PhotoServiceImpl implements PhotoService {
             photo.setApproved(false);
         }
 
-        photo.setFileName(file.getName());
+        photo.setFileName(this.replaceFileNameWhitespace(file.getName()));
         return this.photoDao.save(photo);
     }
 
@@ -232,6 +232,10 @@ public class PhotoServiceImpl implements PhotoService {
 
     private void deletePhotoFromS3Bucket(String photoName) throws IOException {
         amazonS3Client.deleteObject(bucketName, photoName);
+    }
+
+    private String replaceFileNameWhitespace(String fileName) {
+        return fileName.replaceAll("\\s", "_");
     }
 
     /**

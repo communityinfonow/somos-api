@@ -2,13 +2,14 @@ package info.cinow.dto;
 
 import lombok.Data;
 
-/**
- * PhotoSaveDto
- */
 @Data
-public class PhotoSaveDto {
+public class AdminPhotoSaveDto {
 
     private Long id;
+
+    private String fileName;
+
+    private Boolean approved;
 
     private String description;
 

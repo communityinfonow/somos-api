@@ -79,9 +79,7 @@ public class CensusTractPhotoControllerTest {
     @Before
     public void setup() throws IOException, NoDescriptionException, CensusTractDoesNotExistException {
         dto = new PhotoSaveDto();
-        dto.setApproved(false);
         dto.setDescription("This is the new description");
-        dto.setFileName("photo");
         dto.setId(32L);
         dto.setOwnerEmail("owner@email.com");
         dto.setOwnerFirstName("First");

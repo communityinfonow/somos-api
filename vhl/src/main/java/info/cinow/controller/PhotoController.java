@@ -77,13 +77,16 @@ public class PhotoController {
     public EntityModel<Location> getPhotoMetadata(@PathVariable("id") Long id) {
 
         return new EntityModel<>(this.photoService.getGpsCoordinates(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))); // TODO LINKS
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Lat/lng could not be extracted from the photo")));
     }
 
     @GetMapping("/{id}")
     public EntityModel<PhotoDto> getPhoto(@PathVariable("id") Long photoId) {
-        PhotoDto dto = this.photoMapper.toDto(this.photoService.getPhotoById(photoId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))).orElse(null);
+        PhotoDto dto = this.photoMapper
+                .toDto(this.photoService.getPhotoById(photoId).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "The photo could not be found")))
+                .orElse(null);
         return new EntityModel<>(dto);
     }
 

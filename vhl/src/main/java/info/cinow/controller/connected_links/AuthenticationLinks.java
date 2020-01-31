@@ -23,8 +23,4 @@ public class AuthenticationLinks {
                 "login");
     }
 
-    public Link logout() {
-        return this.connectedLinks.configureRelation(linkTo(methodOn(AuthController.class).logout(null, null)), false,
-                "logout");
-    }
 }

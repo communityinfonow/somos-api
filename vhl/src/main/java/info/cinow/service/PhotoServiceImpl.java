@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.amazonaws.util.StringUtils;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.lang.GeoLocation;
@@ -277,6 +278,9 @@ public class PhotoServiceImpl implements PhotoService {
                 photo.setOwnerLastName(oldPhoto.getOwnerLastName().orElse(photo.getOwnerLastName().orElse(null)));
                 photo.setLatitude(oldPhoto.getLatitude().orElse(photo.getLatitude().orElse(null)));
                 photo.setLongitude(oldPhoto.getLongitude().orElse(photo.getLongitude().orElse(null)));
+                if (StringUtils.isNullOrEmpty(photo.getFileName().orElse(null))) {
+                    photo.setFileName(oldPhoto.getFileName().orElse("placeholder_name"));
+                }
 
             } catch (NoSuchElementException e) {
                 log.info("No photo exists for id: " + photo.getId(), e);

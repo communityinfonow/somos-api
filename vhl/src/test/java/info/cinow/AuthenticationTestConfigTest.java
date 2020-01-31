@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Import(AuthenticationConfigTest.class)
-public class AuthenticationConfigTest {
+@Import(AuthenticationConfig.class)
+public class AuthenticationTestConfigTest {
 
     @Autowired
     AuthenticationManagerBuilder builder;

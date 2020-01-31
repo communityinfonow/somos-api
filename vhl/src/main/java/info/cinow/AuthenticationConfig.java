@@ -1,12 +1,14 @@
 package info.cinow;
 
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import info.cinow.controller.LocationSuggestController;
 
@@ -25,17 +30,39 @@ import info.cinow.controller.LocationSuggestController;
  */
 @Configuration
 @EnableWebSecurity
-@Profile({ "dev", "staging" })
-public class AuthenticationConfigTest extends WebSecurityConfigurerAdapter {
+public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     DataSource dataSource;
 
+    @Autowired
+    Environment env;
+
     @Override
-
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests().antMatchers("/**").permitAll().and().httpBasic().and().csrf().disable();
+        httpSecurity.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
+                .and().httpBasic().and().csrf().disable().cors();
+        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()); // TODO
+        // integration
+        // test
+        // this
 
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("GET");
+        configuration.addAllowedMethod("OPTIONS");
+        configuration.addAllowedMethod("DELETE");
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.addAllowedOrigin(env.getProperty("app.origin"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     /**
@@ -56,11 +83,12 @@ public class AuthenticationConfigTest extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN")
-                .and().withUser("user").password(passwordEncoder().encode("userPass")).roles("USER");
+        // auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN")
+        // .and().withUser("user").password(passwordEncoder().encode("userPass")).roles("USER");
 
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("select email_address,password,enabled from user_table where email_address=?")
+                .usersByUsernameQuery(
+                        "select email_address,password, true as enabled from user_table where email_address=?")
                 .authoritiesByUsernameQuery("SELECT U.email_address, R.name FROM USER_TABLE U, USERS_ROLES UR, ROLE R "
                         + "WHERE U.id = UR.user_id AND R.id = UR.role_id and U.email_address = ?")
                 .passwordEncoder(passwordEncoder());

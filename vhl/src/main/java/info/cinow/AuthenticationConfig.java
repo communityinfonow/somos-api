@@ -40,13 +40,13 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.logout().logoutSuccessUrl("/").and().authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
-                .and().httpBasic().and().csrf().disable().cors();
+        httpSecurity.logout().logoutSuccessUrl("/").and().authorizeRequests().antMatchers("/login").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/admin/users").hasRole("SUPER_USER").and()
+                .httpBasic().and().csrf().disable().cors();
         // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()); // TODO
         // integration
         // test
         // this
-
 
     }
 

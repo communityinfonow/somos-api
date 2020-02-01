@@ -67,9 +67,7 @@ public class UserServiceImpl implements UserService {
             User oldUser = this.getUser(user.getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, user.getId() + ""));
 
-            userCopy.setEnabled(oldUser.isEnabled());
             userCopy.setPassword(oldUser.getPassword());
-            userCopy.setTokenExpired(oldUser.isTokenExpired());
         }
         return userCopy;
     }

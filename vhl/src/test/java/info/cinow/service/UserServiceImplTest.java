@@ -48,12 +48,10 @@ public class UserServiceImplTest {
     public void setup() {
         this.user = new User();
         user.setEmailAddress("emailAddress");
-        user.setEnabled(true);
         user.setFirstName("firstName");
         user.setLastName("lastName");
         user.setId(1L);
         user.setPassword("password");
-        user.setTokenExpired(false);
         Mockito.when(userDao.findByEmailAddress("emailAddress")).thenReturn(Optional.empty());
         Mockito.when(userDao.save(any(User.class))).thenReturn(user);
         Mockito.when(userDao.findById(anyLong())).thenReturn(Optional.ofNullable(user));
@@ -79,11 +77,9 @@ public class UserServiceImplTest {
         newUser.setId(user.getId());
         newUser.setFirstName("newFirstName");
         newUser.setLastName("newLastName");
-        newUser.setEnabled(false);
 
         user.setFirstName("newFirstName");
         user.setLastName("newLastName");
-        user.setEnabled(false);
         User returnUser = this.userService.updateUserInformation(newUser);
         assertEquals(user, returnUser);
     }

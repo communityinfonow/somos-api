@@ -38,13 +38,12 @@ public class User implements Auditable {
     private Audit audit;
 
     private String firstName;
+
     private String lastName;
 
     private String emailAddress;
 
     private String password;
-    private boolean enabled;
-    private boolean tokenExpired;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USERS_ROLES", joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id"))

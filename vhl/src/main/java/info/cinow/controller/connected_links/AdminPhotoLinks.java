@@ -20,7 +20,7 @@ public class AdminPhotoLinks extends PhotoLinks {
                 "photos");
     }
 
-    public Link photo(Integer tractId, Long photoId, Boolean self) {
+    public Link photo(String tractId, Long photoId, Boolean self) {
         return this.connectedLinks.configureRelation(
                 linkTo(methodOn(AdminCensusTractPhotoController.class).getPhotoByIdForTract(tractId, photoId)), self,
                 "photo");

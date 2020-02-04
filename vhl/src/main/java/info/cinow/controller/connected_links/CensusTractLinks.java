@@ -22,12 +22,12 @@ public class CensusTractLinks {
                 self, "census-tracts");
     }
 
-    public Link censusTract(Integer censusTractId, Boolean self) {
+    public Link censusTract(String censusTractId, Boolean self) {
         return this.connectedLinks.configureRelation(
                 linkTo(methodOn(CensusTractController.class).getCensusTractById(censusTractId)), self, "census-tract");
     }
 
-    public Link matchedTractsByParentId(Integer tractId) {
+    public Link matchedTractsByParentId(String tractId) {
         return this.connectedLinks.configureRelation(
                 linkTo(methodOn(CensusTractController.class).getMatchedTractsByParentId(tractId)), false,
                 "matched-tracts");

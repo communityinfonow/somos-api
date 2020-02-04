@@ -29,15 +29,14 @@ public class CensusTractMapperTest {
     @Before
     public void setup() {
         this.censusTract = new CensusTract();
-        censusTract.setGid(1);
-        censusTract.setTract("1234");
+        censusTract.setGid("1");
+
     }
 
     @Test
     public void toDtoWorks() {
         CensusTractDto dto = this.mapper.toDto(censusTract);
         assertEquals(dto.getId(), this.censusTract.getGid());
-        assertEquals(dto.getTract(), this.censusTract.getTract());
         assertEquals(dto.getGeometry(), this.censusTract.getPolygon());
 
     }

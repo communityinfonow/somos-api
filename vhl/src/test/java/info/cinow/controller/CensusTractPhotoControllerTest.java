@@ -95,7 +95,7 @@ public class CensusTractPhotoControllerTest {
         photo.setOwnerLastName("Last");
 
         tract = new CensusTract();
-        tract.setGid(1);
+        tract.setGid("1");
         photo.setCensusTract(tract);
 
         Mockito.when(censusService.getCensusTract(tract.getGid())).thenReturn(tract);

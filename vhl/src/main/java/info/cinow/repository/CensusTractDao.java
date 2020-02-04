@@ -11,7 +11,7 @@ import info.cinow.model.CensusTract;
 /**
  * CensusTractDao
  */
-public interface CensusTractDao extends CrudRepository<CensusTract, Integer> {
+public interface CensusTractDao extends CrudRepository<CensusTract, String> {
 
     @Query(value = "SELECT * FROM (SELECT *,  ST_CONTAINS(GEOM\\:\\:geometry, ST_SetSRID(ST_MakePoint(:longitude, :latitude),4326)) AS CONTAINING FROM bexartracts_2010) ss WHERE ss.CONTAINING = true", nativeQuery = true)
     public Optional<CensusTract> getContainingTract(@Param("longitude") double longitude,

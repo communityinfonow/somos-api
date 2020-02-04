@@ -3,6 +3,7 @@ package info.cinow.model;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -18,7 +19,11 @@ import lombok.Data;
 public class MatchingTractSimilarIndicator implements MatchingTractIndicator {
 
     @EmbeddedId
-    private MatchingCensusTractsId id;
+    private MatchingCensusTractsIndicatorId id;
+
+    @ManyToOne
+    @MapsId("matchId")
+    private MatchingTract matchingTract;
 
     @ManyToOne
     @MapsId("indicatorId")

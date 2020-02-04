@@ -5,9 +5,9 @@ package info.cinow.model;
  */
 public interface MatchingTractIndicator {
 
-    public MatchingCensusTractsId getId();
+    public MatchingCensusTractsIndicatorId getId();
 
-    public Indicator getIndicator();
+    public MatchingTract getMatchingTract();
 
     public Integer getRank();
 }

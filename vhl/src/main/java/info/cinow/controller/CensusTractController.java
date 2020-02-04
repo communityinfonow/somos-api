@@ -67,7 +67,7 @@ public class CensusTractController {
         }
 
         @GetMapping("/{id}")
-        public EntityModel<CensusTractDto> getCensusTractById(@PathVariable("id") Integer id) {
+        public EntityModel<CensusTractDto> getCensusTractById(@PathVariable("id") String id) {
                 EntityModel<CensusTractDto> tract = new EntityModel<>(
                                 this.censusTractMapper.toDto(censusTractService.getCensusTract(id)),
                                 this.censusTractLinks.censusTract(id, true),
@@ -76,7 +76,7 @@ public class CensusTractController {
         }
 
         @GetMapping("/{id}/matched-tracts")
-        public CollectionModel<EntityModel<CensusTractDto>> getMatchedTractsByParentId(@PathVariable("id") Integer id) {
+        public CollectionModel<EntityModel<CensusTractDto>> getMatchedTractsByParentId(@PathVariable("id") String id) {
                 CollectionModel<EntityModel<CensusTractDto>> matchedTracts = new CollectionModel<>(
                                 censusTractService.getMatchedTracts(id).stream().map(childCensusTract -> {
                                         CensusTractDto dto = this.censusTractMapper.toDto(childCensusTract);

@@ -62,7 +62,7 @@ public class CensusTractPhotoController {
 
         @GetMapping()
         public CollectionModel<EntityModel<PhotoDto>> getAllPhotosForTract(
-                        @PathVariable("censusTractId") final Integer censusTractId) {
+                        @PathVariable("censusTractId") final String censusTractId) {
                 return new CollectionModel<>(this.censusTractPhotoService.getAllPublicPhotosForTract(censusTractId)
                                 .stream().map(photo -> {
                                         return new EntityModel<>(
@@ -81,7 +81,7 @@ public class CensusTractPhotoController {
         }
 
         @GetMapping("/{id}")
-        public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+        public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,
                         @PathVariable("id") final Long id) {
                 return new EntityModel<>(this.photoMapper
                                 .toDto(this.censusTractPhotoService.getPublicPhotoByIdForTract(censusTractId, id))
@@ -91,7 +91,7 @@ public class CensusTractPhotoController {
 
         @PutMapping("/{id}")
         public EntityModel<PhotoDto> updatePhotoInformationForTract(
-                        @PathVariable("censusTractId") final Integer censusTractId, @PathVariable("id") final Long id,
+                        @PathVariable("censusTractId") final String censusTractId, @PathVariable("id") final Long id,
                         @RequestBody final PhotoSaveDto photoDto) {
                 final Photo photo = photoSaveMapper.toPhoto(photoDto)
                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));

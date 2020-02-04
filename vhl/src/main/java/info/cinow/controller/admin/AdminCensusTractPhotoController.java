@@ -72,7 +72,7 @@ public class AdminCensusTractPhotoController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id) {
         return new EntityModel<>(
                 this.photoMapper.toDto(this.censusTractPhotoService.getPublicPhotoByIdForTract(censusTractId, id))
@@ -82,7 +82,7 @@ public class AdminCensusTractPhotoController {
 
     @PostMapping("/{id}")
     // TODO secure with auth
-    public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("censusTractId") final Integer censusTractId,
+    public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id, @RequestParam("photo") final MultipartFile photo)
             throws ImageNameTooLongException, WrongFileTypeException {
         Photo savedPhoto = null;
@@ -105,7 +105,7 @@ public class AdminCensusTractPhotoController {
     }
 
     @PutMapping("/{id}")
-    public EntityModel<PhotoDto> updatePhotoInformation(@PathVariable("censusTractId") final Integer censusTractId,
+    public EntityModel<PhotoDto> updatePhotoInformation(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id, @RequestBody final AdminPhotoSaveDto photoDto) {
         final Photo photo = adminPhotoSaveMapper.toPhoto(photoDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -127,7 +127,7 @@ public class AdminCensusTractPhotoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletePhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+    public void deletePhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long photoId) {
 
         try {

@@ -14,7 +14,7 @@ public class PhotoDto {
 
     private String description;
 
-    private Integer censusTractId;
+    private String censusTractId;
 
     private String fileName;
 

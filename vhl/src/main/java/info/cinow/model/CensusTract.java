@@ -31,12 +31,12 @@ public class CensusTract {
 
     }
 
-    public CensusTract(String tract) {
-        this.tract = tract;
+    public CensusTract(String gid) {
+        this.gid = gid;
     }
 
     @Id
-    private String tract;
+    private String gid;
 
     @Column(name = "geom", columnDefinition = "Geometry")
     private MultiPolygon polygon;

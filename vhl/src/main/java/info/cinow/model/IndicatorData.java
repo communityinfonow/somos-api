@@ -23,9 +23,6 @@ public class IndicatorData {
     @EmbeddedId
     private IndicatorTractId id;
 
-    @Column(name = "is_life_expectancy")
-    private Boolean isLifeExpectancy;
-
     @Column
     private Double value;
 

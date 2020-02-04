@@ -1,6 +1,6 @@
 package info.cinow.controller;
 
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,7 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import info.cinow.AuthenticationConfig;
-
 import info.cinow.dto.mapper.CensusTractMapper;
 import info.cinow.model.CensusTract;
 import info.cinow.repository.CensusTractDao;
@@ -72,16 +71,16 @@ public class CensusTractControllerTest {
     @Before
     public void setup() {
         this.tract = new CensusTract();
-        this.tract.setGid(1);
+        this.tract.setGid("1");
         Authentication authentication = Mockito.mock(Authentication.class);
         // Mockito.whens() for your authorization object
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
 
         SecurityContextHolder.setContext(securityContext);
-        Mockito.when(service.getCensusTract(anyInt())).thenReturn(tract);
+        Mockito.when(service.getCensusTract(anyString())).thenReturn(tract);
         Mockito.when(service.getAllCensusTracts()).thenReturn(Arrays.asList(tract));
-        Mockito.when(service.getMatchedTracts(anyInt())).thenReturn(Arrays.asList(tract));
+        Mockito.when(service.getMatchedTracts(anyString())).thenReturn(Arrays.asList(tract));
     }
 
     @Test

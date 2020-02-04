@@ -30,12 +30,12 @@ public class CensusTractServiceImpl implements CensusTractService {
     }
 
     @Override
-    public CensusTract getCensusTract(Integer id) {
+    public CensusTract getCensusTract(String id) {
         return censusTractDao.findById(id).orElse(null);
     }
 
     @Override
-    public List<CensusTract> getMatchedTracts(Integer id) {
+    public List<CensusTract> getMatchedTracts(String id) {
         CensusTract tract = censusTractDao.findById(id).orElse(null);
 
         return tract.getMatchingCensusTracts().stream().map(matchingTracts -> matchingTracts.getChildTract())

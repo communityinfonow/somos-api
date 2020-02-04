@@ -18,21 +18,21 @@ public class CensusTractPhotoLinks {
                 this.connectedLinks = new ConnectedLinks();
         }
 
-        public Link photoFile(Integer censusTractId, String fileName, Boolean self) {
+        public Link photoFile(String censusTractId, String fileName, Boolean self) {
                 return this.connectedLinks.configureRelation(linkTo(
                                 ReflectionUtils.findMethod(CensusTractPhotoController.class,
                                                 "getPhotoFileByNameForTract", Integer.class, String.class),
                                 censusTractId, fileName), self, "photo-file");
         }
 
-        public Link croppedPhotoFile(Integer censusTractId, String fileName, Boolean self) {
+        public Link croppedPhotoFile(String censusTractId, String fileName, Boolean self) {
                 return this.connectedLinks.configureRelation(linkTo(
                                 ReflectionUtils.findMethod(CensusTractPhotoController.class,
                                                 "getPhotoFileByNameForTract", Integer.class, String.class),
                                 censusTractId, fileName), self, "cropped-photo-file");
         }
 
-        public Link photo(Integer censusTractId, Long photoId, Boolean self) {
+        public Link photo(String censusTractId, Long photoId, Boolean self) {
                 return this.connectedLinks
                                 .configureRelation(
                                                 linkTo(methodOn(CensusTractPhotoController.class)
@@ -40,7 +40,7 @@ public class CensusTractPhotoLinks {
                                                 self, "photo");
         }
 
-        public Link photos(Integer censusTractId, Boolean self) {
+        public Link photos(String censusTractId, Boolean self) {
                 return this.connectedLinks.configureRelation(
                                 linkTo(methodOn(CensusTractPhotoController.class).getAllPhotosForTract(censusTractId)),
                                 self, "photos");

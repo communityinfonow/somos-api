@@ -13,9 +13,7 @@ import lombok.Data;
 @Data
 public class CensusTractDto {
 
-    private Integer id;
-
-    private String tract;
+    private String id;
 
     private MultiPolygon geometry;
 

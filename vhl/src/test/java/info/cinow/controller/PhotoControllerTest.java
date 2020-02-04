@@ -87,7 +87,7 @@ public class PhotoControllerTest {
         photo.setLongitude(2.0);
         photo.setId(1L);
         CensusTract tract = new CensusTract();
-        tract.setGid(1);
+        tract.setGid("1");
         photo.setCensusTract(tract);
 
         location = new Location(1.0, 1.0);

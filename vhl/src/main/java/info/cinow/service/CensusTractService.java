@@ -11,9 +11,9 @@ import info.cinow.model.CensusTract;
 public interface CensusTractService {
     public List<CensusTract> getAllCensusTracts();
 
-    public CensusTract getCensusTract(Integer id);
+    public CensusTract getCensusTract(String id);
 
-    public List<CensusTract> getMatchedTracts(Integer id);
+    public List<CensusTract> getMatchedTracts(String id);
 
     public Optional<CensusTract> getCensusTract(double lat, double lng);
 }

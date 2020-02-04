@@ -10,7 +10,7 @@ public class PhotoAdminDto {
 
     private Long id;
 
-    private Integer censusTractId;
+    private String censusTractId;
 
     private String description;
 

@@ -13,19 +13,20 @@ import lombok.Data;
  */
 @Embeddable
 @Data
-public class MatchingCensusTractsIndicatorId implements Serializable {
+public class MatchingCensusTractsId implements Serializable {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    private MatchingCensusTractsId tractsId;
+    @Column(name = "parent_id")
+    private String parentTractId;
 
-    @Column(name = "indicator_id")
-    private Long indicatorId;
+    @Column(name = "child_id")
+    private String childTractId;
 
-    public MatchingCensusTractsIndicatorId() {
+    public MatchingCensusTractsId() {
 
     }
 
@@ -37,13 +38,13 @@ public class MatchingCensusTractsIndicatorId implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        MatchingCensusTractsIndicatorId that = (MatchingCensusTractsIndicatorId) o;
-        return Objects.equals(tractsId, that.tractsId) && Objects.equals(indicatorId, that.indicatorId);
+        MatchingCensusTractsId that = (MatchingCensusTractsId) o;
+        return Objects.equals(parentTractId, that.parentTractId) && Objects.equals(childTractId, that.childTractId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tractsId, indicatorId);
+        return Objects.hash(parentTractId, childTractId);
     }
 
 }

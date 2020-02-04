@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -22,8 +23,10 @@ public class MatchingTractSimilarIndicator implements MatchingTractIndicator {
     private MatchingCensusTractsIndicatorId id;
 
     @ManyToOne
-    @MapsId("matchId")
-    private MatchingTract matchingTract;
+    @JoinColumns({ @JoinColumn(name = "parent_tract_gid", referencedColumnName = "parent_tract_gid"),
+            @JoinColumn(name = "child_tract_gid", referencedColumnName = "child_tract_gid") })
+    @MapsId("tractsId")
+    private MatchingTract tractsId;
 
     @ManyToOne
     @MapsId("indicatorId")

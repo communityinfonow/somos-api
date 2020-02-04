@@ -15,10 +15,10 @@ import lombok.Data;
 /**
  * MatchingCensusTracts
  */
-@Entity(name = "matchingCensusTracts")
-@Table(name = "matching_census_tracts")
+@Entity(name = "matchingTract")
+@Table(name = "matching_tract")
 @Data
-public class MatchingCensusTracts {
+public class MatchingTract {
 
     @EmbeddedId
     private MatchingCensusTractsId id;
@@ -31,14 +31,17 @@ public class MatchingCensusTracts {
     @MapsId("childTractId")
     private CensusTract childTract;
 
-    @Column(name = "multivariable_difference")
-    private Double multivariableDifference;
-
     @Column(name = "miles_difference")
     private Double milesDifference;
 
     @Column(name = "life_expectancy_difference")
-    private Double lifeExpentencyDifference;
+    private Double lifeExpentancyDifference;
+
+    /**
+     * The ranking order for which to display this matching tract
+     */
+    @Column
+    private Integer rank;
 
     @Override
     public boolean equals(Object o) {
@@ -48,7 +51,7 @@ public class MatchingCensusTracts {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        MatchingCensusTracts that = (MatchingCensusTracts) o;
+        MatchingTract that = (MatchingTract) o;
         return Objects.equals(parentTract, that.parentTract) && Objects.equals(childTract, that.childTract);
     }
 

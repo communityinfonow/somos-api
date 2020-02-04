@@ -31,14 +31,11 @@ public class CensusTract {
 
     }
 
-    public CensusTract(Integer gid) {
-        this.gid = gid;
+    public CensusTract(String tract) {
+        this.tract = tract;
     }
 
     @Id
-    private Integer gid;
-
-    @Column
     private String tract;
 
     @Column(name = "geom", columnDefinition = "Geometry")
@@ -48,9 +45,9 @@ public class CensusTract {
     private List<Photo> photos;
 
     @OneToMany(mappedBy = "childTract", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingCensusTracts> parentMatchingCensusTract;
+    private List<MatchingTract> parentMatchingCensusTract;
 
     @OneToMany(mappedBy = "parentTract", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingCensusTracts> matchingCensusTracts;
+    private List<MatchingTract> matchingCensusTracts;
 
 }

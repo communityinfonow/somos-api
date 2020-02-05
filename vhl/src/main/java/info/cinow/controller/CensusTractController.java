@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.CensusTractDto;
+import info.cinow.dto.MatchedCensusTractDto;
 import info.cinow.dto.mapper.CensusTractMapper;
+import info.cinow.dto.mapper.MatchedCensusTractMapper;
 import info.cinow.service.CensusTractService;
 
 /**
@@ -33,6 +34,9 @@ public class CensusTractController {
 
         @Autowired
         private CensusTractMapper censusTractMapper;
+
+        @Autowired
+        MatchedCensusTractMapper matchedCensusTractMapper;
 
         private CensusTractLinks censusTractLinks;
 
@@ -62,7 +66,8 @@ public class CensusTractController {
                                 .getCensusTract(Double.parseDouble(latLng.get("lat")),
                                                 Double.parseDouble(latLng.get("lng")))
                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
-                return new EntityModel<>(dto, this.censusTractPhotoLinks.photos(dto.getId(), false));
+                return new EntityModel<>(dto, this.censusTractPhotoLinks.photos(dto.getId(), false),
+                                this.censusTractLinks.matchedTractsByParentId(dto.getId()));
 
         }
 
@@ -76,17 +81,15 @@ public class CensusTractController {
         }
 
         @GetMapping("/{id}/matched-tracts")
-        public CollectionModel<EntityModel<CensusTractDto>> getMatchedTractsByParentId(@PathVariable("id") String id) {
-                CollectionModel<EntityModel<CensusTractDto>> matchedTracts = new CollectionModel<>(
-                                censusTractService.getMatchedTracts(id).stream().map(childCensusTract -> {
-                                        CensusTractDto dto = this.censusTractMapper.toDto(childCensusTract);
+        public CollectionModel<EntityModel<MatchedCensusTractDto>> getMatchedTractsByParentId(
+                        @PathVariable("id") String id) {
+                CollectionModel<EntityModel<MatchedCensusTractDto>> matchedTracts = new CollectionModel<>(
+                                censusTractService.getMatchedTracts(id).stream().map(matchingTract -> {
+                                        MatchedCensusTractDto dto = this.matchedCensusTractMapper.toDto(matchingTract);
                                         return new EntityModel<>(dto,
-                                                        this.censusTractPhotoLinks.photos(childCensusTract.getGid(),
-                                                                        false),
-                                                        this.censusTractLinks.censusTract(childCensusTract.getGid(),
-                                                                        true),
-                                                        this.censusTractLinks.matchedTractsByParentId(
-                                                                        childCensusTract.getGid()));
+                                                        this.censusTractPhotoLinks.photos(dto.getId(), false),
+                                                        this.censusTractLinks.censusTract(dto.getId(), true),
+                                                        this.censusTractLinks.matchedTractsByParentId(dto.getId()));
                                 }).collect(Collectors.toList()));
 
                 return matchedTracts;

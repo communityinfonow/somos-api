@@ -23,11 +23,11 @@ public class MatchingTract {
     @EmbeddedId
     private MatchingCensusTractsId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("parentTractId")
     private CensusTract parentTract;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("childTractId")
     private CensusTract childTract;
 

@@ -2,18 +2,17 @@ package info.cinow.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Data;
 
@@ -24,7 +23,6 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "bexartracts_2010")
-// @Data
 public class CensusTract {
 
     public CensusTract() {
@@ -41,13 +39,13 @@ public class CensusTract {
     @Column(name = "geom", columnDefinition = "Geometry")
     private MultiPolygon polygon;
 
-    @OneToMany(mappedBy = "censusTract", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "censusTract")
     private List<Photo> photos;
 
-    @OneToMany(mappedBy = "childTract", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingTract> parentMatchingCensusTract;
+    // @OneToMany(mappedBy = "childTract")
+    // private List<MatchingTract> parentMatchingCensusTract;
 
-    @OneToMany(mappedBy = "parentTract", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingTract> matchingCensusTracts;
+    // @OneToMany(mappedBy = "parentTract")
+    // private List<MatchingTract> matchingCensusTracts;
 
 }

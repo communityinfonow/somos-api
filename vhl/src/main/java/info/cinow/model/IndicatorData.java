@@ -6,6 +6,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,19 +24,18 @@ public class IndicatorData {
     @EmbeddedId
     private IndicatorTractId id;
 
+    @ManyToOne
+    @MapsId("indicatorId")
+    private Indicator indicator;
+
+    @ManyToOne
+    @MapsId("gid")
+    private CensusTract censusTract;
+
     @Column
     private Double value;
 
-    /**
-     * MOE is margin of error. This is the low value when applying margin of error.
-     */
-    @Column(name = "moe_value_low")
-    private Double moeValueLow;
-
-    /**
-     * MOE is margin of error. This is the high value when applying margin of error.
-     */
-    @Column(name = "moe_value_high")
-    private Double moeValueHigh;
+    @Embedded
+    private MarginOfError marginOfError;
 
 }

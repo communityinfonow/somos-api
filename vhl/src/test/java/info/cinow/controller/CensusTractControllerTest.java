@@ -80,7 +80,6 @@ public class CensusTractControllerTest {
         SecurityContextHolder.setContext(securityContext);
         Mockito.when(service.getCensusTract(anyString())).thenReturn(tract);
         Mockito.when(service.getAllCensusTracts()).thenReturn(Arrays.asList(tract));
-        Mockito.when(service.getMatchedTracts(anyString())).thenReturn(Arrays.asList(tract));
     }
 
     @Test

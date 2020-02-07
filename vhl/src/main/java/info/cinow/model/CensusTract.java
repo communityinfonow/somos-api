@@ -10,10 +10,6 @@ import javax.persistence.Table;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.Data;
 
 /**
@@ -39,13 +35,7 @@ public class CensusTract {
     @Column(name = "geom", columnDefinition = "Geometry")
     private MultiPolygon polygon;
 
-    @OneToMany(mappedBy = "censusTract")
-    private List<Photo> photos;
-
-    // @OneToMany(mappedBy = "childTract")
-    // private List<MatchingTract> parentMatchingCensusTract;
-
-    // @OneToMany(mappedBy = "parentTract")
-    // private List<MatchingTract> matchingCensusTracts;
+    // @OneToMany(mappedBy = "censusTract")
+    // private List<Photo> photos;
 
 }

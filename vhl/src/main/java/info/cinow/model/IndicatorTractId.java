@@ -1,6 +1,7 @@
 package info.cinow.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -20,6 +21,23 @@ public class IndicatorTractId implements Serializable {
     private Long indicatorId;
 
     @Column
-    private Integer gid;
+    private String gid;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        IndicatorTractId that = (IndicatorTractId) o;
+        return Objects.equals(indicatorId, that.indicatorId) && Objects.equals(gid, that.gid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(indicatorId, gid);
+    }
 
 }

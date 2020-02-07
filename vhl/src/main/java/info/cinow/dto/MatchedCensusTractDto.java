@@ -1,5 +1,8 @@
 package info.cinow.dto;
 
+import java.util.List;
+
+import info.cinow.model.MatchingTractSimilarIndicator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +14,8 @@ import lombok.EqualsAndHashCode;
 public class MatchedCensusTractDto {
 
     private String id;
+
+    private List<MatchingTractSimilarIndicator> similarIndicators;
 
     /**
      * the rank of the match for display purposes

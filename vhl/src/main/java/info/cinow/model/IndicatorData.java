@@ -25,10 +25,12 @@ public class IndicatorData {
     private IndicatorTractId id;
 
     @ManyToOne
+    @JoinColumn(name = "indicator_id", referencedColumnName = "id")
     @MapsId("indicatorId")
     private Indicator indicator;
 
     @ManyToOne
+    @JoinColumn(name = "census_tract_id", referencedColumnName = "gid")
     @MapsId("gid")
     private CensusTract censusTract;
 

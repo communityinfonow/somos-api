@@ -21,7 +21,7 @@ public class LocationIqDao implements GeocodeDao<LocationIqResult[]> {
 
     @Value("${locationiq.key}")
     private String locationIqKey;
-    private final String URL = "https://us1.locationiq.com/v1/search.php/?q={q}&key={key}&format={format}&viewbox={viewbox}&bounded={bounded}";
+    private final String URL = "https://us1.locationiq.com/v1/search.php/?q={q}&key={key}&format={format}&viewbox={viewbox}&bounded={bounded}&addressdetails={addressdetails}";
 
     @Autowired
     public LocationIqDao(RestTemplateBuilder restTemplateBuilder) {
@@ -36,6 +36,7 @@ public class LocationIqDao implements GeocodeDao<LocationIqResult[]> {
         params.put("viewbox", "-98.821561,29.777565,-98.096464,29.133046");
         params.put("bounded", "1");
         params.put("format", "json");
+        params.put("addressdetails", "1");
         response = this.restTemplate.getForObject(URL, LocationIqResult[].class, params);
 
         return response;

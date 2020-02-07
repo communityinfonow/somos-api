@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -28,8 +29,8 @@ public class MatchingTractSimilarIndicator implements MatchingTractIndicator {
     @MapsId("tractsId")
     private MatchingTract tractsId;
 
-    @ManyToOne
     @MapsId("indicatorId")
+    @OneToOne
     private Indicator indicator;
 
     /**

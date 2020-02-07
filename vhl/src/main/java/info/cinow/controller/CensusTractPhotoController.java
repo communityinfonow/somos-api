@@ -113,7 +113,7 @@ public class CensusTractPhotoController {
 
         // TODO: secure for public use by modifying query to get accepted
         @GetMapping(value = "/file/{fileName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-        public byte[] getPhotoFileByNameForTract(@PathVariable("censusTractId") final Integer censusTractId,
+        public byte[] getPhotoFileByNameForTract(@PathVariable("censusTractId") final String censusTractId,
                         @PathVariable("fileName") final String fileName) {
                 try {
                         return photoService.getPublicPhotoByFileName(fileName);

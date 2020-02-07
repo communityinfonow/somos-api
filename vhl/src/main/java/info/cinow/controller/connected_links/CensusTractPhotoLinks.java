@@ -21,14 +21,14 @@ public class CensusTractPhotoLinks {
         public Link photoFile(String censusTractId, String fileName, Boolean self) {
                 return this.connectedLinks.configureRelation(linkTo(
                                 ReflectionUtils.findMethod(CensusTractPhotoController.class,
-                                                "getPhotoFileByNameForTract", Integer.class, String.class),
+                                                "getPhotoFileByNameForTract", String.class, String.class),
                                 censusTractId, fileName), self, "photo-file");
         }
 
         public Link croppedPhotoFile(String censusTractId, String fileName, Boolean self) {
                 return this.connectedLinks.configureRelation(linkTo(
                                 ReflectionUtils.findMethod(CensusTractPhotoController.class,
-                                                "getPhotoFileByNameForTract", Integer.class, String.class),
+                                                "getPhotoFileByNameForTract", String.class, String.class),
                                 censusTractId, fileName), self, "cropped-photo-file");
         }
 

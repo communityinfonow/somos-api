@@ -33,7 +33,4 @@ public class Indicator {
     @Column(name = "is_life_expectancy", columnDefinition = "boolean default false")
     private Boolean isLifeExpectancy;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<IndicatorData> data;
-
 }

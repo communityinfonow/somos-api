@@ -20,7 +20,8 @@ public class LocationIqMapper implements LocationSuggestionMapper<LocationIqResu
         List<LocationSuggestionDto> dto = new ArrayList<LocationSuggestionDto>();
         for (LocationIqResult result : results) {
             dto.add(new LocationSuggestionDto(result.getDisplayName(),
-                    new Location(Double.parseDouble(result.getLat()), Double.parseDouble(result.getLon()))));
+                    new Location(Double.parseDouble(result.getLat()), Double.parseDouble(result.getLon())),
+                    result.getAddressDetails()));
         }
         return dto;
     }

@@ -22,7 +22,7 @@ public class MatchedCensusTractMapperImpl implements MatchedCensusTractMapper {
         dto.setId(childTract.getGid());
         dto.setRank(censusTract.getRank());
         dto.setLifeExpectancyDifference(censusTract.getLifeExpentancyDifference());
-        // dto.setSimilarIndicators(censusTract.getSimilarIndicators());
+        dto.setSimilarIndicators(censusTract.getSimilarIndicators());
         return dto;
     }
 }

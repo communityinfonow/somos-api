@@ -26,7 +26,7 @@ public class MatchingTractDissimilarIndicator implements MatchingTractIndicator 
     @JoinColumns({ @JoinColumn(name = "parent_tract_gid", referencedColumnName = "parent_tract_gid"),
             @JoinColumn(name = "child_tract_gid", referencedColumnName = "child_tract_gid") })
     @MapsId("tractsId")
-    private MatchingTract tractsId;
+    private MatchingTract matchingTracts;
 
     @ManyToOne
     @MapsId("indicatorId")

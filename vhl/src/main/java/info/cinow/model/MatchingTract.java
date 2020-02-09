@@ -3,6 +3,7 @@ package info.cinow.model;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -39,8 +40,8 @@ public class MatchingTract {
     @Column(name = "life_expectancy_difference")
     private Double lifeExpentancyDifference;
 
-    // @OneToMany(mappedBy = "tractsId", fetch = FetchType.EAGER)
-    // private List<MatchingTractSimilarIndicator> similarIndicators;
+    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<MatchingTractSimilarIndicator> similarIndicators;
 
     /**
      * The ranking order for which to display this matching tract

@@ -7,7 +7,7 @@ public interface MatchingTractIndicator {
 
     public MatchingCensusTractsIndicatorId getId();
 
-    public MatchingTract getTractsId();
+    public MatchingTract getMatchingTracts();
 
     public Integer getRank();
 }

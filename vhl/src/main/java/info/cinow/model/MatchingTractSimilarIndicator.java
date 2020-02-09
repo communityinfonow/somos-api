@@ -24,13 +24,13 @@ public class MatchingTractSimilarIndicator implements MatchingTractIndicator {
     private MatchingCensusTractsIndicatorId id;
 
     @ManyToOne
-    @JoinColumns({ @JoinColumn(name = "parent_tract_gid", referencedColumnName = "parent_tract_gid"),
-            @JoinColumn(name = "child_tract_gid", referencedColumnName = "child_tract_gid") })
+    @JoinColumns({ @JoinColumn(name = "parent_tract_gid"), @JoinColumn(name = "child_tract_gid") })
     @MapsId("tractsId")
-    private MatchingTract tractsId;
+    private MatchingTract matchingTracts;
 
     @MapsId("indicatorId")
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "indicator_id")
     private Indicator indicator;
 
     /**

@@ -1,17 +1,20 @@
 package info.cinow.model;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
@@ -23,15 +26,16 @@ import lombok.Data;
 @Data
 public class MatchingTract {
 
-    @EmbeddedId
-    private MatchingCensusTractsId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @ManyToOne
-    @MapsId("parentTractId")
+    @JoinColumn(name = "parent_tract_gid", referencedColumnName = "gid")
     private CensusTract parentTract;
 
     @ManyToOne
-    @MapsId("childTractId")
+    @JoinColumn(name = "child_tract_gid", referencedColumnName = "gid")
     private CensusTract childTract;
 
     @Column(name = "miles_difference")
@@ -40,8 +44,18 @@ public class MatchingTract {
     @Column(name = "life_expectancy_difference")
     private Double lifeExpentancyDifference;
 
-    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<MatchingTractSimilarIndicator> similarIndicators;
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id.matchingTracts")
+    private Set<MatchingTractSimilarIndicator> similarIndicators;
+
+    // @ManyToMany(fetch = FetchType.EAGER)
+    // @JoinTable(name = "matching_tract_dissimilar_indicator", joinColumns = {
+    // @JoinColumn(name = "child_tract_gid", referencedColumnName =
+    // "child_tract_gid"),
+    // @JoinColumn(name = "parent_tract_gid", referencedColumnName =
+    // "parent_tract_gid") }, inverseJoinColumns = {
+    // @JoinColumn(name = "indicator_id", referencedColumnName = "id") })
+    // private Set<Indicator> dissimilarIndicators;
 
     /**
      * The ranking order for which to display this matching tract

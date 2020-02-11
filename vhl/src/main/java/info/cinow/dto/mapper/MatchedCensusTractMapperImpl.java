@@ -23,6 +23,7 @@ public class MatchedCensusTractMapperImpl implements MatchedCensusTractMapper {
         dto.setRank(censusTract.getRank());
         dto.setLifeExpectancyDifference(censusTract.getLifeExpentancyDifference());
         dto.setSimilarIndicators(censusTract.getSimilarIndicators());
+        // dto.setDissimilarIndicators(censusTract.getDissimilarIndicators());
         return dto;
     }
 }

@@ -18,20 +18,10 @@ import lombok.Data;
 @Entity
 @Table(name = "matching_tract_similar_indicator")
 @Data
-public class MatchingTractSimilarIndicator implements MatchingTractIndicator {
+public class MatchingTractSimilarIndicator {
 
     @EmbeddedId
     private MatchingCensusTractsIndicatorId id;
-
-    @ManyToOne
-    @JoinColumns({ @JoinColumn(name = "parent_tract_gid"), @JoinColumn(name = "child_tract_gid") })
-    @MapsId("tractsId")
-    private MatchingTract matchingTracts;
-
-    @MapsId("indicatorId")
-    @ManyToOne
-    @JoinColumn(name = "indicator_id")
-    private Indicator indicator;
 
     /**
      * The ranking of which to order the similar indicators

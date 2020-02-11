@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import lombok.Data;
 
@@ -32,5 +33,9 @@ public class Indicator {
 
     @Column(name = "is_life_expectancy", columnDefinition = "boolean default false")
     private Boolean isLifeExpectancy;
+
+    @OneToOne
+    @JoinColumn(name = "id")
+    private ValueType valueType;
 
 }

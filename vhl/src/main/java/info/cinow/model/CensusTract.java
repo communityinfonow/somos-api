@@ -1,6 +1,6 @@
 package info.cinow.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +34,5 @@ public class CensusTract {
 
     @Column(name = "geom", columnDefinition = "Geometry")
     private MultiPolygon polygon;
-
-    // @OneToMany(mappedBy = "censusTract")
-    // private List<Photo> photos;
 
 }

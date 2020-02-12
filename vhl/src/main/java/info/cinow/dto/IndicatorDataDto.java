@@ -14,4 +14,6 @@ public class IndicatorDataDto {
     private Double maxValue;
 
     private MarginOfError marginOfError;
+
+    private String censusTractId;
 }

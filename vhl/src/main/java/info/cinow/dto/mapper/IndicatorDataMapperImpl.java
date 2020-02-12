@@ -21,6 +21,7 @@ public class IndicatorDataMapperImpl implements IndicatorDataMapper {
         dto.setMarginOfError(data.getMarginOfError());
         dto.setMaxValue(data.getMaxValue());
         dto.setValue(data.getValue());
+        dto.setCensusTractId(data.getCensusTract().getGid());
 
         return dto;
     }

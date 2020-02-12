@@ -10,6 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import lombok.Data;
 
@@ -30,6 +34,7 @@ public class IndicatorData {
     private Indicator indicator;
 
     @ManyToOne
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "census_tract_id", referencedColumnName = "gid")
     @MapsId("gid")
     private CensusTract censusTract;
@@ -37,6 +42,7 @@ public class IndicatorData {
     @Column
     private Double value;
 
+    @Transient
     private Double maxValue;
 
     @Embedded

@@ -3,10 +3,13 @@ package info.cinow.model;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * MarginOfError
  */
 @Embeddable
+@Data
 public class MarginOfError {
 
     /**

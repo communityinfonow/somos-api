@@ -35,7 +35,7 @@ public class Indicator {
     private Boolean isLifeExpectancy;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "value_type_id")
     private ValueType valueType;
 
 }

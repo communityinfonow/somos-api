@@ -1,7 +1,7 @@
 package info.cinow.model;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
@@ -40,14 +42,19 @@ public class MatchingTract {
     @Column(name = "life_expectancy_difference")
     private Double lifeExpentancyDifference;
 
-    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<MatchingTractSimilarIndicator> similarIndicators;
-
     /**
      * The ranking order for which to display this matching tract
      */
     @Column
     private Integer rank;
+
+    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<MatchingTractSimilarIndicator> similarIndicators;
+
+    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<MatchingTractDissimilarIndicator> dissimilarIndicators;
 
     @Override
     public boolean equals(Object o) {

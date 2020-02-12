@@ -37,6 +37,8 @@ public class IndicatorData {
     @Column
     private Double value;
 
+    private Double maxValue;
+
     @Embedded
     private MarginOfError marginOfError;
 

@@ -10,4 +10,6 @@ public interface MatchingTractIndicator {
     public MatchingTract getMatchingTracts();
 
     public Integer getRank();
+
+    public Indicator getIndicator();
 }

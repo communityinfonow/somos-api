@@ -7,8 +7,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
 
@@ -24,7 +25,9 @@ public class MatchingTractSimilarIndicator implements MatchingTractIndicator {
     private MatchingCensusTractsIndicatorId id;
 
     @ManyToOne
-    @JoinColumns({ @JoinColumn(name = "parent_tract_gid"), @JoinColumn(name = "child_tract_gid") })
+    @JoinColumns({ @JoinColumn(name = "parent_tract_gid", referencedColumnName = "parent_tract_gid"),
+            @JoinColumn(name = "child_tract_gid", referencedColumnName = "child_tract_gid") })
+    @JsonBackReference
     @MapsId("tractsId")
     private MatchingTract matchingTracts;
 

@@ -30,14 +30,11 @@ public class MatchedCensusTractMapperImpl implements MatchedCensusTractMapper {
     @Autowired
     private IndicatorDao indicatorDao;
 
+    @Autowired
     private ConnectedLinks connectedLinks;
 
     @Autowired
     private IndicatorLinks indicatorLinks;
-
-    public MatchedCensusTractMapperImpl() {
-        this.connectedLinks = new ConnectedLinks();
-    }
 
     @Override
     public MatchedCensusTractDto toDto(MatchingTract censusTract) {

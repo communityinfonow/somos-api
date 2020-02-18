@@ -43,11 +43,8 @@ public class PhotoController {
     @Autowired
     PhotoMapper<PhotoAdminDto> photoAdminMapper;
 
+    @Autowired
     private PhotoLinks photoLinks;
-
-    public PhotoController() {
-        this.photoLinks = new PhotoLinks();
-    }
 
     @PostMapping
     public EntityModel<PhotoDto> savePhoto(@RequestParam("photo") MultipartFile photo) {

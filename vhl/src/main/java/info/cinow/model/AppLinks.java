@@ -14,8 +14,8 @@ public class AppLinks {
 
     private Link censusTracts;
 
-    private Link users;
-
     private Link photos;
+
+    private Link mapBreaks;
 
 }

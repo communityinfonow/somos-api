@@ -49,14 +49,11 @@ public class CensusTractController {
         @Autowired
         private IndicatorDataMapper indicatorDataMapper;
 
+        @Autowired
         private CensusTractLinks censusTractLinks;
 
+        @Autowired
         private CensusTractPhotoLinks censusTractPhotoLinks;
-
-        public CensusTractController() {
-                this.censusTractLinks = new CensusTractLinks();
-                this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-        }
 
         @GetMapping
         public CollectionModel<EntityModel<CensusTractDto>> getCensusTracts() {

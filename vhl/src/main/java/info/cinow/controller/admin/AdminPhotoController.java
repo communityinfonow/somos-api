@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import info.cinow.controller.connected_links.AdminPhotoLinks;
-import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
+import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;
@@ -37,18 +37,14 @@ public class AdminPhotoController {
     @Autowired
     PhotoMapper<PhotoAdminDto> photoAdminMapper;
 
-    private AdminPhotoLinks photoLinks;
+    @Autowired
+    private AdminPhotoLinks adminPhotoLinks;
 
-    private CensusTractLinks censusTractLinks;
+    @Autowired
+    private PhotoLinks photoLinks;
 
+    @Autowired
     private CensusTractPhotoLinks censusTractPhotoLinks;
-
-    public AdminPhotoController() {
-        this.photoLinks = new AdminPhotoLinks();
-        this.censusTractLinks = new CensusTractLinks();
-        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-
-    }
 
     @GetMapping
     public CollectionModel<EntityModel<PhotoAdminDto>> getAllPhotos() {
@@ -62,7 +58,7 @@ public class AdminPhotoController {
                     this.censusTractPhotoLinks.photoFile(photoDto.getCensusTractId(), photo.getFilePathName(), false),
                     this.censusTractPhotoLinks.croppedPhotoFile(photoDto.getCensusTractId(),
                             photo.getCroppedFilePathName(), false),
-                    this.photoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
+                    this.adminPhotoLinks.photo(photoDto.getCensusTractId(), photoDto.getId(), true),
                     this.photoLinks.photoMetadata(photoDto.getId(), false), this.photoLinks.photos(false));
         }).collect(Collectors.toList()));
 

@@ -40,25 +40,19 @@ import lombok.extern.slf4j.Slf4j;
 public class CensusTractPhotoController {
 
         @Autowired
-        PhotoService photoService;
+        private PhotoService photoService;
 
         @Autowired
-        CensusTractPhotoService censusTractPhotoService;
+        private CensusTractPhotoService censusTractPhotoService;
 
         @Autowired
-        PhotoMapper<PhotoDto> photoMapper;
+        private PhotoMapper<PhotoDto> photoMapper;
 
         @Autowired
-        PhotoMapper<PhotoSaveDto> photoSaveMapper;
+        private PhotoMapper<PhotoSaveDto> photoSaveMapper;
 
         @Autowired
-        CensusTractService censusTractService;
-
-        private final CensusTractPhotoLinks censusTractPhotoLinks;
-
-        public CensusTractPhotoController() {
-                this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-        }
+        private CensusTractPhotoLinks censusTractPhotoLinks;
 
         @GetMapping()
         public CollectionModel<EntityModel<PhotoDto>> getAllPhotosForTract(

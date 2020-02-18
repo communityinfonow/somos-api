@@ -5,16 +5,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Component;
 
-import info.cinow.controller.CensusTractController;
-import info.cinow.service.IndicatorService;
+import info.cinow.controller.MapBreakController;
 
 /**
- * AuthenticationLinks
+ * MapBreakLinks
  */
-public interface IndicatorLinks {
+public interface MapBreakLinks {
 
-    public Link lifeExpectancy(String label, String censusTractId);
-
+    public Link allMapBreaks();
 }

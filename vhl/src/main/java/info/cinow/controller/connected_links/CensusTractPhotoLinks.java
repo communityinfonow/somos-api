@@ -1,48 +1,24 @@
 package info.cinow.controller.connected_links;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.util.ReflectionUtils;
 
 import info.cinow.controller.CensusTractPhotoController;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * CensusTractPhotoLinks
  */
-public class CensusTractPhotoLinks {
+public interface CensusTractPhotoLinks {
 
-        private ConnectedLinks connectedLinks;
+        public Link photoFile(String censusTractId, String fileName, Boolean self);
 
-        public CensusTractPhotoLinks() {
-                this.connectedLinks = new ConnectedLinks();
-        }
+        public Link croppedPhotoFile(String censusTractId, String fileName, Boolean self);
 
-        public Link photoFile(String censusTractId, String fileName, Boolean self) {
-                return this.connectedLinks.configureRelation(linkTo(
-                                ReflectionUtils.findMethod(CensusTractPhotoController.class,
-                                                "getPhotoFileByNameForTract", String.class, String.class),
-                                censusTractId, fileName), self, "photo-file");
-        }
+        public Link photo(String censusTractId, Long photoId, Boolean self);
 
-        public Link croppedPhotoFile(String censusTractId, String fileName, Boolean self) {
-                return this.connectedLinks.configureRelation(linkTo(
-                                ReflectionUtils.findMethod(CensusTractPhotoController.class,
-                                                "getPhotoFileByNameForTract", String.class, String.class),
-                                censusTractId, fileName), self, "cropped-photo-file");
-        }
-
-        public Link photo(String censusTractId, Long photoId, Boolean self) {
-                return this.connectedLinks
-                                .configureRelation(
-                                                linkTo(methodOn(CensusTractPhotoController.class)
-                                                                .getPhotoByIdForTract(censusTractId, photoId)),
-                                                self, "photo");
-        }
-
-        public Link photos(String censusTractId, Boolean self) {
-                return this.connectedLinks.configureRelation(
-                                linkTo(methodOn(CensusTractPhotoController.class).getAllPhotosForTract(censusTractId)),
-                                self, "photos");
-        }
+        public Link photos(String censusTractId, Boolean self);
 }

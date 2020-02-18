@@ -7,14 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import info.cinow.controller.CensusTractController;
-import info.cinow.service.IndicatorService;
+import info.cinow.controller.admin.AuthController;
 
 /**
  * AuthenticationLinks
  */
-public interface IndicatorLinks {
 
-    public Link lifeExpectancy(String label, String censusTractId);
+@Component
+public class AuthenticationLinksImpl implements AuthenticationLinks {
 
+    @Autowired
+    private ConnectedLinks connectedLinks;
+
+    public Link login() {
+        return this.connectedLinks.configureRelation(linkTo(methodOn(AuthController.class).login(null, null)), false,
+                "login");
+    }
 }

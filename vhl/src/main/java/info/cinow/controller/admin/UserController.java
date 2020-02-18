@@ -32,16 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     @Autowired
-    UserService service;
+    private UserService service;
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
-    UserLinks userLinks;
-
-    public UserController() {
-        this.userLinks = new UserLinks();
-    }
+    @Autowired
+    private UserLinks userLinks;
 
     @GetMapping
     public CollectionModel<EntityModel<UserDto>> getUsers() {

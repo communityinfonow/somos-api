@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import info.cinow.controller.connected_links.AdminPhotoLinks;
+import info.cinow.controller.connected_links.AdminPhotoLinksImpl;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.AdminPhotoSaveDto;
 import info.cinow.dto.PhotoDto;
@@ -62,14 +62,11 @@ public class AdminCensusTractPhotoController {
     @Autowired
     CensusTractPhotoService censusTractPhotoService;
 
-    private final CensusTractPhotoLinks censusTractPhotoLinks;
+    @Autowired
+    private CensusTractPhotoLinks censusTractPhotoLinks;
 
-    private final AdminPhotoLinks adminPhotoLinks;
-
-    public AdminCensusTractPhotoController() {
-        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-        this.adminPhotoLinks = new AdminPhotoLinks();
-    }
+    @Autowired
+    private AdminPhotoLinksImpl adminPhotoLinks;
 
     @GetMapping("/{id}")
     public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,

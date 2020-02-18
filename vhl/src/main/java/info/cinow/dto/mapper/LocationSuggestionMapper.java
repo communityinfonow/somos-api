@@ -9,6 +9,6 @@ import info.cinow.dto.LocationSuggestionDto;
  */
 public interface LocationSuggestionMapper<T> {
 
-    public List<LocationSuggestionDto> toDto(T model);
+    public LocationSuggestionDto toDto(T model);
 
 }

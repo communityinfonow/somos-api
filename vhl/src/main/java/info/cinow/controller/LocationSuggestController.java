@@ -1,7 +1,11 @@
 package info.cinow.controller;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +13,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.MatrixVariable;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,7 +43,7 @@ public class LocationSuggestController {
     private GeocodeService geocodeService;
 
     @Autowired
-    private LocationSuggestionMapper<LocationIqResult[]> locationIqMapper;
+    private LocationSuggestionMapper<LocationIqResult> locationIqMapper;
 
     /**
      * Catches 400, 401, 403, 429, 500, and restClient errors and passes as 500 to
@@ -49,8 +55,23 @@ public class LocationSuggestController {
     @GetMapping()
     @ResponseBody
     public List<LocationSuggestionDto> getLocationSuggestions(@RequestParam String location) {
-        return locationIqMapper.toDto(geocodeService.getLocationSuggestions(location));
+        return Arrays.asList(geocodeService.getLocationSuggestionsByAddress(location)).stream()
+                .map(locationSuggestion -> locationIqMapper.toDto(locationSuggestion)).collect(Collectors.toList());
 
+    }
+
+    @GetMapping("/zip/{zipCode}")
+    @ResponseBody
+    public List<LocationSuggestionDto> getLocationSuggestionsByZipCode(@PathVariable("zipCode") String zipCode) {
+        return Arrays.asList(geocodeService.getLocationSuggestionsByZipCode(zipCode)).stream()
+                .map(locationSuggestion -> locationIqMapper.toDto(locationSuggestion)).collect(Collectors.toList());
+
+    }
+
+    @GetMapping("/latlng/{latlng}")
+    public LocationSuggestionDto getLocationByLatLng(@MatrixVariable Map<String, String> latLng) {
+        return locationIqMapper.toDto(geocodeService.getLocationByLatLng(Double.parseDouble(latLng.get("lat")),
+                Double.parseDouble(latLng.get("lng"))));
     }
 
     /**

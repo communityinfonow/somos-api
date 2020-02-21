@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import info.cinow.controller.connected_links.AdminPhotoLinks;
+import info.cinow.controller.connected_links.AdminPhotoLinksImpl;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.AdminPhotoSaveDto;
 import info.cinow.dto.PhotoDto;
@@ -62,17 +62,14 @@ public class AdminCensusTractPhotoController {
     @Autowired
     CensusTractPhotoService censusTractPhotoService;
 
-    private final CensusTractPhotoLinks censusTractPhotoLinks;
+    @Autowired
+    private CensusTractPhotoLinks censusTractPhotoLinks;
 
-    private final AdminPhotoLinks adminPhotoLinks;
-
-    public AdminCensusTractPhotoController() {
-        this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-        this.adminPhotoLinks = new AdminPhotoLinks();
-    }
+    @Autowired
+    private AdminPhotoLinksImpl adminPhotoLinks;
 
     @GetMapping("/{id}")
-    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+    public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id) {
         return new EntityModel<>(
                 this.photoMapper.toDto(this.censusTractPhotoService.getPublicPhotoByIdForTract(censusTractId, id))
@@ -82,7 +79,7 @@ public class AdminCensusTractPhotoController {
 
     @PostMapping("/{id}")
     // TODO secure with auth
-    public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("censusTractId") final Integer censusTractId,
+    public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id, @RequestParam("photo") final MultipartFile photo)
             throws ImageNameTooLongException, WrongFileTypeException {
         Photo savedPhoto = null;
@@ -105,7 +102,7 @@ public class AdminCensusTractPhotoController {
     }
 
     @PutMapping("/{id}")
-    public EntityModel<PhotoDto> updatePhotoInformation(@PathVariable("censusTractId") final Integer censusTractId,
+    public EntityModel<PhotoDto> updatePhotoInformation(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id, @RequestBody final AdminPhotoSaveDto photoDto) {
         final Photo photo = adminPhotoSaveMapper.toPhoto(photoDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -127,7 +124,7 @@ public class AdminCensusTractPhotoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletePhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+    public void deletePhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long photoId) {
 
         try {

@@ -30,7 +30,7 @@ public class CensusTractServiceImplTest {
 
     @Test
     public void realDaoReturnsGeometry() {
-        CensusTract tract = this.service.getCensusTract(1);
+        CensusTract tract = this.service.getCensusTract("1");
         assertNotNull(tract.getPolygon());
     }
 

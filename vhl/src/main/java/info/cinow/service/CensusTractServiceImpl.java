@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import info.cinow.model.CensusTract;
+import info.cinow.model.MatchingTract;
 import info.cinow.repository.CensusTractDao;
+import info.cinow.repository.MatchedCensusTractDao;
 
 /**
  * CensusTractServiceImpl
@@ -19,6 +21,9 @@ public class CensusTractServiceImpl implements CensusTractService {
 
     @Autowired
     private CensusTractDao censusTractDao;
+
+    @Autowired
+    private MatchedCensusTractDao matchedCensusTractDao;
 
     @Override
     public List<CensusTract> getAllCensusTracts() {
@@ -30,16 +35,13 @@ public class CensusTractServiceImpl implements CensusTractService {
     }
 
     @Override
-    public CensusTract getCensusTract(Integer id) {
+    public CensusTract getCensusTract(String id) {
         return censusTractDao.findById(id).orElse(null);
     }
 
     @Override
-    public List<CensusTract> getMatchedTracts(Integer id) {
-        CensusTract tract = censusTractDao.findById(id).orElse(null);
-
-        return tract.getMatchingCensusTracts().stream().map(matchingTracts -> matchingTracts.getChildTract())
-                .collect(Collectors.toList());
+    public List<MatchingTract> getMatchedTracts(String id) {
+        return this.matchedCensusTractDao.findMatchingTractsByParentId(id).stream().collect(Collectors.toList());
     }
 
     @Override

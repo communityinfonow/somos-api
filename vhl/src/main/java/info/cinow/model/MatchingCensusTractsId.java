@@ -21,10 +21,10 @@ public class MatchingCensusTractsId implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "parent_id")
-    private Long parentTractId;
+    private String parentTractId;
 
     @Column(name = "child_id")
-    private Long childTractId;
+    private String childTractId;
 
     public MatchingCensusTractsId() {
 

@@ -42,4 +42,7 @@ public class LocationIqResult {
 
     private String icon;
 
+    @JsonProperty("address")
+    private AddressDetails addressDetails;
+
 }

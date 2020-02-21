@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import info.cinow.model.CensusTract;
+import info.cinow.model.MatchingTract;
 
 /**
  * CensusTractService
@@ -11,9 +12,9 @@ import info.cinow.model.CensusTract;
 public interface CensusTractService {
     public List<CensusTract> getAllCensusTracts();
 
-    public CensusTract getCensusTract(Integer id);
+    public CensusTract getCensusTract(String id);
 
-    public List<CensusTract> getMatchedTracts(Integer id);
+    public List<MatchingTract> getMatchedTracts(String id);
 
     public Optional<CensusTract> getCensusTract(double lat, double lng);
 }

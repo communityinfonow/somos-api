@@ -1,6 +1,7 @@
 package info.cinow.dto;
 
 import info.cinow.model.Location;
+import info.cinow.model.locationiq.AddressDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,4 +19,6 @@ public class LocationSuggestionDto {
      */
 
     Location location;
+
+    AddressDetails addressDetails;
 }

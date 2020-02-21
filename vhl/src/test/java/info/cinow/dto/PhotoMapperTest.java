@@ -51,7 +51,7 @@ public class PhotoMapperTest {
     @Before
     public void setup() {
         CensusTract tract = new CensusTract();
-        tract.setGid(1);
+        tract.setGid("1");
 
         User user = new User();
         user.setFirstName("First");

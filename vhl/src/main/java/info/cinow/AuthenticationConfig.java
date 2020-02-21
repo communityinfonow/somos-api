@@ -90,7 +90,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery(
-                        "select email_address,password, true as enabled from user_table where email_address=?")
+                        "select email_address,password, true as enabled from user_table where lower (email_address)=?")
                 .authoritiesByUsernameQuery("SELECT U.email_address, R.name FROM USER_TABLE U, USERS_ROLES UR, ROLE R "
                         + "WHERE U.id = UR.user_id AND R.id = UR.role_id and U.email_address = ?")
                 .passwordEncoder(passwordEncoder());

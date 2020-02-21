@@ -1,44 +1,60 @@
 package info.cinow.model;
 
 import java.util.Objects;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
 /**
  * MatchingCensusTracts
  */
-@Entity(name = "matchingCensusTracts")
-@Table(name = "matching_census_tracts")
+@Entity(name = "matchingTract")
+@Table(name = "matching_tract")
 @Data
-public class MatchingCensusTracts {
+public class MatchingTract {
 
     @EmbeddedId
     private MatchingCensusTractsId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("parentTractId")
     private CensusTract parentTract;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @MapsId("childTractId")
     private CensusTract childTract;
-
-    @Column(name = "multivariable_difference")
-    private Double multivariableDifference;
 
     @Column(name = "miles_difference")
     private Double milesDifference;
 
     @Column(name = "life_expectancy_difference")
-    private Double lifeExpentencyDifference;
+    private Double lifeExpentancyDifference;
+
+    /**
+     * The ranking order for which to display this matching tract
+     */
+    @Column
+    private Integer rank;
+
+    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<MatchingTractSimilarIndicator> similarIndicators;
+
+    @OneToMany(mappedBy = "matchingTracts", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<MatchingTractDissimilarIndicator> dissimilarIndicators;
 
     @Override
     public boolean equals(Object o) {
@@ -48,7 +64,7 @@ public class MatchingCensusTracts {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        MatchingCensusTracts that = (MatchingCensusTracts) o;
+        MatchingTract that = (MatchingTract) o;
         return Objects.equals(parentTract, that.parentTract) && Objects.equals(childTract, that.childTract);
     }
 

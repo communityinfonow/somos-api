@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 
-import info.cinow.model.CensusTractData;
 import info.cinow.model.Photo;
 import lombok.Data;
 
@@ -14,9 +13,7 @@ import lombok.Data;
 @Data
 public class CensusTractDto {
 
-    private Integer id;
-
-    private String tract;
+    private String id;
 
     private MultiPolygon geometry;
 

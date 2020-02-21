@@ -14,11 +14,21 @@ import info.cinow.repository.GeocodeDao;
 public class GeocodeServiceImpl implements GeocodeService {
 
     @Autowired
-    private GeocodeDao<LocationIqResult[]> locationIqDao;
+    private GeocodeDao<LocationIqResult> locationIqDao;
 
     @Override
-    public LocationIqResult[] getLocationSuggestions(String locationString) {
-        return locationIqDao.find(locationString);
+    public LocationIqResult[] getLocationSuggestionsByAddress(String locationString) {
+        return locationIqDao.findByAddress(locationString);
+    }
+
+    @Override
+    public LocationIqResult getLocationByLatLng(double lat, double lng) {
+        return locationIqDao.findByLatLng(lat, lng);
+    }
+
+    @Override
+    public LocationIqResult[] getLocationSuggestionsByZipCode(String zipCode) {
+        return locationIqDao.findByZipCode(zipCode);
     }
 
 }

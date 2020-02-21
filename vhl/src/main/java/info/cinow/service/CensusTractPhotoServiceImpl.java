@@ -17,11 +17,11 @@ public class CensusTractPhotoServiceImpl implements CensusTractPhotoService {
     @Autowired
     CensusTractPhotoDao dao;
 
-    public List<Photo> getAllPublicPhotosForTract(Integer censusTractId) {
+    public List<Photo> getAllPublicPhotosForTract(String censusTractId) {
         return this.dao.findPublicByCensusTractId(censusTractId);
     }
 
-    public Photo getPublicPhotoByIdForTract(Integer censusTractId, Long photoId) {
+    public Photo getPublicPhotoByIdForTract(String censusTractId, Long photoId) {
         return this.dao.findPublicByCensusTractPhotoId(censusTractId, photoId);
     }
 }

@@ -40,29 +40,23 @@ import lombok.extern.slf4j.Slf4j;
 public class CensusTractPhotoController {
 
         @Autowired
-        PhotoService photoService;
+        private PhotoService photoService;
 
         @Autowired
-        CensusTractPhotoService censusTractPhotoService;
+        private CensusTractPhotoService censusTractPhotoService;
 
         @Autowired
-        PhotoMapper<PhotoDto> photoMapper;
+        private PhotoMapper<PhotoDto> photoMapper;
 
         @Autowired
-        PhotoMapper<PhotoSaveDto> photoSaveMapper;
+        private PhotoMapper<PhotoSaveDto> photoSaveMapper;
 
         @Autowired
-        CensusTractService censusTractService;
-
-        private final CensusTractPhotoLinks censusTractPhotoLinks;
-
-        public CensusTractPhotoController() {
-                this.censusTractPhotoLinks = new CensusTractPhotoLinks();
-        }
+        private CensusTractPhotoLinks censusTractPhotoLinks;
 
         @GetMapping()
         public CollectionModel<EntityModel<PhotoDto>> getAllPhotosForTract(
-                        @PathVariable("censusTractId") final Integer censusTractId) {
+                        @PathVariable("censusTractId") final String censusTractId) {
                 return new CollectionModel<>(this.censusTractPhotoService.getAllPublicPhotosForTract(censusTractId)
                                 .stream().map(photo -> {
                                         return new EntityModel<>(
@@ -81,7 +75,7 @@ public class CensusTractPhotoController {
         }
 
         @GetMapping("/{id}")
-        public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final Integer censusTractId,
+        public EntityModel<PhotoDto> getPhotoByIdForTract(@PathVariable("censusTractId") final String censusTractId,
                         @PathVariable("id") final Long id) {
                 return new EntityModel<>(this.photoMapper
                                 .toDto(this.censusTractPhotoService.getPublicPhotoByIdForTract(censusTractId, id))
@@ -91,7 +85,7 @@ public class CensusTractPhotoController {
 
         @PutMapping("/{id}")
         public EntityModel<PhotoDto> updatePhotoInformationForTract(
-                        @PathVariable("censusTractId") final Integer censusTractId, @PathVariable("id") final Long id,
+                        @PathVariable("censusTractId") final String censusTractId, @PathVariable("id") final Long id,
                         @RequestBody final PhotoSaveDto photoDto) {
                 final Photo photo = photoSaveMapper.toPhoto(photoDto)
                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -113,7 +107,7 @@ public class CensusTractPhotoController {
 
         // TODO: secure for public use by modifying query to get accepted
         @GetMapping(value = "/file/{fileName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-        public byte[] getPhotoFileByNameForTract(@PathVariable("censusTractId") final Integer censusTractId,
+        public byte[] getPhotoFileByNameForTract(@PathVariable("censusTractId") final String censusTractId,
                         @PathVariable("fileName") final String fileName) {
                 try {
                         return photoService.getPublicPhotoByFileName(fileName);

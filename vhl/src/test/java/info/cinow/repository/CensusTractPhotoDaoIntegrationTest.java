@@ -41,7 +41,7 @@ public class CensusTractPhotoDaoIntegrationTest {
 
     @Before
     public void setup() {
-        this.censusTract = new CensusTract(1);
+        this.censusTract = new CensusTract("1");
         this.photo = new Photo();
         this.photo.setApproved(false);
         this.photo.setCensusTract(censusTract);

@@ -9,7 +9,7 @@ import info.cinow.model.Photo;
  */
 public interface CensusTractPhotoService {
 
-    public List<Photo> getAllPublicPhotosForTract(Integer censusTractId);
+    public List<Photo> getAllPublicPhotosForTract(String censusTractId);
 
-    public Photo getPublicPhotoByIdForTract(Integer censusTractId, Long photoId);
+    public Photo getPublicPhotoByIdForTract(String censusTractId, Long photoId);
 }

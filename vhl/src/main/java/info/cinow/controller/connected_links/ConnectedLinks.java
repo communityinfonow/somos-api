@@ -6,9 +6,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 /**
  * ConnectedLinks
  */
-public class ConnectedLinks {
+public interface ConnectedLinks {
 
-    public Link configureRelation(WebMvcLinkBuilder linkBuilder, Boolean self, String defaultRelationName) {
-        return self ? linkBuilder.withSelfRel() : linkBuilder.withRel(defaultRelationName);
-    }
+    public Link configureRelation(WebMvcLinkBuilder linkBuilder, Boolean self, String defaultRelationName);
 }

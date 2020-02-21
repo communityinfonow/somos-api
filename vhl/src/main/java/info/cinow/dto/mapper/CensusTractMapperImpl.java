@@ -18,7 +18,6 @@ public class CensusTractMapperImpl implements CensusTractMapper {
         }
         CensusTractDto dto = new CensusTractDto();
         dto.setId(censusTract.getGid());
-        dto.setTract(censusTract.getTract());
         dto.setGeometry(censusTract.getPolygon());
         return dto;
     }

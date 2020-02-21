@@ -30,8 +30,8 @@ public class AuthServiceImpl implements AuthService {
 
     public Authentication authorize(LoginRequest loginRequest) {
         try {
-            this.auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            this.auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername().toLowerCase(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(auth);
         } catch (BadCredentialsException e) {
             log.info("Login attempt unsuccessful for username: " + loginRequest.getUsername());

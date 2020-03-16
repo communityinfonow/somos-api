@@ -1,13 +1,23 @@
 package info.cinow.service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -228,7 +238,40 @@ public class PhotoServiceImpl implements PhotoService {
 
     private byte[] loadPhotoFromS3Bucket(String photoName) throws IOException {
         S3ObjectInputStream stream = amazonS3Client.getObject(bucketName, photoName).getObjectContent();
-        return IOUtils.toByteArray(stream);
+        return this.compressImage(IOUtils.toByteArray(stream), photoName);
+    }
+
+    private byte[] compressImage(byte[] imageFile, String photoName) throws IOException {
+        File file = new File(photoName);
+        File compressedImageFile = new File(file.getName());
+
+        OutputStream os = new FileOutputStream(file);
+        os.write(imageFile);
+        os.close();
+        BufferedImage image = ImageIO.read(file);
+
+        os = new FileOutputStream(compressedImageFile);
+
+        // TODO dynamic writer for each image type
+        // TODO run this code only if as a param from the client
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpeg");
+        ImageWriter writer = (ImageWriter) writers.next();
+
+        ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+        writer.setOutput(ios);
+
+        ImageWriteParam param = writer.getDefaultWriteParam();
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(0.1f);
+
+        writer.write(null, new IIOImage(image, null, null), param);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpeg", baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+
+        return imageInByte;
     }
 
     private void deletePhotoFromS3Bucket(String photoName) throws IOException {

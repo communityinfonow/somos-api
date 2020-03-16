@@ -105,23 +105,4 @@ public class CensusTractController {
                 return matchedTracts;
         }
 
-        @GetMapping("/{id}/indicators/{indicatorId}/data")
-        public EntityModel<IndicatorDataDto> getDataByIndicatorGeography(@PathVariable("id") String censusTractId,
-                        @PathVariable("indicatorId") Long indicatorId) {
-                return new EntityModel<>(this.indicatorDataMapper
-                                .toDto(this.indicatorService.getDataByIndicatorGeography(censusTractId, indicatorId)));
-        }
-
-        @GetMapping("/indicators/{indicatorId}/data")
-        public IndicatorDataSetDto getDataByIndicator(@PathVariable("indicatorId") Long indicatorId) {
-                IndicatorDataSetDto dto = new IndicatorDataSetDto();
-                IndicatorDataSet dataset = indicatorService.getDataByIndicatorId(indicatorId);
-                dto.setIndicatorData(dataset.getIndicatorData().stream()
-                                .map(indicatorData -> this.indicatorDataMapper.toDto(indicatorData))
-                                .collect(Collectors.toSet()));
-                dto.setMaxValue(dataset.getMaxValue());
-                dto.setMinValue(dataset.getMinValue());
-                return dto;
-        }
-
 }

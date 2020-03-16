@@ -1,5 +1,7 @@
 package info.cinow.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -38,6 +40,13 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     @Override
+    public List<Indicator> getAllIndicators() {
+        List<Indicator> indicators = new ArrayList<Indicator>();
+        this.indicatorDao.findAll().forEach(indicators::add);
+        return indicators;
+    }
+
+    @Override
     public Indicator getLifeExpectancyIndicator() {
         return this.indicatorDao.findLifeExpectancyIndicator();
     }
@@ -64,17 +73,17 @@ public class IndicatorServiceImpl implements IndicatorService {
         return this.indicatorDao.findById(indicatorId);
     }
 
-    private double determineMaxValue(Indicator indicator) {
-        double maxValue = this.indicatorDataDao.getMaxValueByIndicatorId(indicator.getId());
-        if (indicator.getValueType().getType().equals("percent")) {
+    private Double determineMaxValue(Indicator indicator) {
+        Double maxValue = this.indicatorDataDao.getMaxValueByIndicatorId(indicator.getId());
+        if (!indicator.getValueType().equals(null) && indicator.getValueType().getType().equals("percent")) {
             return 100.0;
         } else {
             return maxValue;
         }
     }
 
-    private double determineMinValue(Indicator indicator) {
-        double minValue = this.indicatorDataDao.getMinValueByIndicatorId(indicator.getId());
+    private Double determineMinValue(Indicator indicator) {
+        Double minValue = this.indicatorDataDao.getMinValueByIndicatorId(indicator.getId());
         if (indicator.getValueType().getType().equals("percent")) {
             return 0.0;
         } else {

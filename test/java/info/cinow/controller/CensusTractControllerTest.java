@@ -49,22 +49,10 @@ public class CensusTractControllerTest {
     @MockBean
     private CensusTractDao censusTractDao;
 
-    // @MockBean
-    // AuthenticationManagerBuilder builder;
-
     @MockBean
     DataSource dataSource;
 
     @MockBean
-
-    // @MockBean
-    // UserDetailsService userDetailsService;
-
-    // @MockBean
-    // PasswordEncoder passwordEncoder;
-
-    // @MockBean
-    // public HttpFirewall allowUrlSemicolonhHttpFirewall;
 
     private CensusTract tract;
 
@@ -73,7 +61,6 @@ public class CensusTractControllerTest {
         this.tract = new CensusTract();
         this.tract.setGid("1");
         Authentication authentication = Mockito.mock(Authentication.class);
-        // Mockito.whens() for your authorization object
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
 

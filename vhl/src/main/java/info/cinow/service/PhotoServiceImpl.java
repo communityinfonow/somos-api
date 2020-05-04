@@ -132,9 +132,6 @@ public class PhotoServiceImpl implements PhotoService {
         }
         this.updateS3FileName(photo.getId(), photo.getFileName().get(), photo.getFilePathName());
         return photoDao.save(photo);
-
-        // TODO test s3 name update
-
     }
 
     /**
@@ -143,7 +140,6 @@ public class PhotoServiceImpl implements PhotoService {
      * @param photo
      */
     private void updateS3FileName(Long photoId, String photoName, String photoPath) {
-        // TODO test
         Photo oldPhoto = this.photoDao.findById(photoId).get();
         if (!oldPhoto.getFileName().get().equals(photoName)) {
             amazonS3Client.copyObject(bucketName, oldPhoto.getFilePathName(), bucketName, photoPath);
@@ -187,9 +183,7 @@ public class PhotoServiceImpl implements PhotoService {
             if (!(e instanceof DataAccessException)) {
                 photoDao.delete(savedPhotoInfo); // if error isn't from JPA, delete photo in database
             }
-            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved"); // TODO move this
-                                                                                                       // throw to the
-                                                                                                       // controller
+            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved");
         } finally {
             FileUtils.deleteQuietly(photoFile); // clean up temp file
         }
@@ -252,8 +246,6 @@ public class PhotoServiceImpl implements PhotoService {
 
         os = new FileOutputStream(compressedImageFile);
 
-        // TODO dynamic writer for each image type
-        // TODO run this code only if as a param from the client
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpeg");
         ImageWriter writer = (ImageWriter) writers.next();
 

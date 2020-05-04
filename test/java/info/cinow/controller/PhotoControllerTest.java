@@ -102,7 +102,6 @@ public class PhotoControllerTest {
 
     @Test
     public void getPhotos() throws Exception {
-        // TODO
         mvc.perform(get("/photos").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 

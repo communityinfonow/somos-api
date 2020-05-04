@@ -91,17 +91,15 @@ public class LocationSuggestController {
      */
     @ExceptionHandler(ResponseStatusException.class)
     private void internalServerError(ResponseStatusException e) {
-        // TODO actually make sure this does what I want
         switch (e.getStatus()) {
-        // case HttpStatus.NOT_FOUND ->
-        case BAD_REQUEST:
-        case UNAUTHORIZED:
-        case FORBIDDEN:
-        case TOO_MANY_REQUESTS:
-            log.error("An error occured accessing the REST APIs for geocoding", e);
-            throw new InternalError();
-        default:
-            break;
+            case BAD_REQUEST:
+            case UNAUTHORIZED:
+            case FORBIDDEN:
+            case TOO_MANY_REQUESTS:
+                log.error("An error occured accessing the REST APIs for geocoding", e);
+                throw new InternalError();
+            default:
+                break;
         }
     }
 

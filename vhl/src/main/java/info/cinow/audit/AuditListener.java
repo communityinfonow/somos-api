@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
-import info.cinow.audit.Audit;
 
 /**
  * AuditListener

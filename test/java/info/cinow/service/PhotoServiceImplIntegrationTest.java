@@ -26,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;//I got the error in
 import org.springframework.transaction.annotation.Transactional;
 
 import info.cinow.audit.Audit;
-// import info.cinow.authentication.User;
 import info.cinow.dto.PhotoDto;
 import info.cinow.exceptions.ImageNameTooLongException;
 import info.cinow.exceptions.ImageTooLargeException;
@@ -71,12 +70,9 @@ public class PhotoServiceImplIntegrationTest {
         returnPhoto.setApproved(true);
         returnPhoto.setDescription("description");
         returnPhoto.setCensusTract(new CensusTract());
-        // User user = new User();
-        // user.setFirstName("First");
-        // user.setLastName("last");
+
         Audit audit = new Audit();
         audit.setLastModified(LocalDateTime.now());
-        // audit.setLastModifiedBy(user);
         returnPhoto.setAudit(audit);
         mockFile = new MockMultipartFile("fileThatDoesNotExists.jpeg", "fileThatDoesNotExists.jpeg", "image/jpeg",
                 new FileInputStream(
@@ -113,13 +109,4 @@ public class PhotoServiceImplIntegrationTest {
         amazonS3Client.deleteObject(bucketName, returnPhoto.getFilePathName());
     }
 
-    @Test
-    public void updatePhotoName_UpdatesInBothPlaces() {
-        // TODO: test for updating file name and updates in s3 and database
-    }
-
-    @Test
-    public void savedImageStripsMetadata() {
-        // TODO: test for stripped metadata
-    }
 }

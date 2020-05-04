@@ -24,7 +24,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;//I got the error in this line
 
 import info.cinow.audit.Audit;
-// import info.cinow.authentication.User;
 import info.cinow.dto.PhotoDto;
 import info.cinow.exceptions.CensusTractDoesNotExistException;
 import info.cinow.exceptions.ImageNameTooLongException;
@@ -33,8 +32,7 @@ import info.cinow.exceptions.NoDescriptionException;
 import info.cinow.exceptions.WrongFileTypeException;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
-// import info.cinow.model.User;
-// import info.cinow.model.User;
+
 import info.cinow.repository.PhotoDao;
 
 /**
@@ -73,12 +71,9 @@ public class PhotoServiceImplTest {
         returnPhoto.setApproved(true);
         returnPhoto.setDescription("description");
         returnPhoto.setCensusTract(new CensusTract());
-        // User user = new User();
-        // user.setFirstName("First");
-        // user.setLastName("last");
+
         Audit audit = new Audit();
         audit.setLastModified(LocalDateTime.now());
-        // audit.setLastModifiedBy(user);
         returnPhoto.setAudit(audit);
 
         mockFileLongName = new MockMultipartFile("photo", StringUtils.repeat("j", 1010) + ".jpeg", "image/jpeg",
@@ -112,8 +107,6 @@ public class PhotoServiceImplTest {
         assertNotNull(photo);
         assertNotNull(photo.getAudit());
         assertNotNull(photo.getAudit().getLastModified());
-        // assertNotNull(photo.getAudit().getLastModifiedBy());
-        // assertEquals(photo.getAudit().getLastModifiedBy().getFirstName(), "First");
 
     }
 
@@ -151,11 +144,6 @@ public class PhotoServiceImplTest {
             throws IOException, ImageTooLargeException, ImageNameTooLongException, WrongFileTypeException {
         Mockito.when(amazonS3Client.putObject(any(PutObjectRequest.class))).thenReturn(null);
         this.service.uploadPhoto(mockFileLargeSize);
-    }
-
-    @Test
-    public void getImageByFileName() {
-        // TODO: test getting image by file name
     }
 
 }

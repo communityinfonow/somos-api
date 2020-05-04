@@ -15,9 +15,6 @@ import lombok.Data;
 @Data
 public class MapBreak {
 
-    // TODO delete all map break work? Doesn't seem needed since the life expectancy
-    // data will never change
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

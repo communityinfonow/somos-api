@@ -110,8 +110,6 @@ public class CensusTractPhotoControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // TODO: add basic testing for all endpoints
-
     @Test
     public void photoDescriptionUpdated_RestRemainsTheSame() throws Exception {
         mvc.perform(put("/census-tracts/1/photos/{id}", dto.getId()).contentType(MediaType.APPLICATION_JSON)

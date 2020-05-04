@@ -17,7 +17,6 @@ import info.cinow.audit.Audit;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.model.CensusTract;
 import info.cinow.model.Photo;
-// import info.cinow.model.User;
 import info.cinow.model.User;
 
 /**
@@ -112,7 +111,6 @@ public class PhotoMapperTest {
         this.adminDto.setOwnerFirstName("First");
         this.adminDto.setCensusTractId(tract.getGid());
         this.adminDto.setOwnerLastName("Last");
-        // this.adminDto.setLastEditedBy(audit.getLastModifiedBy().toString());
         this.adminDto.setLastEdited(audit.getLastModified().format(DateTimeFormatter.ISO_LOCAL_DATE).toString());
 
         this.adminDtoPhoto = new Photo();

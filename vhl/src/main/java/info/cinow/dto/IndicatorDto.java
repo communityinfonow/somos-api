@@ -1,5 +1,6 @@
 package info.cinow.dto;
 
+import info.cinow.model.ValueType;
 import lombok.Data;
 
 /**
@@ -17,5 +18,7 @@ public class IndicatorDto {
     private String dataLabel;
 
     private Boolean isLifeExpectancy;
+
+    private ValueType valueType;
 
 }

@@ -63,7 +63,7 @@ public class UserController {
     @GetMapping("/{id}")
     public EntityModel<UserDto> getUser(@PathVariable("id") Long id) {
         return new EntityModel<>(this.userMapper.toDto(this.service.getUser(id).orElse(null)),
-                this.userLinks.user(id, true), this.userLinks.users(false)); // TODO handle this null
+                this.userLinks.user(id, true), this.userLinks.users(false));
     }
 
     @PutMapping("/{id}")

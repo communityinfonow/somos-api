@@ -21,7 +21,6 @@ import info.cinow.controller.connected_links.MapBreakLinks;
 import info.cinow.controller.connected_links.PhotoLinks;
 import info.cinow.controller.connected_links.UserLinks;
 import info.cinow.model.AdminLinks;
-// import info.cinow.controller.connected_links.UserLinks;
 import info.cinow.model.AppLinks;
 import info.cinow.utility.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,6 @@ public class AppController {
 
     @GetMapping("/admin-links")
     public AdminLinks getAdminAppLinks() {
-        // TODO refactor this nonsense. Lots of duplicated effort here
         return new AdminLinks(this.censusTractLinks.censusTracts(false), this.userLinks.users(false),
                 this.adminPhotoLinks.photos(false), this.authLinks.login());
 

@@ -44,10 +44,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.logout().logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))).and()
                 .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/admin/users").hasRole("SUPER_USER").and().httpBasic().and().csrf().disable().cors();
-        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()); // TODO
-        // integration
-        // test
-        // this
+        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
     }
 

@@ -66,8 +66,7 @@ public class PhotoController {
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
         }
         return new EntityModel<>(dto, this.photoLinks.photoMetadata(dto.getId(), false));
-        // TODO if the lat/lng doesn't exist within the bounds of the geographies, don't
-        // return lat/lng
+
     }
 
     @GetMapping("/{id}/gps-coordinates")

@@ -78,7 +78,6 @@ public class AdminCensusTractPhotoController {
     }
 
     @PostMapping("/{id}")
-    // TODO secure with auth
     public EntityModel<PhotoDto> cropPhotoForTract(@PathVariable("censusTractId") final String censusTractId,
             @PathVariable("id") final Long id, @RequestParam("photo") final MultipartFile photo)
             throws ImageNameTooLongException, WrongFileTypeException {
@@ -113,7 +112,7 @@ public class AdminCensusTractPhotoController {
             return new EntityModel<>(
                     photoMapper.toDto(photoService.updatePhoto(photo))
                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)),
-                    this.censusTractPhotoLinks.photo(censusTractId, id, true)); // TODO
+                    this.censusTractPhotoLinks.photo(censusTractId, id, true));
 
         } catch (NoDescriptionException | CensusTractDoesNotExistException e) {
             log.error("An error occurred updating the photo information for tract: " + censusTractId + ", photo id:"

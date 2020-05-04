@@ -18,12 +18,11 @@ import info.cinow.dto.PhotoAdminDto;
 import info.cinow.dto.PhotoDto;
 import info.cinow.dto.mapper.PhotoMapper;
 import info.cinow.service.PhotoService;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * PhotoController
  */
-@Slf4j
+
 @RestController()
 @RequestMapping("/admin/photos")
 public class AdminPhotoController {
@@ -48,7 +47,6 @@ public class AdminPhotoController {
 
     @GetMapping
     public CollectionModel<EntityModel<PhotoAdminDto>> getAllPhotos() {
-        // TODO: do links and entitymodels and collection models correctly
         CollectionModel<EntityModel<PhotoAdminDto>> photoEntities = new CollectionModel<>(Arrays.asList());
 
         photoEntities = new CollectionModel<>(photoService.getAllPhotos().stream().map(photo -> {

@@ -17,15 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.CensusTractDto;
-import info.cinow.dto.IndicatorDataDto;
-import info.cinow.dto.IndicatorDataSet;
-import info.cinow.dto.IndicatorDataSetDto;
 import info.cinow.dto.MatchedCensusTractDto;
 import info.cinow.dto.mapper.CensusTractMapper;
-import info.cinow.dto.mapper.IndicatorDataMapper;
 import info.cinow.dto.mapper.MatchedCensusTractMapper;
 import info.cinow.service.CensusTractService;
-import info.cinow.service.IndicatorService;
 
 /**
  * CensusTractController
@@ -42,12 +37,6 @@ public class CensusTractController {
 
         @Autowired
         private MatchedCensusTractMapper matchedCensusTractMapper;
-
-        @Autowired
-        private IndicatorService indicatorService;
-
-        @Autowired
-        private IndicatorDataMapper indicatorDataMapper;
 
         @Autowired
         private CensusTractLinks censusTractLinks;

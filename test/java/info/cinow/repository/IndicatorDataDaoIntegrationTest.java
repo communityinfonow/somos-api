@@ -45,7 +45,6 @@ public class IndicatorDataDaoIntegrationTest {
         data.forEach(obj -> {
             System.out.println("GID" + obj.getCensusTract().getGid());
         });
-        // assertTrue(data.contains(photo));
 
     }
 }

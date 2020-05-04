@@ -1,7 +1,5 @@
 package info.cinow.dto.mapper;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 
-import info.cinow.controller.IndicatorController;
 import info.cinow.controller.connected_links.ConnectedLinks;
 import info.cinow.controller.connected_links.IndicatorLinks;
 import info.cinow.dto.MatchedCensusTractDto;
@@ -53,11 +50,9 @@ public class MatchedCensusTractMapperImpl implements MatchedCensusTractMapper {
                 dto.setLifeExpectancyIndicator(new EntityModel<>(lifeExpectancy,
                                 this.indicatorLinks.lifeExpectancy("parent-life-expectancy",
                                                 censusTract.getParentTract().getGid()),
-                                this.indicatorLinks.lifeExpectancy("child-life-expectancy", childTract.getGid()))); // TODO
-                                                                                                                    // move
-                                                                                                                    // this
-                                                                                                                    // somewhere
-                                                                                                                    // better?
+
+                                this.indicatorLinks.lifeExpectancy("child-life-expectancy", childTract.getGid())));
+
                 return dto;
         }
 
@@ -70,6 +65,7 @@ public class MatchedCensusTractMapperImpl implements MatchedCensusTractMapper {
                                         this.indicatorLinks.allDataByIndicatorAndGeography(
                                                         indicator.getIndicator().getId(), childTractId, "child-data",
                                                         false));
+
                 }).collect(Collectors.toList());
 
         }

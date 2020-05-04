@@ -10,16 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import info.cinow.dto.mapper.RoleMapper;
-import info.cinow.dto.mapper.RoleMapperImpl;
 import info.cinow.dto.mapper.UserMapper;
-import info.cinow.dto.mapper.UserMapperImpl;
 import info.cinow.exceptions.EmailExistsException;
 import info.cinow.model.User;
 import info.cinow.repository.UserDao;

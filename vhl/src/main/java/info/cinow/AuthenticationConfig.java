@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,12 +44,8 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.logout().logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))).and()
                 .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/admin/users").hasRole("SUPER_USER").and().httpBasic().and().csrf().disable().cors();
-        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()); // TODO
-        // integration
-        // test
-        // this
-
+                .antMatchers("/admin/users").hasRole("SUPER_USER").and().csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().httpBasic().and().cors();
     }
 
     @Bean
@@ -85,8 +82,6 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN")
-        // .and().withUser("user").password(passwordEncoder().encode("userPass")).roles("USER");
 
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery(

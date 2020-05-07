@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import info.cinow.controller.CensusTractController;
 import info.cinow.controller.IndicatorController;
+import info.cinow.controller.IndicatorTopicController;
 import info.cinow.service.IndicatorService;
 
 /**
@@ -48,6 +49,12 @@ public class IndicatorLinksImpl implements IndicatorLinks {
         return this.connectedLinks.configureRelation(
                 linkTo(methodOn(IndicatorController.class).getDataByIndicatorGeography(geoid, indicatorId)), self,
                 label);
+    }
+
+    @Override
+    public Link allIndicatorTopics() {
+        return this.connectedLinks.configureRelation(
+                linkTo(methodOn(IndicatorTopicController.class).getAllIndicatorTopics()), false, "indicator-topics");
     }
 
 }

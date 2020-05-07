@@ -15,9 +15,12 @@ import info.cinow.dto.IndicatorDataDto;
 import info.cinow.dto.IndicatorDataSet;
 import info.cinow.dto.IndicatorDataSetDto;
 import info.cinow.dto.IndicatorDto;
+import info.cinow.dto.IndicatorTopicDto;
 import info.cinow.dto.mapper.IndicatorDataMapper;
 import info.cinow.dto.mapper.IndicatorMapper;
+import info.cinow.dto.mapper.IndicatorTopicMapper;
 import info.cinow.service.IndicatorService;
+import info.cinow.service.IndicatorTopicService;
 
 /**
  * IndicatorController

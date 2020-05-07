@@ -15,4 +15,6 @@ public interface IndicatorLinks {
 
     public Link allDataByIndicator(Long indicatorId, String label, boolean self);
 
+    public Link allIndicatorTopics();
+
 }

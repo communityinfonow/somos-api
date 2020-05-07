@@ -71,7 +71,8 @@ public class AppController {
     public EntityModel<String> getAdvancedDataLinks() {
         return new EntityModel<>("advanced data links", indicatorLinks.allIndicators(),
                 this.censusTractLinks.censusTracts(false),
-                indicatorLinks.allDataByIndicator(Constants.lifeExpectancyId, "life-expectancy-data", false));
+                indicatorLinks.allDataByIndicator(Constants.lifeExpectancyId, "life-expectancy-data", false),
+                indicatorLinks.allIndicatorTopics());
     }
 
     @ExceptionHandler(Exception.class)

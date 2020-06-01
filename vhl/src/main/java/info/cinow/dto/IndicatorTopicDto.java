@@ -2,6 +2,9 @@ package info.cinow.dto;
 
 import java.util.Set;
 
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+
 import info.cinow.model.Indicator;
 import lombok.Data;
 
@@ -11,5 +14,5 @@ public class IndicatorTopicDto {
 
     private String name;
 
-    private Set<Indicator> indicators;
+    private CollectionModel<EntityModel<Indicator>> indicators;
 }

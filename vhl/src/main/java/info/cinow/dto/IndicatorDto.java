@@ -17,6 +17,10 @@ public class IndicatorDto {
 
     private String dataLabel;
 
+    private Long order;
+
+    private String notation;
+
     private Boolean isLifeExpectancy;
 
     private ValueType valueType;

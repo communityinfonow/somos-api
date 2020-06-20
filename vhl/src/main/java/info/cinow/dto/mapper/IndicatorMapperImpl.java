@@ -24,6 +24,8 @@ public class IndicatorMapperImpl implements IndicatorMapper {
         dto.setIsLifeExpectancy(indicator.getIsLifeExpectancy());
         dto.setName(indicator.getName());
         dto.setValueType(indicator.getValueType());
+        dto.setNotation(indicator.getNotation());
+        dto.setOrder(indicator.getOrder());
 
         return dto;
     }

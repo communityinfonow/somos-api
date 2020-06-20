@@ -34,6 +34,12 @@ public class Indicator {
     @Column(name = "is_life_expectancy", columnDefinition = "boolean default false")
     private Boolean isLifeExpectancy;
 
+    @Column(name = "list_order")
+    private Long order;
+
+    @Column
+    private String notation;
+
     @OneToOne
     @JoinColumn(name = "value_type_id")
     private ValueType valueType;
@@ -97,6 +103,22 @@ public class Indicator {
 
     public void setIndicatorTopic(IndicatorTopic indicatorTopic) {
         this.indicatorTopic = indicatorTopic;
+    }
+
+    public Long getOrder() {
+        return order;
+    }
+
+    public void setOrder(Long order) {
+        this.order = order;
+    }
+
+    public String getNotation() {
+        return notation;
+    }
+
+    public void setNotation(String notation) {
+        this.notation = notation;
     }
 
 }

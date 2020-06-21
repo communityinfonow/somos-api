@@ -57,7 +57,6 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private String user3password;
 
     @Override
-    // @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (isSetup) {
             return;

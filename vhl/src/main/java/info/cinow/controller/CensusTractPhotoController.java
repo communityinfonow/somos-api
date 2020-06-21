@@ -96,7 +96,7 @@ public class CensusTractPhotoController {
                         return new EntityModel<>(
                                         photoMapper.toDto(photoService.updatePhoto(photo)).orElseThrow(
                                                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND)),
-                                        this.censusTractPhotoLinks.photo(censusTractId, id, true)); // TODO
+                                        this.censusTractPhotoLinks.photo(censusTractId, id, true));
 
                 } catch (NoDescriptionException | CensusTractDoesNotExistException e) {
                         log.error("An error occurred updating the photo information for tract: " + censusTractId
@@ -105,7 +105,6 @@ public class CensusTractPhotoController {
                 }
         }
 
-        // TODO: secure for public use by modifying query to get accepted
         @GetMapping(value = "/file/{fileName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
         public byte[] getPhotoFileByNameForTract(@PathVariable("censusTractId") final String censusTractId,
                         @PathVariable("fileName") final String fileName) {

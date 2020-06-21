@@ -42,10 +42,14 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+
+        httpSecurity.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
         httpSecurity.logout().logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))).and()
                 .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/admin/users").hasRole("SUPER_USER").and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().httpBasic().and().cors();
+                .antMatchers("/admin/users").hasRole("SUPER_USER").and().httpBasic().and().cors();
+
+
     }
 
     @Bean
@@ -57,7 +61,8 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedMethod("OPTIONS");
         configuration.addAllowedMethod("DELETE");
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration
+                .setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "X-XSRF-TOKEN"));
         configuration.addAllowedOrigin(env.getProperty("app.origin"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

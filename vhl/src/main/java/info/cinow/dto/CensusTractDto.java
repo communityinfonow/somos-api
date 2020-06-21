@@ -19,6 +19,4 @@ public class CensusTractDto {
 
     private List<Photo> photos;
 
-    // private CensusTractData data;
-
 }

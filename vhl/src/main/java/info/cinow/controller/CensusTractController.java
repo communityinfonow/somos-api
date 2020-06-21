@@ -17,15 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 import info.cinow.controller.connected_links.CensusTractLinks;
 import info.cinow.controller.connected_links.CensusTractPhotoLinks;
 import info.cinow.dto.CensusTractDto;
-import info.cinow.dto.IndicatorDataDto;
-import info.cinow.dto.IndicatorDataSet;
-import info.cinow.dto.IndicatorDataSetDto;
 import info.cinow.dto.MatchedCensusTractDto;
 import info.cinow.dto.mapper.CensusTractMapper;
-import info.cinow.dto.mapper.IndicatorDataMapper;
 import info.cinow.dto.mapper.MatchedCensusTractMapper;
 import info.cinow.service.CensusTractService;
-import info.cinow.service.IndicatorService;
 
 /**
  * CensusTractController
@@ -42,12 +37,6 @@ public class CensusTractController {
 
         @Autowired
         private MatchedCensusTractMapper matchedCensusTractMapper;
-
-        @Autowired
-        private IndicatorService indicatorService;
-
-        @Autowired
-        private IndicatorDataMapper indicatorDataMapper;
 
         @Autowired
         private CensusTractLinks censusTractLinks;
@@ -103,25 +92,6 @@ public class CensusTractController {
                                 }).collect(Collectors.toList()));
 
                 return matchedTracts;
-        }
-
-        @GetMapping("/{id}/indicators/{indicatorId}/data")
-        public EntityModel<IndicatorDataDto> getDataByIndicatorGeography(@PathVariable("id") String censusTractId,
-                        @PathVariable("indicatorId") Long indicatorId) {
-                return new EntityModel<>(this.indicatorDataMapper
-                                .toDto(this.indicatorService.getDataByIndicatorGeography(censusTractId, indicatorId)));
-        }
-
-        @GetMapping("/indicators/{indicatorId}/data")
-        public IndicatorDataSetDto getDataByIndicator(@PathVariable("indicatorId") Long indicatorId) {
-                IndicatorDataSetDto dto = new IndicatorDataSetDto();
-                IndicatorDataSet dataset = indicatorService.getDataByIndicatorId(indicatorId);
-                dto.setIndicatorData(dataset.getIndicatorData().stream()
-                                .map(indicatorData -> this.indicatorDataMapper.toDto(indicatorData))
-                                .collect(Collectors.toSet()));
-                dto.setMaxValue(dataset.getMaxValue());
-                dto.setMinValue(dataset.getMinValue());
-                return dto;
         }
 
 }

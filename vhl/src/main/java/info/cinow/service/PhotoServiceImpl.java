@@ -1,13 +1,23 @@
 package info.cinow.service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -122,9 +132,6 @@ public class PhotoServiceImpl implements PhotoService {
         }
         this.updateS3FileName(photo.getId(), photo.getFileName().get(), photo.getFilePathName());
         return photoDao.save(photo);
-
-        // TODO test s3 name update
-
     }
 
     /**
@@ -133,7 +140,6 @@ public class PhotoServiceImpl implements PhotoService {
      * @param photo
      */
     private void updateS3FileName(Long photoId, String photoName, String photoPath) {
-        // TODO test
         Photo oldPhoto = this.photoDao.findById(photoId).get();
         if (!oldPhoto.getFileName().get().equals(photoName)) {
             amazonS3Client.copyObject(bucketName, oldPhoto.getFilePathName(), bucketName, photoPath);
@@ -177,9 +183,7 @@ public class PhotoServiceImpl implements PhotoService {
             if (!(e instanceof DataAccessException)) {
                 photoDao.delete(savedPhotoInfo); // if error isn't from JPA, delete photo in database
             }
-            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved"); // TODO move this
-                                                                                                       // throw to the
-                                                                                                       // controller
+            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Photo could not be saved");
         } finally {
             FileUtils.deleteQuietly(photoFile); // clean up temp file
         }
@@ -228,7 +232,38 @@ public class PhotoServiceImpl implements PhotoService {
 
     private byte[] loadPhotoFromS3Bucket(String photoName) throws IOException {
         S3ObjectInputStream stream = amazonS3Client.getObject(bucketName, photoName).getObjectContent();
-        return IOUtils.toByteArray(stream);
+        return this.compressImage(IOUtils.toByteArray(stream), photoName);
+    }
+
+    private byte[] compressImage(byte[] imageFile, String photoName) throws IOException {
+        File file = new File(photoName);
+        File compressedImageFile = new File(file.getName());
+
+        OutputStream os = new FileOutputStream(file);
+        os.write(imageFile);
+        os.close();
+        BufferedImage image = ImageIO.read(file);
+
+        os = new FileOutputStream(compressedImageFile);
+
+        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpeg");
+        ImageWriter writer = (ImageWriter) writers.next();
+
+        ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+        writer.setOutput(ios);
+
+        ImageWriteParam param = writer.getDefaultWriteParam();
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(0.1f);
+
+        writer.write(null, new IIOImage(image, null, null), param);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpeg", baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+
+        return imageInByte;
     }
 
     private void deletePhotoFromS3Bucket(String photoName) throws IOException {

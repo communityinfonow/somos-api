@@ -25,8 +25,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import info.cinow.controller.LocationSuggestController;
-
 /**
  * AuthenticationConfig
  */
@@ -43,12 +41,15 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        CookieCsrfTokenRepository csrf = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrf.setCookieDomain(env.getProperty("cookie.domain"));
+        csrf.setCookiePath(env.getProperty("cookie.path"));
+
+        httpSecurity.csrf().csrfTokenRepository(csrf);
 
         httpSecurity.logout().logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))).and()
                 .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/admin/users").hasRole("SUPER_USER").and().httpBasic().and().cors();
-
 
     }
 
@@ -63,6 +64,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowCredentials(true);
         configuration
                 .setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "X-XSRF-TOKEN"));
+        configuration.setExposedHeaders(Arrays.asList("X-XSRF-TOKEN"));
         configuration.addAllowedOrigin(env.getProperty("app.origin"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

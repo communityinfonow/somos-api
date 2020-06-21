@@ -49,6 +49,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/admin/users").hasRole("SUPER_USER").and().httpBasic().and().cors();
 
+
     }
 
     @Bean
@@ -86,8 +87,6 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN")
-        // .and().withUser("user").password(passwordEncoder().encode("userPass")).roles("USER");
 
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery(
